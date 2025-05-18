@@ -1,5 +1,0 @@
-enum MutationType {
-    ADD_RANDOM_ARITHMETIC,
-    REPLACE_ARITHMETIC,
-    MOVE_BLOCKWISE
-};

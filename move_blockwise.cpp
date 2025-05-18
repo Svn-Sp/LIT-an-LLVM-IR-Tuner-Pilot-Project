@@ -13,7 +13,7 @@
 #include <vector>
 #include <fstream>
 #include <random>
-#include "mutation.cpp"
+#include "mutation.h"
 #include "utils.cpp"
 
 using namespace llvm;
@@ -55,6 +55,8 @@ std::tuple<Instruction*, Instruction*, Instruction*> selectRandomInstructions(Ba
 class MoveBlockwise : public Mutation {
 public:
     MoveBlockwise() : Mutation(4) {
+    }
+    MoveBlockwise(int decisions[]) : Mutation(4, decisions) {
     }
     
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {

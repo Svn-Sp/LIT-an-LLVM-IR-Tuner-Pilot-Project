@@ -11,7 +11,7 @@
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/Bitcode/BitcodeWriter.h"
-#include "mutation.cpp"
+#include "mutation.h"
 #include <vector>
 #include "utils.cpp"
 #include <fstream>
@@ -22,6 +22,8 @@ using namespace llvm;
 class ReplaceArithmetic : public Mutation {
     public:
         ReplaceArithmetic() : Mutation(3) {
+        }
+        ReplaceArithmetic(int decisions[]) : Mutation(3, decisions) {
         }
         std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override{
             std::vector<Function*> NonDeclFunctions;

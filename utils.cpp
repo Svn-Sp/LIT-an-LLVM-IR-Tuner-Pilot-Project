@@ -1,16 +1,19 @@
 #ifndef UTILS_CPP
 #define UTILS_CPP
 
-#include "llvm/IR/Instruction.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/InstrTypes.h"
+#include "llvm/IR/Instruction.h"
 
-bool isArithmeticInstruction(Instruction &I) {
-    return isa<BinaryOperator>(&I) &&
-           (I.getOpcode() == Instruction::Add ||
-            I.getOpcode() == Instruction::Sub ||
-            I.getOpcode() == Instruction::Mul ||
-            I.getOpcode() == Instruction::UDiv ||
-            I.getOpcode() == Instruction::SDiv);
+using namespace llvm;
+
+bool isArithmeticInstruction(llvm::Instruction &I) {
+    return llvm::isa<llvm::BinaryOperator>(&I) &&
+           (I.getOpcode() == llvm::Instruction::Add ||
+            I.getOpcode() == llvm::Instruction::Sub ||
+            I.getOpcode() == llvm::Instruction::Mul ||
+            I.getOpcode() == llvm::Instruction::UDiv ||
+            I.getOpcode() == llvm::Instruction::SDiv);
 }
 
 #endif

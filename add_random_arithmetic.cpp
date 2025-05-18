@@ -15,7 +15,7 @@
 #include "llvm/IR/Instruction.h"
 #include "llvm/IR/IRPrintingPasses.h"
 #include "llvm/Bitcode/BitcodeWriter.h"
-#include "mutation.cpp"
+#include "mutation.h"
 #include "utils.cpp"
 using namespace llvm;
 
@@ -31,6 +31,8 @@ std::vector<Instruction::BinaryOps> ArithmeticOps = {
 class AddRandomArithmetic : public Mutation {
 public:
     AddRandomArithmetic() : Mutation(6) {
+    }
+    AddRandomArithmetic(int decisions[]) : Mutation(6, decisions) {
     }
 
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {
