@@ -83,9 +83,9 @@ std::tuple<Instruction*, Instruction*, Instruction*> selectRandomInstructions(Ba
 
 class MoveBlockwise : public Mutation {
 public:
-    MoveBlockwise() : Mutation(4) {
+    MoveBlockwise() : Mutation(5) {
     }
-    MoveBlockwise(int decisions[]) : Mutation(4, decisions) {
+    MoveBlockwise(int decisions[]) : Mutation(5, decisions) {
     }
     
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {

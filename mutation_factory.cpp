@@ -5,6 +5,7 @@
 #include "add_random_arithmetic.cpp"
 #include "replace_arithmetic.cpp"
 #include "move_blockwise.cpp"
+#include "add_new_cond.cpp"
 #include <random>
 #include "constants.h"
 
@@ -14,7 +15,8 @@ void applyRandomMutation(Run& run_instance) {
     AddRandomArithmetic addRandomArithmetic;
     ReplaceArithmetic replaceArithmetic;
     MoveBlockwise moveBlockwise;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 2); 
+    AddNewCond addNewCond;
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 3); 
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
@@ -35,6 +37,12 @@ void applyRandomMutation(Run& run_instance) {
             break;
         case MOVE_BLOCKWISE:
             decisions = moveBlockwise.run(
+                MODIFIED_CODE,
+                MODIFIED_CODE
+            );
+            break;
+        case ADD_NEW_COND:
+            decisions = addNewCond.run(
                 MODIFIED_CODE,
                 MODIFIED_CODE
             );
@@ -77,6 +85,12 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             case MOVE_BLOCKWISE: {
                 MoveBlockwise moveBlockwiseCustom(decisionsArray);
                 result_decisions = moveBlockwiseCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                success = !result_decisions.empty();
+                break;
+            }
+            case ADD_NEW_COND: {
+                AddNewCond addNewCondCustom(decisionsArray);
+                result_decisions = addNewCondCustom.run(MODIFIED_CODE, MODIFIED_CODE);
                 success = !result_decisions.empty();
                 break;
             }

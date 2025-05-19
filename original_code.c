@@ -1,6 +1,32 @@
 #include <stdio.h>
 #include <stdint.h>
 
+// int main(int argc, char** argv) {
+//     const int N = 600;
+//     double A[N][N], B[N][N], C[N][N];
+    
+//     // Initialize matrices
+//     for (int i = 0; i < N; i++) {
+//         for (int j = 0; j < N; j++) {
+//             A[i][j] = (double)(i + j) / N;
+//             B[i][j] = (double)(i * j) / N;
+//             C[i][j] = 0.0;
+//         }
+//     }
+    
+//     // Perform matrix multiplication
+//     for (int i = 0; i < N; i++) {
+//         for (int j = 0; j < N; j++) {
+//             for (int k = 0; k < N; k++) {
+//                 C[i][j] += A[i][k] * B[k][j];
+//             }
+//         }
+//     }
+    
+//     // Print a sample value to verify
+//     printf("%f\n", C[100][100]);
+//     return 0;
+// }
 int main(int argc, char** argv) {
     const long N = 128;
     const long M = 128;

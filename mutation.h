@@ -25,7 +25,8 @@ public:
 enum MutationType {
     ADD_RANDOM_ARITHMETIC,
     REPLACE_ARITHMETIC,
-    MOVE_BLOCKWISE
+    MOVE_BLOCKWISE,
+    ADD_NEW_COND
 };
 
 #endif // MUTATION_H 

@@ -11,7 +11,7 @@
 #include "core.cpp"
 
 #define TIMEOUT_SECONDS 5
-#define REPETITIONS 4
+#define REPETITIONS 2
 
 int call_executable(const std::string& cmd, std::string* output, int timeout_seconds = TIMEOUT_SECONDS) {
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -102,6 +102,7 @@ void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple
     } catch (const std::invalid_argument& e) {
     } catch (const std::out_of_range& e) {
     }
+    run_instance.saveToDb();
 }
 
 #endif // MEASURE_TIME_CPP
