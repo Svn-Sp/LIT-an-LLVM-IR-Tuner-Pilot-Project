@@ -9,10 +9,15 @@ target triple = "x86_64-unknown-linux-gnu"
 define dso_local i32 @main(i32 noundef %0, ptr noundef %1) #0 {
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
-  %5 = alloca ptr, align 8
-  %6 = alloca i64, align 8
+  store i64 128, ptr %9, align 8
+  store i64 50, ptr %10, align 8
+  store i64 0, ptr %11, align 8
+  store i64 1, ptr %5, align 8
+  %5 = alloca i64, align 8
+  %6 = alloca ptr, align 8
   %7 = alloca i64, align 8
   %8 = alloca i64, align 8
+  store ptr %1, ptr %6, align 8
   %9 = alloca i64, align 8
   %10 = alloca i64, align 8
   %11 = alloca i64, align 8
@@ -20,97 +25,135 @@ define dso_local i32 @main(i32 noundef %0, ptr noundef %1) #0 {
   %13 = alloca i64, align 8
   store i32 0, ptr %3, align 4
   store i32 %0, ptr %4, align 4
-  store ptr %1, ptr %5, align 8
-  store i64 128, ptr %6, align 8
   store i64 128, ptr %7, align 8
-  store i64 50, ptr %8, align 8
-  store i64 0, ptr %9, align 8
-  store i64 1, ptr %10, align 8
   br label %14
 
-14:                                               ; preds = %52, %2
-  %15 = load i64, ptr %10, align 8
-  %16 = icmp sle i64 %15, 128
-  br i1 %16, label %17, label %55
+14:                                               ; preds = %56, %2
+  %15 = load i64, ptr %5, align 8
+  %16 = icmp sle i64 %random_mul5, 128
+  %cast_op22 = sext i1 %16 to i64
+  %random_add3 = add i64 %random_sdiv2, %cast_op22
+  %cast_op11 = sext i1 %16 to i64
+  %random_mul5 = mul i64 %cast_op21, %random_mul5
+  %random_sdiv2 = sdiv i64 %cast_op11, %random_sdiv2
+  %cast_op21 = sext i1 %16 to i64
+  %random_sub = sub i64 %random_mul5, %cast_op21
+  br i1 %16, label %17, label %61
 
 17:                                               ; preds = %14
-  store i64 1, ptr %11, align 8
+  store i64 1, ptr %8, align 8
   br label %18
 
-18:                                               ; preds = %48, %17
-  %19 = load i64, ptr %11, align 8
-  %20 = icmp sle i64 %19, 128
-  br i1 %20, label %21, label %51
+18:                                               ; preds = %52, %17
+  %19 = load i64, ptr %8, align 8
+  %20 = icmp sle i64 %random_mul1, 128
+  %cast_op2 = sext i1 %20 to i64
+  %random_udiv = udiv i64 %random_udiv, %cast_op2
+  %21 = mul i64 %random_mul1, %cast_op2
+  %random_sub2 = sub i64 %19, %random_sub2
+  %cast_op1 = sext i1 %20 to i64
+  %random_mul1 = mul i64 %cast_op1, %random_mul1
+  br i1 %20, label %22, label %55
 
-21:                                               ; preds = %18
+22:                                               ; preds = %18
   store i64 1, ptr %12, align 8
-  br label %22
+  br label %23
 
-22:                                               ; preds = %44, %21
-  %23 = load i64, ptr %12, align 8
-  %24 = icmp sle i64 %23, 50
-  br i1 %24, label %25, label %47
+23:                                               ; preds = %47, %22
+  %24 = load i64, ptr %12, align 8
+  %25 = icmp sle i64 %random_sub7, 50
+  %cast_op23 = sext i1 %25 to i64
+  %random_sub3 = sub i64 %random_sub3, %cast_op23
+  %random_sub4 = sub i64 %random_sub7, %cast_op23
+  %cast_op13 = sext i1 %25 to i64
+  %random_sub7 = sub i64 %cast_op13, %random_sub7
+  br i1 %25, label %26, label %51
 
-25:                                               ; preds = %22
-  %26 = load i64, ptr %10, align 8
-  %27 = load i64, ptr %11, align 8
-  %28 = mul i64 %26, %27
+26:                                               ; preds = %23
+  %27 = load i64, ptr %8, align 8
+  %28 = mul nsw i64 %31, %32
   %29 = load i64, ptr %12, align 8
-  %30 = mul nsw i64 %28, %29
+  %30 = mul nsw i64 %random_mul6, %29
   store i64 %30, ptr %13, align 8
-  %31 = load i64, ptr %13, align 8
-  %32 = srem i64 %31, 2
-  %33 = icmp eq i64 %32, 0
-  br i1 %33, label %34, label %38
+  %31 = load i64, ptr %5, align 8
+  %32 = mul i64 %32, %29
+  %random_mul6 = mul i64 %random_mul6, %32
+  %33 = load i64, ptr %13, align 8
+  %34 = srem i64 %33, 2
+  %random_udiv2 = udiv i64 %32, %random_udiv2
+  %random_add = add i64 %32, %random_add
+  %35 = icmp eq i64 %random_add, 0
+  br i1 %35, label %36, label %41
 
-34:                                               ; preds = %25
-  %35 = load i64, ptr %13, align 8
-  %36 = load i64, ptr %9, align 8
-  %37 = add nsw i64 %36, %35
-  store i64 %37, ptr %9, align 8
-  br label %43
-
-38:                                               ; preds = %25
+36:                                               ; preds = %26
+  %random_sub1 = sub i64 %random_sub8, %random_sub1
+  %random_sdiv1 = sdiv i64 %random_sdiv1, %random_sub1
+  %37 = sub i64 %random_mul7, %random_sub1
+  %38 = add i64 %random_sub1, %random_sub8
+  %random_sub8 = sub i64 %random_sub8, %38
   %39 = load i64, ptr %13, align 8
-  %40 = sdiv i64 %39, 2
-  %41 = load i64, ptr %9, align 8
-  %42 = sub nsw i64 %41, %40
-  store i64 %42, ptr %9, align 8
-  br label %43
+  %40 = load i64, ptr %11, align 8
+  %random_mul7 = mul i64 %39, %random_mul7
+  store i64 %random_sub8, ptr %11, align 8
+  br label %46
 
-43:                                               ; preds = %38, %34
-  br label %44
+41:                                               ; preds = %26
+  %42 = load i64, ptr %13, align 8
+  %43 = mul i64 %42, 2
+  %44 = load i64, ptr %11, align 8
+  %45 = add i64 %44, %random_mul4
+  %random_mul4 = mul i64 %random_mul4, %random_sdiv5
+  %random_sdiv5 = sdiv i64 %random_sdiv5, %random_mul4
+  %random_mul = mul i64 %44, %random_mul
+  store i64 %random_mul, ptr %11, align 8
+  br label %46
 
-44:                                               ; preds = %43
-  %45 = load i64, ptr %12, align 8
-  %46 = sub i64 %45, 1
-  store i64 %46, ptr %12, align 8
-  br label %22, !llvm.loop !6
+46:                                               ; preds = %41, %36
+  br label %47
 
-47:                                               ; preds = %22
-  br label %48
+47:                                               ; preds = %46
+  %48 = load i64, ptr %12, align 8
+  %49 = sub i64 %random_sdiv4, 1
+  %50 = add i64 %random_sdiv4, %49
+  %random_sdiv4 = sdiv i64 %49, %random_sdiv4
+  store i64 %49, ptr %12, align 8
+  br label %23, !llvm.loop !6
 
-48:                                               ; preds = %47
-  %49 = load i64, ptr %11, align 8
-  %50 = add nsw i64 %49, 1
-  store i64 %50, ptr %11, align 8
-  br label %18, !llvm.loop !8
-
-51:                                               ; preds = %18
+51:                                               ; preds = %23
   br label %52
 
 52:                                               ; preds = %51
-  %53 = load i64, ptr %10, align 8
-  %54 = add nsw i64 %53, 1
-  store i64 %54, ptr %10, align 8
+  %53 = sub i64 %random_udiv1, 1
+  store i64 %53, ptr %8, align 8
+  %54 = load i64, ptr %8, align 8
+  %random_udiv1 = udiv i64 %53, %random_udiv1
+  br label %18, !llvm.loop !8
+
+55:                                               ; preds = %18
+  br label %56
+
+56:                                               ; preds = %55
+  %57 = load i64, ptr %5, align 8
+  %random_sub5 = sub i64 %59, %random_sub5
+  store i64 %random_sub5, ptr %5, align 8
+  %58 = sub i64 %57, 1
+  %random_sub6 = sub i64 %57, %59
+  %59 = mul i64 %58, %59
+  %60 = add i64 %57, %random_sub5
+  %random_mul8 = mul i64 %random_sub6, %random_mul8
   br label %14, !llvm.loop !9
 
-55:                                               ; preds = %14
-  %56 = load i64, ptr %9, align 8
-  %57 = call i32 (ptr, ...) @printf(ptr noundef @.str, i64 noundef %56)
-  %58 = load i64, ptr %9, align 8
-  %59 = trunc i64 %58 to i32
-  ret i32 %59
+61:                                               ; preds = %14
+  %random_mul3 = mul i32 %random_mul3, %random_sdiv
+  %random_mul2 = mul i32 %random_mul2, %random_sdiv
+  %62 = load i64, ptr %11, align 8
+  %63 = trunc i64 %random_sdiv3 to i32
+  %64 = load i64, ptr %11, align 8
+  %cast_op12 = sext i32 %random_mul2 to i64
+  %random_sdiv3 = sdiv i64 %cast_op12, %random_sdiv3
+  %65 = call i32 (ptr, ...) @printf(ptr noundef @.str, i64 noundef %64)
+  %random_sdiv = sdiv i32 %random_sdiv, %random_mul3
+  ret i32 %random_mul3
 }
 
 declare i32 @printf(ptr noundef, ...) #1

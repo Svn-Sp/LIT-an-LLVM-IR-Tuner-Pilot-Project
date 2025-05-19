@@ -1,13 +1,17 @@
-#ifndef CALL_EXECUTABLE_CPP
-#define CALL_EXECUTABLE_CPP
+#ifndef MEASURE_TIME_CPP
+#define MEASURE_TIME_CPP
 
 #include <sys/select.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string>
 #include <cstdio>
+#include <chrono>
+#include <cmath>
+#include "core.cpp"
 
 #define TIMEOUT_SECONDS 5
+#define REPETITIONS 4
 
 int call_executable(const std::string& cmd, std::string* output, int timeout_seconds = TIMEOUT_SECONDS) {
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -71,4 +75,33 @@ int call_executable(const std::string& cmd, std::string* output, int timeout_sec
     return timeout_occurred ? 1 : WEXITSTATUS(status);
 }
 
-#endif // CALL_EXECUTABLE_CPP
+void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple<double, double, std::string>>& results, const std::string& cmd = "lli modified.ll"){
+    std::vector<double> durations;
+    for (int run = 0; run < REPETITIONS; run++) {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        call_executable(cmd, &result);
+        auto end_time = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end_time - start_time;
+            durations.push_back(elapsed.count());
+    }
+    
+    double sum = 0.0;
+    for (double d : durations) sum += d;
+    double avg = sum / durations.size();
+    
+    double variance = 0.0;
+    for (double d : durations) variance += (d - avg) * (d - avg);
+    variance /= durations.size();
+    double stddev = std::sqrt(variance);
+    
+    results.push_back(std::make_tuple(avg, stddev, result));
+    run_instance.avgDuration = avg;
+    run_instance.stddevDuration = stddev;
+    try {
+        run_instance.result = std::stod(result);
+    } catch (const std::invalid_argument& e) {
+    } catch (const std::out_of_range& e) {
+    }
+}
+
+#endif // MEASURE_TIME_CPP
