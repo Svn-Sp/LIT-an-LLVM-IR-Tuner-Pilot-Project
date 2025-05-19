@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS code (
 CREATE TABLE IF NOT EXISTS run (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     code_id INTEGER,
+    result REAL,
     avg_rt REAL NOT NULL,
     std_dev_rt REAL NOT NULL,
     FOREIGN KEY (code_id) REFERENCES code(id)
