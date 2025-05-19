@@ -19,9 +19,19 @@
 using namespace llvm;
 
 std::tuple<Instruction*, Instruction*, Instruction*> selectRandomInstructions(BasicBlock *BB, DecisionMaker &dm) {
+    // Safety check for nullptr
+    if (!BB) {
+        return std::make_tuple(nullptr, nullptr, nullptr);
+    }
+    
     std::vector<Instruction*> Insts;
-    for (Instruction &I : *BB) {
-        Insts.push_back(&I);
+    try {
+        for (Instruction &I : *BB) {
+            Insts.push_back(&I);
+        }
+    } catch (...) {
+        // If iteration fails, return nullptrs
+        return std::make_tuple(nullptr, nullptr, nullptr);
     }
 
     if (Insts.size() < 3) {
@@ -29,7 +39,16 @@ std::tuple<Instruction*, Instruction*, Instruction*> selectRandomInstructions(Ba
     }
 
     int FirstIdx = dm.make_decision(0, Insts.size() - 2); // at least 1 before the end
+    // Bounds check
+    if (FirstIdx < 0 || FirstIdx >= static_cast<int>(Insts.size() - 1)) {
+        FirstIdx = 0;
+    }
+    
     int LastIdx = dm.make_decision(FirstIdx + 1, Insts.size() - 1);
+    // Bounds check
+    if (LastIdx <= FirstIdx || LastIdx >= static_cast<int>(Insts.size())) {
+        LastIdx = std::min(FirstIdx + 1, static_cast<int>(Insts.size() - 1));
+    }
 
     std::vector<int> insertOptions;
     for (int i = 0; i < (int)Insts.size(); ++i) {
@@ -43,11 +62,21 @@ std::tuple<Instruction*, Instruction*, Instruction*> selectRandomInstructions(Ba
     }
 
     int InsertIdx = dm.make_decision(0, insertOptions.size() - 1);
+    // Bounds check
+    if (InsertIdx < 0 || InsertIdx >= static_cast<int>(insertOptions.size())) {
+        InsertIdx = 0;
+    }
+    
     int InsertPos = insertOptions[InsertIdx];
 
     Instruction *First = Insts[FirstIdx];
     Instruction *Last = Insts[LastIdx];
     Instruction *InsertBefore = Insts[InsertPos];
+    
+    // Final validity check
+    if (!First || !Last || !InsertBefore) {
+        return std::make_tuple(nullptr, nullptr, nullptr);
+    }
 
     return std::make_tuple(First, Last, InsertBefore);
 }
@@ -68,36 +97,77 @@ public:
             }
         }
 
-        // Select a random function
-        Function* SelectedFunction = NonDeclFunctions[this->dm.make_decision(0, NonDeclFunctions.size() - 1)];
+        // Safety check: ensure we have at least one function
+        if (NonDeclFunctions.empty()) {
+            return std::move(M); // Return unchanged module instead of nullptr
+        }
 
+        // Make sure decision index is in bounds
+        int funcIndex = this->dm.make_decision(0, NonDeclFunctions.size() - 1);
+        if (funcIndex < 0 || funcIndex >= static_cast<int>(NonDeclFunctions.size())) {
+            // If the decision is out of bounds, default to the first function
+            funcIndex = 0;
+        }
+
+        // Select a random function
+        Function* SelectedFunction = NonDeclFunctions[funcIndex];
+
+        // Safety check: ensure SelectedFunction is valid
+        if (!SelectedFunction) {
+            return std::move(M); // Return unchanged module
+        }
 
         // Find all basic blocks in the selected function
         std::vector<BasicBlock*> BasicBlocks;
-        for (BasicBlock &BB : *SelectedFunction) {
-            BasicBlocks.push_back(&BB);
+        
+        // Safely iterate through basic blocks with validity check
+        bool validFunction = true;
+        try {
+            for (BasicBlock &BB : *SelectedFunction) {
+                BasicBlocks.push_back(&BB);
+            }
+        } catch (...) {
+            // If any exception occurs during iteration, consider it invalid
+            validFunction = false;
         }
 
-        if (BasicBlocks.empty()) {
-            return nullptr;
+        if (!validFunction || BasicBlocks.empty()) {
+            return std::move(M); // Return unchanged module
+        }
+
+        // Make sure decision index is in bounds
+        int bbIndex = this->dm.make_decision(0, BasicBlocks.size() - 1);
+        if (bbIndex < 0 || bbIndex >= static_cast<int>(BasicBlocks.size())) {
+            // If the decision is out of bounds, default to the first basic block
+            bbIndex = 0;
         }
 
         // Select a random basic block
-        BasicBlock* SelectedBB = BasicBlocks[this->dm.make_decision(0, BasicBlocks.size() - 1)];
+        BasicBlock* SelectedBB = BasicBlocks[bbIndex];
 
+        // Safety check: ensure SelectedBB is valid
+        if (!SelectedBB) {
+            return std::move(M); // Return unchanged module
+        }
 
         std::tuple<Instruction*, Instruction*, Instruction*> Insts = selectRandomInstructions(SelectedBB, this->dm);
         
         if (std::get<0>(Insts) == nullptr || std::get<1>(Insts) == nullptr || std::get<2>(Insts) == nullptr) {
-            return nullptr;
+            return std::move(M); // Return unchanged module instead of nullptr
         }
         
-        SelectedBB->splice(
-            std::get<2>(Insts)->getIterator(), 
-            SelectedBB,
-            std::get<0>(Insts)->getIterator(), 
-            ++std::get<1>(Insts)->getIterator()
-        );
+        // Safety check: ensure instructions are valid before splicing
+        try {
+            SelectedBB->splice(
+                std::get<2>(Insts)->getIterator(), 
+                SelectedBB,
+                std::get<0>(Insts)->getIterator(), 
+                ++std::get<1>(Insts)->getIterator()
+            );
+        } catch (...) {
+            // If any exception occurs during splicing, return the unchanged module
+            return std::move(M);
+        }
         
         return std::move(M);
     }

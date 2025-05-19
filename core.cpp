@@ -1,3 +1,6 @@
+#ifndef CORE_CPP
+#define CORE_CPP
+
 #include <vector>
 #include <tuple>
 #include <sstream>
@@ -9,6 +12,7 @@ class Run {
     std::vector<std::tuple<MutationType, std::vector<int>>> mutations;
     double avgDuration;
     double stddevDuration;
+    double result;
     std::string asString(){
         std::stringstream ss;
         ss << "Run: " << avgDuration << " " << stddevDuration << "\n";
@@ -23,3 +27,5 @@ class Run {
     }
     
 };
+
+#endif // CORE_CPP

@@ -1,3 +1,6 @@
+#ifndef MUTATION_CPP
+#define MUTATION_CPP
+
 #include "mutation.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/AsmParser/Parser.h"
@@ -54,3 +57,5 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     }
     return decisions;
 }
+
+#endif // MUTATION_CPP

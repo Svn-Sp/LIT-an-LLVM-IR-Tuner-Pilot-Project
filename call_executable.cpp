@@ -1,3 +1,6 @@
+#ifndef CALL_EXECUTABLE_CPP
+#define CALL_EXECUTABLE_CPP
+
 #include <sys/select.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -67,3 +70,5 @@ int call_executable(const std::string& cmd, std::string* output, int timeout_sec
     
     return timeout_occurred ? 1 : WEXITSTATUS(status);
 }
+
+#endif // CALL_EXECUTABLE_CPP

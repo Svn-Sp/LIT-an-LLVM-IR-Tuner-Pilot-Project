@@ -33,11 +33,11 @@ void random_tuning(){
     std::vector<Run> runs;
     // Function to copy content from original.ll to modified.ll
     std::string result;
-    for (int t = 0; t < 500; t++){
+    for (int t = 0; t < RUN_COUNT; t++){
         llvm::outs() << "----------------------------------------\n";
         llvm::outs() << "Running test " << t << "\n";
         copyOriginalToModified(ORIGINAL_CODE, MODIFIED_CODE);
-        std::uniform_int_distribution<> mutationCountDistribution(3, 100);
+        std::uniform_int_distribution<> mutationCountDistribution(MIN_MUTATIONS, MAX_MUTATIONS);
         int mutationCount = mutationCountDistribution(gen);
         Run run_instance;
         for (int i = 0; i < mutationCount; i++) {
@@ -63,6 +63,11 @@ void random_tuning(){
         results.push_back(std::make_tuple(avg, stddev, result));
         run_instance.avgDuration = avg;
         run_instance.stddevDuration = stddev;
+        try {
+            run_instance.result = std::stod(result);
+        } catch (const std::invalid_argument& e) {
+        } catch (const std::out_of_range& e) {
+        }
         runs.push_back(run_instance);
         llvm::outs() << run_instance.asString() << "\n";
     }  

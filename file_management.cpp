@@ -1,3 +1,6 @@
+#ifndef FILE_MANAGEMENT_CPP
+#define FILE_MANAGEMENT_CPP
+
 #include <fstream>
 #include <string>
 
@@ -42,3 +45,5 @@ int writeResultsToCSV(std::string filename, std::vector<std::tuple<double, doubl
     }
     return 0;
 }
+
+#endif // FILE_MANAGEMENT_CPP

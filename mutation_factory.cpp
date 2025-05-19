@@ -8,13 +8,13 @@
 #include <random>
 #include "constants.h"
 
-AddRandomArithmetic addRandomArithmetic;
-ReplaceArithmetic replaceArithmetic;
-MoveBlockwise moveBlockwise;
 
 
 void applyRandomMutation(Run& run_instance) {
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 2);
+    AddRandomArithmetic addRandomArithmetic;
+    ReplaceArithmetic replaceArithmetic;
+    MoveBlockwise moveBlockwise;
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 2); 
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
@@ -44,30 +44,61 @@ void applyRandomMutation(Run& run_instance) {
 }
 
 void reapplyMutation(Run& run_instance, MutationType mutationType, const std::vector<int>& decisions) {
+    // Safety check: empty decisions vector
+    if (decisions.empty()) {
+        llvm::outs() << "Warning: Empty decisions vector for mutation type " << mutationType << "\n";
+        return;
+    }
+    
     // Convert vector to array for the constructors
-    int* decisionsArray = new int[decisions.size()];
-    for (size_t i = 0; i < decisions.size(); i++) {
-        decisionsArray[i] = decisions[i];
+    int* decisionsArray = nullptr;
+    try {
+        decisionsArray = new int[decisions.size()];
+        for (size_t i = 0; i < decisions.size(); i++) {
+            decisionsArray[i] = decisions[i];
+        }
+        
+        std::vector<int> result_decisions;
+        bool success = false;
+        
+        switch (mutationType) {
+            case ADD_RANDOM_ARITHMETIC: {
+                AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);
+                result_decisions = addRandomArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                success = !result_decisions.empty();
+                break;
+            }
+            case REPLACE_ARITHMETIC: {
+                ReplaceArithmetic replaceArithmeticCustom(decisionsArray);
+                result_decisions = replaceArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                success = !result_decisions.empty();
+                break;
+            }
+            case MOVE_BLOCKWISE: {
+                MoveBlockwise moveBlockwiseCustom(decisionsArray);
+                result_decisions = moveBlockwiseCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                success = !result_decisions.empty();
+                break;
+            }
+            default:
+                llvm::outs() << "Warning: Unknown mutation type " << mutationType << "\n";
+                break;
+        }
+        
+        if (success) {
+            run_instance.mutations.push_back(std::make_tuple(mutationType, result_decisions));
+        } else {
+            llvm::outs() << "Warning: Mutation application failed for type " << mutationType << "\n";
+        }
+    } catch (const std::exception& e) {
+        llvm::outs() << "Exception in reapplyMutation: " << e.what() << "\n";
+    } catch (...) {
+        llvm::outs() << "Unknown exception in reapplyMutation\n";
     }
     
-    switch (mutationType) {
-        case ADD_RANDOM_ARITHMETIC: {
-            AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);
-            addRandomArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
-            break;
-        }
-        case REPLACE_ARITHMETIC: {
-            ReplaceArithmetic replaceArithmeticCustom(decisionsArray);
-            replaceArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
-            break;
-        }
-        case MOVE_BLOCKWISE: {
-            MoveBlockwise moveBlockwiseCustom(decisionsArray);
-            moveBlockwiseCustom.run(MODIFIED_CODE, MODIFIED_CODE);
-            break;
-        }
+    // Clean up
+    if (decisionsArray) {
+        delete[] decisionsArray;
     }
-    
-    delete[] decisionsArray;
 }
 #endif 

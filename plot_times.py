@@ -1,10 +1,12 @@
+import sys
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
 # Read the CSV file
-data = pd.read_csv("results.csv")
+data = pd.read_csv(sys.argv[1])
 
 # Convert columns to numeric, coercing errors to NaN
 data["Average Duration (s)"] = pd.to_numeric(

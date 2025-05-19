@@ -45,7 +45,11 @@ public:
         }
         
         // Select a random function
+        llvm::outs() << "Decision maker index: " << this->dm.current_decision << "\n";
+        llvm::outs() << "Next decision: " << this->dm.decisions[this->dm.current_decision] << "\n";
+        llvm::outs() << "NonDeclFunctions.size(): " << NonDeclFunctions.size() << "\n";
         Function* SelectedFunction = NonDeclFunctions[this->dm.make_decision(0, NonDeclFunctions.size() - 1)];
+        llvm::outs() << "Selected function: " << SelectedFunction->getName() << "\n";
         
         // Find all basic blocks in the selected function
         std::vector<BasicBlock*> BasicBlocks;
