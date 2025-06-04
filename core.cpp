@@ -50,7 +50,7 @@ class Run {
         }
         
         // Insert into run table (ignoring code_id for now)
-        std::string runSql = "INSERT INTO run (code_id, avg_rt, std_dev_rt) VALUES (NULL, ?, ?)";
+        std::string runSql = "INSERT INTO run (code_id, result, avg_rt, std_dev_rt) VALUES (NULL, ?, ?, ?)";
         sqlite3_stmt* runStmt;
         rc = sqlite3_prepare_v2(db, runSql.c_str(), -1, &runStmt, nullptr);
         if (rc != SQLITE_OK) {
@@ -59,8 +59,13 @@ class Run {
             return false;
         }
         
-        sqlite3_bind_double(runStmt, 1, avgDuration);
-        sqlite3_bind_double(runStmt, 2, stddevDuration);
+        if (std::isfinite(result)) {
+            sqlite3_bind_double(runStmt, 1, result);
+        } else {
+            sqlite3_bind_null(runStmt, 1);
+        }
+        sqlite3_bind_double(runStmt, 2, avgDuration);
+        sqlite3_bind_double(runStmt, 3, stddevDuration);
         
         rc = sqlite3_step(runStmt);
         if (rc != SQLITE_DONE) {
