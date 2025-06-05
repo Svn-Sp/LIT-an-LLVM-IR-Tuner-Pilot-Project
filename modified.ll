@@ -16,109 +16,105 @@ define dso_local i32 @main(i32 noundef %0, ptr noundef %1) #0 {
   %9 = alloca i64, align 8
   %10 = alloca i64, align 8
   %11 = alloca i64, align 8
-  store ptr %1, ptr %5, align 8
-  store i64 128, ptr %6, align 8
-  store i64 128, ptr %7, align 8
-  store i64 50, ptr %8, align 8
   %12 = alloca i64, align 8
   %13 = alloca i64, align 8
   store i32 0, ptr %3, align 4
   store i32 %0, ptr %4, align 4
+  store ptr %1, ptr %5, align 8
+  store i64 128, ptr %6, align 8
+  store i64 128, ptr %7, align 8
+  store i64 50, ptr %8, align 8
   store i64 0, ptr %9, align 8
   store i64 1, ptr %10, align 8
   br label %14
 
-14:                                               ; preds = %54, %2
+14:                                               ; preds = %52, %2
   %15 = load i64, ptr %10, align 8
   %16 = icmp sle i64 %15, 128
-  br i1 %16, label %17, label %57
+  br i1 %16, label %17, label %55
 
 17:                                               ; preds = %14
   store i64 1, ptr %11, align 8
   br label %18
 
-18:                                               ; preds = %50, %17
+18:                                               ; preds = %48, %17
   %19 = load i64, ptr %11, align 8
-  %20 = icmp sle i64 %21, 128
-  %cast_op2 = sext i1 %20 to i64
-  %21 = add i64 %21, %cast_op2
-  br i1 %20, label %22, label %53
+  %20 = icmp sle i64 %19, 128
+  br i1 %20, label %21, label %51
 
-22:                                               ; preds = %18
+21:                                               ; preds = %18
   store i64 1, ptr %12, align 8
-  br label %23
+  br label %22
 
-23:                                               ; preds = %45, %22
-  %24 = load i64, ptr %12, align 8
-  %25 = icmp sle i64 %24, 50
-  br i1 %25, label %26, label %49
+22:                                               ; preds = %44, %21
+  %23 = load i64, ptr %12, align 8
+  %24 = icmp sle i64 %23, 50
+  br i1 %24, label %25, label %47
 
-26:                                               ; preds = %23
-  %27 = load i64, ptr %10, align 8
-  %28 = load i64, ptr %11, align 8
-  %29 = mul i64 %27, %28
-  %30 = load i64, ptr %12, align 8
-  %31 = mul i64 %29, %30
-  store i64 %31, ptr %13, align 8
-  %32 = load i64, ptr %13, align 8
-  %random_sdiv = sdiv i64 %30, %random_sdiv
-  %33 = srem i64 %random_sdiv, 2
-  %34 = icmp eq i64 %33, 0
-  br i1 %34, label %35, label %39
+25:                                               ; preds = %22
+  %26 = load i64, ptr %10, align 8
+  %27 = load i64, ptr %11, align 8
+  %28 = mul nsw i64 %26, %27
+  %29 = load i64, ptr %12, align 8
+  %30 = mul nsw i64 %28, %29
+  store i64 %30, ptr %13, align 8
+  %31 = load i64, ptr %13, align 8
+  %32 = srem i64 %31, 2
+  %33 = icmp eq i64 %32, 0
+  br i1 %33, label %34, label %38
 
-35:                                               ; preds = %26
-  %36 = sub i64 %38, %37
-  %37 = load i64, ptr %13, align 8
-  %38 = load i64, ptr %9, align 8
-  store i64 %36, ptr %9, align 8
+34:                                               ; preds = %25
+  %35 = load i64, ptr %13, align 8
+  %36 = load i64, ptr %9, align 8
+  %37 = add nsw i64 %random_sub, %35
+  %random_sub = sub i64 %random_sub, %37
+  store i64 %37, ptr %9, align 8
+  br label %43
+
+38:                                               ; preds = %25
+  %39 = load i64, ptr %13, align 8
+  %40 = sdiv i64 %39, 2
+  %41 = load i64, ptr %9, align 8
+  %42 = sub nsw i64 %41, %40
+  %random_udiv = udiv i64 %41, %random_udiv
+  store i64 %random_udiv, ptr %9, align 8
+  br label %43
+
+43:                                               ; preds = %38, %34
   br label %44
 
-39:                                               ; preds = %26
-  %40 = load i64, ptr %13, align 8
-  %41 = sdiv i64 %40, 2
-  %42 = load i64, ptr %9, align 8
-  %43 = sub nsw i64 %random_udiv, %41
-  %random_udiv = udiv i64 %random_udiv, %43
-  store i64 %43, ptr %9, align 8
-  br label %44
+44:                                               ; preds = %43
+  %45 = load i64, ptr %12, align 8
+  %46 = add i64 %45, 1
+  store i64 %46, ptr %12, align 8
+  br label %22, !llvm.loop !6
 
-44:                                               ; preds = %39, %35
-  br label %45
+47:                                               ; preds = %22
+  br label %48
 
-45:                                               ; preds = %44
-  %46 = load i64, ptr %12, align 8
-  %47 = add nsw i64 %48, 1
-  %48 = mul i64 %48, %47
-  store i64 %47, ptr %12, align 8
-  br label %23, !llvm.loop !6
-
-49:                                               ; preds = %23
-  br label %50
-
-50:                                               ; preds = %49
-  %51 = load i64, ptr %11, align 8
-  %52 = add nsw i64 %random_add, 1
-  %random_mul = mul i64 %random_add, %random_mul
-  %random_add = add i64 %random_add, %random_mul
+48:                                               ; preds = %47
+  %49 = load i64, ptr %11, align 8
+  %50 = add nsw i64 %49, 1
+  %random_mul = mul i64 %49, %random_mul
   store i64 %random_mul, ptr %11, align 8
   br label %18, !llvm.loop !8
 
-53:                                               ; preds = %18
-  br label %54
+51:                                               ; preds = %18
+  br label %52
 
-54:                                               ; preds = %53
-  %55 = load i64, ptr %10, align 8
-  %56 = sub i64 %random_udiv1, 1
-  %random_udiv1 = udiv i64 %random_udiv1, %56
-  store i64 %56, ptr %10, align 8
+52:                                               ; preds = %51
+  %53 = load i64, ptr %10, align 8
+  %54 = sub i64 %53, 1
+  store i64 %54, ptr %10, align 8
   br label %14, !llvm.loop !9
 
-57:                                               ; preds = %14
+55:                                               ; preds = %14
+  %56 = load i64, ptr %9, align 8
+  %57 = call i32 (ptr, ...) @printf(ptr noundef @.str, i64 noundef %56)
   %58 = load i64, ptr %9, align 8
-  %59 = call i32 (ptr, ...) @printf(ptr noundef @.str, i64 noundef %58)
-  %60 = load i64, ptr %9, align 8
-  %61 = trunc i64 %60 to i32
-  ret i32 %61
+  %59 = mul i64 %56, %59
+  %60 = trunc i64 %59 to i32
+  ret i32 %60
 }
 
 declare i32 @printf(ptr noundef, ...) #1
