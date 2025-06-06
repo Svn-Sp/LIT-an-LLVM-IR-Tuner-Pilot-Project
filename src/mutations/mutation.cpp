@@ -31,6 +31,7 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     std::unique_ptr<Module> updatedM = mutate(std::move(M));
     std::error_code EC;
     if(updatedM == nullptr){
+        llvm::errs() << "Failed to mutate" << "\n";
         return {};
     }
     //Check if modified module will be parsable
@@ -45,6 +46,8 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     std::unique_ptr<llvm::Module> ParsedModule = llvm::parseIR(
         llvm::MemoryBufferRef(irString, "in-memory IR"), Err, TempContext);
     if(ParsedModule == nullptr){
+        llvm::errs() << "Failed to parse modified module" << "\n";
+        llvm::errs() << Err.getMessage() << "\n";
         return {};
     }
     raw_fd_ostream Out(output_file, EC);
@@ -56,6 +59,7 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     for (int i = 0; i < dm.num_decisions; i++) {
         decisions.push_back(dm.decisions[i]);
     }
+    dm.print_decisions();
     return decisions;
 }
 

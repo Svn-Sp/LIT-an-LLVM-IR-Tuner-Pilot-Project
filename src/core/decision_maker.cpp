@@ -1,7 +1,8 @@
 #pragma once
 #include <random>
-#include <iostream>
 
+#include <iostream>
+#include "llvm/Support/raw_ostream.h"
 class DecisionMaker {
     public:
         int* decisions;
@@ -73,13 +74,15 @@ class DecisionMaker {
         }
 
         void print_decisions(){
-            std::cout << "DECISIONS:[";
+            llvm::outs() << "Current decision: " << current_decision << "\n";
+            llvm::outs() << "Num decisions: " << num_decisions << "\n";
+            llvm::outs() << "DECISIONS:[";
             for(int i = 0; i < num_decisions; i++) {
-                std::cout << decisions[i];
+                llvm::outs() << decisions[i];
                 if (i < num_decisions - 1) {
-                    std::cout << ",";
+                    llvm::outs() << ",";
                 }
             }
-            std::cout << "]" << std::endl;
+            llvm::outs() << "]" << "\n";
         }
 };

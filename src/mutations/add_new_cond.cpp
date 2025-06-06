@@ -17,6 +17,7 @@
 #include "llvm/Bitcode/BitcodeWriter.h"
 #include "mutations/mutation.h"
 #include "utils/utils.cpp"
+#include "utils/randomness_utils.cpp"
 using namespace llvm;
 
 class AddNewCond : public Mutation {
@@ -92,39 +93,37 @@ public:
         // Select two random registers
         Value* SelectedRegister1 = UsedRegisters[this->dm.make_decision(0, UsedRegisters.size() - 1)];
         Value* SelectedRegister2 = UsedRegisters[this->dm.make_decision(0, UsedRegisters.size() - 1)];
+        Type* Type1 = SelectedRegister1->getType();
+        Type* Type2 = SelectedRegister2->getType();
+        // llvm::outs() << "SelectedRegister1: " << SelectedRegister1->getName() << "\n";
+        // llvm::outs() << "SelectedRegister2: " << SelectedRegister2->getName() << "\n";
+        // llvm::outs() << "Type1: " << Type1->getTypeID() << "\n";
+        // llvm::outs() << "Type2: " << Type2->getTypeID() << "\n";
         
         // Ensure both registers have the same type for comparison
-        if (SelectedRegister1->getType() != SelectedRegister2->getType()) {
-            // Try to cast if possible, or just return without mutation if not possible
-            if (CastInst::isBitCastable(SelectedRegister1->getType(), SelectedRegister2->getType())) {
-                SelectedRegister2 = Builder.CreateCast(
-                    CastInst::getCastOpcode(SelectedRegister2, false, SelectedRegister1->getType(), false),
-                    SelectedRegister2, SelectedRegister1->getType(), "castedReg");
-            } else if (CastInst::isBitCastable(SelectedRegister2->getType(), SelectedRegister1->getType())) {
-                SelectedRegister1 = Builder.CreateCast(
-                    CastInst::getCastOpcode(SelectedRegister1, false, SelectedRegister2->getType(), false),
-                    SelectedRegister1, SelectedRegister2->getType(), "castedReg");
-            } else {
-                errs() << "Cannot compare registers of incompatible types.\n";
-                return nullptr;
-            }
+        if (CastInst::isBitCastable(Type1, Type2)) {
+            SelectedRegister2 = Builder.CreateCast(
+                CastInst::getCastOpcode(SelectedRegister2, false, Type1, false),
+                SelectedRegister2, Type1, "castedReg");
+        } else if (CastInst::isBitCastable(Type2, Type1)) {
+            SelectedRegister1 = Builder.CreateCast(
+                CastInst::getCastOpcode(SelectedRegister1, false, Type2, false),
+                SelectedRegister1, Type2, "castedReg");
+        } else {
+            errs() << "Cannot compare registers of incompatible types.\n";
+            return nullptr;
         }
-        
         // Compare the two registers for equality
         Value* ComparisonResult = Builder.CreateICmpEQ(SelectedRegister1, SelectedRegister2, "regCompare");
-        
-        // Create a new basic block B1 that will be jumped to if the registers are equal
-        BasicBlock* B1 = BasicBlock::Create(M->getContext(), "newblock_B1", SelectedFunction, nullptr);
-        
+        // Create a new basic block that will be jumped to if the registers are equal
+        std::uniform_int_distribution<> dis(0, 1000000);
+        Twine Name = Twine("newblock") + Twine(dis(gen));
+        BasicBlock* NewBlock = BasicBlock::Create(M->getContext(), Name, SelectedFunction);
+        llvm::outs()<<"NewBlock: "<<NewBlock<<"\n";
         // Get the original successor of the terminator
         BasicBlock* OriginalSuccessor = nullptr;
         if (BranchInst* BI = dyn_cast<BranchInst>(Terminator)) {
-            if (BI->isUnconditional()) {
-                OriginalSuccessor = BI->getSuccessor(0);
-            } else {
-                // For conditional branches, use the true successor
-                OriginalSuccessor = BI->getSuccessor(0);
-            }
+            OriginalSuccessor = BI->getSuccessor(0);
         } else if (SwitchInst* SI = dyn_cast<SwitchInst>(Terminator)) {
             // For switches, use the default destination
             OriginalSuccessor = SI->getDefaultDest();
@@ -134,11 +133,16 @@ public:
             return nullptr;
         }
         
-        IRBuilder<> B1Builder(B1);  
-        // Set up branching in B1 to the original successor
-        B1Builder.CreateBr(OriginalSuccessor);
-        Builder.CreateCondBr(ComparisonResult, B1, OriginalSuccessor);
+        IRBuilder<> NewBlockBuilder(NewBlock);  
 
+        // Set up branching in NewBlock to the original successor
+        NewBlockBuilder.CreateBr(OriginalSuccessor);
+        Builder.CreateCondBr(ComparisonResult, NewBlock, OriginalSuccessor);
+        // Remove the original terminator from the selected basic block if it exists
+        if (SelectedBB->getTerminator()) {
+            SelectedBB->getTerminator()->eraseFromParent();
+        }
+        llvm::outs()<<"Mutation done"<<"\n";
         return std::move(M);
     }
 };
