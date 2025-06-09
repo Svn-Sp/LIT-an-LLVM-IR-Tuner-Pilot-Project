@@ -4,4 +4,4 @@
 #define RUN_COUNT 5000
 #define MIN_MUTATIONS 3
 #define MAX_MUTATIONS 300
-#define DB_PATH "results.db"
+#define DB_PATH "results.sqlite"

@@ -28,7 +28,7 @@
 #include "utils/randomness_utils.cpp"
 #include "mutations/mutation_factory.cpp"
 #include "utils/measure_time.cpp"
-#define exploration_share 0.5
+#define exploration_share 1
 #define elitism_share 1
 
 void genetic_tuning(){

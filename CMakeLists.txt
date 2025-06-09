@@ -121,7 +121,7 @@ target_link_libraries(main
 # add_custom_command(TARGET main POST_BUILD
 #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
 #         ${CMAKE_SOURCE_DIR}/original.ll
-#         ${CMAKE_SOURCE_DIR}/results.db
+#         ${CMAKE_SOURCE_DIR}/results.sqlite
 #         ${CMAKE_SOURCE_DIR}/genetic_results.csv
 #         ${CMAKE_SOURCE_DIR}/results.csv
 #         ${CMAKE_SOURCE_DIR}/10k.csv

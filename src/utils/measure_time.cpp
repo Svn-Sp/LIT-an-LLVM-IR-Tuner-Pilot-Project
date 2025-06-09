@@ -76,6 +76,7 @@ int call_executable(const std::string& cmd, std::string* output, int timeout_sec
 }
 
 void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple<double, double, std::string>>& results, const std::string& cmd = "lli modified.ll"){
+    result = "";
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
         auto start_time = std::chrono::high_resolution_clock::now();
@@ -100,7 +101,9 @@ void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple
     try {
         run_instance.result = std::stod(result);
     } catch (const std::invalid_argument& e) {
+        run_instance.result = 0;
     } catch (const std::out_of_range& e) {
+        run_instance.result = 0;
     }
     run_instance.saveToDb();
 }

@@ -1,9 +1,10 @@
 #!/bin/bash
 
-sqlite3 results.db << 'EOF'
+sqlite3 results.sqlite << 'EOF'
 CREATE TABLE IF NOT EXISTS code (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT NOT NULL
+    code TEXT NOT NULL,
+    comment TEXT
 );
 
 CREATE TABLE IF NOT EXISTS run (
