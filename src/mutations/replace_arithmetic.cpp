@@ -28,7 +28,7 @@ class ReplaceArithmetic : public Mutation {
         std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override{
             std::vector<Function*> NonDeclFunctions;
             for (Function &F : *M) {
-                if (!F.isDeclaration()) {
+                if (!F.isDeclaration() && isOptimizable(&F)) {
                     NonDeclFunctions.push_back(&F);
                 }
             }

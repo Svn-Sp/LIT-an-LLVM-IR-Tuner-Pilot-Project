@@ -3,117 +3,92 @@ source_filename = "original_code.c"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@.str = private unnamed_addr constant [6 x i8] c"%lld\0A\00", align 1
+@.str = private unnamed_addr constant [2 x i8] c"r\00", align 1
+@.str.1 = private unnamed_addr constant [20 x i8] c"Error opening file\0A\00", align 1
+@.str.2 = private unnamed_addr constant [5 x i8] c"%lld\00", align 1
+@.str.3 = private unnamed_addr constant [22 x i8] c"Error reading number\0A\00", align 1
+@.str.4 = private unnamed_addr constant [6 x i8] c"%lld\0A\00", align 1
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i32 @main(i32 noundef %0, ptr noundef %1) #0 {
+define dso_local i32 @load_file(ptr noundef %0) #0 {
+  %2 = alloca i32, align 4
+  %3 = alloca ptr, align 8
+  %4 = alloca ptr, align 8
+  %5 = alloca i64, align 8
+  store ptr %0, ptr %3, align 8
+  %6 = load ptr, ptr %3, align 8
+  %7 = call noalias ptr @fopen(ptr noundef %6, ptr noundef @.str)
+  store ptr %7, ptr %4, align 8
+  %8 = load ptr, ptr %4, align 8
+  %9 = icmp eq ptr %8, null
+  br i1 %9, label %10, label %12
+
+10:                                               ; preds = %1
+  %11 = call i32 (ptr, ...) @printf(ptr noundef @.str.1)
+  store i32 1, ptr %2, align 4
+  br label %25
+
+12:                                               ; preds = %1
+  %13 = load ptr, ptr %4, align 8
+  %14 = call i32 (ptr, ptr, ...) @__isoc99_fscanf(ptr noundef %13, ptr noundef @.str.2, ptr noundef %5)
+  %15 = icmp ne i32 %14, 1
+  br i1 %15, label %16, label %20
+
+16:                                               ; preds = %12
+  %17 = call i32 (ptr, ...) @printf(ptr noundef @.str.3)
+  %18 = load ptr, ptr %4, align 8
+  %19 = call i32 @fclose(ptr noundef %18)
+  store i32 1, ptr %2, align 4
+  br label %25
+
+20:                                               ; preds = %12
+  %21 = load ptr, ptr %4, align 8
+  %22 = call i32 @fclose(ptr noundef %21)
+  %23 = load i64, ptr %5, align 8
+  %24 = trunc i64 %23 to i32
+  store i32 %24, ptr %2, align 4
+  br label %25
+
+25:                                               ; preds = %20, %16, %10
+  %26 = load i32, ptr %2, align 4
+  ret i32 %26
+}
+
+declare noalias ptr @fopen(ptr noundef, ptr noundef) #1
+
+declare i32 @printf(ptr noundef, ...) #1
+
+declare i32 @__isoc99_fscanf(ptr noundef, ptr noundef, ...) #1
+
+declare i32 @fclose(ptr noundef) #1
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @main(i32 noundef %0, ptr noundef %1) #0 section "mutate_section" {
   %3 = alloca i32, align 4
   %4 = alloca i32, align 4
   %5 = alloca ptr, align 8
   %6 = alloca i64, align 8
-  %7 = alloca i64, align 8
-  %8 = alloca i64, align 8
-  %9 = alloca i64, align 8
-  %10 = alloca i64, align 8
-  %11 = alloca i64, align 8
-  %12 = alloca i64, align 8
-  %13 = alloca i64, align 8
   store i32 0, ptr %3, align 4
   store i32 %0, ptr %4, align 4
   store ptr %1, ptr %5, align 8
-  store i64 128, ptr %6, align 8
-  store i64 128, ptr %7, align 8
-  store i64 50, ptr %8, align 8
-  store i64 0, ptr %9, align 8
-  store i64 1, ptr %10, align 8
-  br label %14
-
-14:                                               ; preds = %52, %2
-  %15 = load i64, ptr %10, align 8
-  %16 = icmp sle i64 %15, 128
-  br i1 %16, label %17, label %55
-
-17:                                               ; preds = %14
-  store i64 1, ptr %11, align 8
-  br label %18
-
-18:                                               ; preds = %48, %17
-  %19 = load i64, ptr %11, align 8
-  %20 = icmp sle i64 %19, 128
-  br i1 %20, label %21, label %51
-
-21:                                               ; preds = %18
-  store i64 1, ptr %12, align 8
-  br label %22
-
-22:                                               ; preds = %44, %21
-  %23 = load i64, ptr %12, align 8
-  %24 = icmp sle i64 %23, 50
-  br i1 %24, label %25, label %47
-
-25:                                               ; preds = %22
-  %26 = load i64, ptr %10, align 8
-  %27 = load i64, ptr %11, align 8
-  %28 = mul nsw i64 %26, %27
-  %29 = load i64, ptr %12, align 8
-  %30 = mul nsw i64 %28, %29
-  store i64 %30, ptr %13, align 8
-  %31 = load i64, ptr %13, align 8
-  %32 = srem i64 %31, 2
-  %33 = icmp eq i64 %32, 0
-  br i1 %33, label %34, label %38
-
-34:                                               ; preds = %25
-  %35 = load i64, ptr %13, align 8
-  %36 = load i64, ptr %9, align 8
-  %37 = add nsw i64 %36, %35
-  store i64 %37, ptr %9, align 8
-  br label %43
-
-38:                                               ; preds = %25
-  %39 = load i64, ptr %13, align 8
-  %40 = sdiv i64 %39, 2
-  %41 = load i64, ptr %9, align 8
-  %42 = sub nsw i64 %41, %40
-  store i64 %42, ptr %9, align 8
-  br label %43
-
-43:                                               ; preds = %38, %34
-  br label %44
-
-44:                                               ; preds = %43
-  %45 = load i64, ptr %12, align 8
-  %46 = add nsw i64 %45, 1
-  store i64 %46, ptr %12, align 8
-  br label %22, !llvm.loop !6
-
-47:                                               ; preds = %22
-  br label %48
-
-48:                                               ; preds = %47
-  %49 = load i64, ptr %11, align 8
-  %50 = add nsw i64 %49, 1
-  store i64 %50, ptr %11, align 8
-  br label %18, !llvm.loop !8
-
-51:                                               ; preds = %18
-  br label %52
-
-52:                                               ; preds = %51
-  %53 = load i64, ptr %10, align 8
-  %54 = add nsw i64 %53, 1
-  store i64 %54, ptr %10, align 8
-  br label %14, !llvm.loop !9
-
-55:                                               ; preds = %14
-  %56 = load i64, ptr %9, align 8
-  %57 = call i32 (ptr, ...) @printf(ptr noundef @.str, i64 noundef %56)
-  %58 = load i64, ptr %9, align 8
-  %59 = trunc i64 %58 to i32
-  ret i32 %59
+  %7 = load ptr, ptr %5, align 8
+  %8 = getelementptr inbounds ptr, ptr %7, i64 1
+  %9 = load ptr, ptr %8, align 8
+  %10 = call i32 @load_file(ptr noundef %9)
+  %11 = sext i32 %10 to i64
+  store i64 %11, ptr %6, align 8
+  %12 = load i64, ptr %6, align 8
+  %13 = add nsw i64 %12, 1
+  store i64 %13, ptr %6, align 8
+  %14 = load i64, ptr %6, align 8
+  %15 = call i32 (ptr, ...) @printf(ptr noundef @.str.4, i64 noundef %14)
+  ret i32 0
 }
 
-declare i32 @printf(ptr noundef, ...) #1
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @test() #0 {
+  ret i32 1
+}
 
 attributes #0 = { noinline nounwind optnone uwtable "frame-pointer"="all" "min-legal-vector-width"="0" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
 attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cmov,+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "tune-cpu"="generic" }
@@ -127,7 +102,3 @@ attributes #1 = { "frame-pointer"="all" "no-trapping-math"="true" "stack-protect
 !3 = !{i32 7, !"uwtable", i32 2}
 !4 = !{i32 7, !"frame-pointer", i32 2}
 !5 = !{!"clang version 21.0.0git (https://github.com/llvm/llvm-project.git 8b40a09bf50d62e2017611b7be2c55fab22d9572)"}
-!6 = distinct !{!6, !7}
-!7 = !{!"llvm.loop.mustprogress"}
-!8 = distinct !{!8, !7}
-!9 = distinct !{!9, !7}

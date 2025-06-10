@@ -5,3 +5,4 @@
 #define MIN_MUTATIONS 3
 #define MAX_MUTATIONS 300
 #define DB_PATH "results.sqlite"
+#define OPTIMIZABLE_SECTION_FLAG "OPTIMIZABLE_SECTION"

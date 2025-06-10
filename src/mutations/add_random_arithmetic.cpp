@@ -17,6 +17,8 @@
 #include "llvm/Bitcode/BitcodeWriter.h"
 #include "mutations/mutation.h"
 #include "utils/utils.cpp"
+#include "utils/is_optimizable.cpp"
+#include "llvm/IR/Attributes.h"
 using namespace llvm;
 
 std::vector<Instruction::BinaryOps> ArithmeticOps = {
@@ -37,19 +39,22 @@ public:
 
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {
         // Find a random function that isn't a declaration
-        std::vector<Function*> NonDeclFunctions;
+        std::vector<Function*> ValidFunctions;
         for (Function &F : *M) {
-            if (!F.isDeclaration()) {
-                NonDeclFunctions.push_back(&F);
+            llvm::outs() << "Function: " << F.getName();
+            if (!F.isDeclaration() && isOptimizable(&F)) {
+                llvm::outs() << " is optimizable";
+                ValidFunctions.push_back(&F);
             }
+            llvm::outs() << "\n";
         }
         
         // Select a random function
-        llvm::outs() << "Decision maker index: " << this->dm.current_decision << "\n";
-        llvm::outs() << "Next decision: " << this->dm.decisions[this->dm.current_decision] << "\n";
-        llvm::outs() << "NonDeclFunctions.size(): " << NonDeclFunctions.size() << "\n";
-        Function* SelectedFunction = NonDeclFunctions[this->dm.make_decision(0, NonDeclFunctions.size() - 1)];
-        llvm::outs() << "Selected function: " << SelectedFunction->getName() << "\n";
+        //llvm::outs() << "Decision maker index: " << this->dm.current_decision << "\n";
+        //llvm::outs() << "Next decision: " << this->dm.decisions[this->dm.current_decision] << "\n";
+        //llvm::outs() << "ValidFunctions.size(): " << ValidFunctions.size() << "\n";
+        Function* SelectedFunction = ValidFunctions[this->dm.make_decision(0, ValidFunctions.size() - 1)];
+        //llvm::outs() << "Selected function: " << SelectedFunction->getName() << "\n";
         
         // Find all basic blocks in the selected function
         std::vector<BasicBlock*> BasicBlocks;

@@ -92,7 +92,7 @@ public:
         // Find a random function that isn't a declaration
         std::vector<Function*> NonDeclFunctions;
         for (Function &F : *M) {
-            if (!F.isDeclaration()) {
+            if (!F.isDeclaration() && isOptimizable(&F)) {
                 NonDeclFunctions.push_back(&F);
             }
         }
