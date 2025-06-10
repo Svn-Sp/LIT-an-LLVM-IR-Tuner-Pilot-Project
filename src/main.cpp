@@ -6,6 +6,6 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-    // random_tuning();
-    genetic_tuning();
+    random_tuning();
+    // genetic_tuning();
 }

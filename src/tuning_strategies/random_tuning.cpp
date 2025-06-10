@@ -46,5 +46,5 @@ void random_tuning(){
         runs.push_back(run_instance);
         llvm::outs() << run_instance.asString() << "\n";
     }  
-    writeResultsToCSV(RESULTS_FILE, results);
+    writeResultsToCSV("random_results.csv", results);
 }
