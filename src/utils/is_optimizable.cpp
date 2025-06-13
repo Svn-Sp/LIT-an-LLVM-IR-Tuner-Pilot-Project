@@ -1,3 +1,5 @@
+#ifndef IS_OPTIMIZABLE_CPP
+#define IS_OPTIMIZABLE_CPP
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Attributes.h>
 #include "constants.h"
@@ -14,3 +16,4 @@ bool isOptimizable(Function* F) {
     
     return false;
 }
+#endif

@@ -24,6 +24,7 @@ void applyRandomMutation(Run& run_instance) {
     
     std::vector<int> decisions;
     MutationType mutationType = static_cast<MutationType>(mutationTypeVal);
+    llvm::outs() << "Apply mutation: " << mutationType << "\n";
     switch (mutationType) {
         case ADD_RANDOM_ARITHMETIC:
             decisions = addRandomArithmetic.run(
@@ -70,7 +71,6 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
         
         std::vector<int> result_decisions;
         bool success = false;
-        
         switch (mutationType) {
             case ADD_RANDOM_ARITHMETIC: {
                 AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);

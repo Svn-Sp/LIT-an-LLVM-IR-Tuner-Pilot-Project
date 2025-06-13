@@ -59,7 +59,7 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     for (int i = 0; i < dm.num_decisions; i++) {
         decisions.push_back(dm.decisions[i]);
     }
-    dm.print_decisions();
+    //dm.print_decisions();
     return decisions;
 }
 

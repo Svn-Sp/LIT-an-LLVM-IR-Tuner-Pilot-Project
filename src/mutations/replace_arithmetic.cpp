@@ -15,6 +15,7 @@
 #include <vector>
 #include "utils/utils.cpp"
 #include <fstream>
+#include "utils/is_optimizable.cpp"
 #include <random>
 
 using namespace llvm;

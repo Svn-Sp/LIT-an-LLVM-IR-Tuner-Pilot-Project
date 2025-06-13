@@ -41,12 +41,9 @@ public:
         // Find a random function that isn't a declaration
         std::vector<Function*> ValidFunctions;
         for (Function &F : *M) {
-            llvm::outs() << "Function: " << F.getName();
             if (!F.isDeclaration() && isOptimizable(&F)) {
-                llvm::outs() << " is optimizable";
                 ValidFunctions.push_back(&F);
             }
-            llvm::outs() << "\n";
         }
         
         // Select a random function

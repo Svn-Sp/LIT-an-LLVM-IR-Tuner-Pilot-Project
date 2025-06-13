@@ -14,6 +14,7 @@
 #include <fstream>
 #include <random>
 #include "mutations/mutation.h"
+#include "utils/is_optimizable.cpp"
 #include "utils/utils.cpp"
 
 using namespace llvm;
