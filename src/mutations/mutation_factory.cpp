@@ -13,7 +13,7 @@
 
 
 
-void applyRandomMutation(Run& run_instance) {
+std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance) {
     AddRandomArithmetic addRandomArithmetic;
     ReplaceArithmetic replaceArithmetic;
     MoveBlockwise moveBlockwise;
@@ -52,6 +52,7 @@ void applyRandomMutation(Run& run_instance) {
             break;
     }
     run_instance.mutations.push_back(std::make_tuple(mutationType, decisions));
+    return std::make_tuple(mutationType, decisions);
 }
 
 void reapplyMutation(Run& run_instance, MutationType mutationType, const std::vector<int>& decisions) {

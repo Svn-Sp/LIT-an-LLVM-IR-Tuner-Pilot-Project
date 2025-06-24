@@ -8,6 +8,7 @@
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Instruction.h"
 #include <vector>
+#include <string>
 
 using namespace llvm;
 
@@ -28,5 +29,16 @@ enum MutationType {
     MOVE_BLOCKWISE,
     ADD_NEW_COND
 };
+
+// Add string conversion functionality
+inline std::string mutation_type_to_string(MutationType type) {
+    switch (type) {
+        case ADD_RANDOM_ARITHMETIC: return "ADD_RANDOM_ARITHMETIC";
+        case REPLACE_ARITHMETIC: return "REPLACE_ARITHMETIC";
+        case MOVE_BLOCKWISE: return "MOVE_BLOCKWISE";
+        case ADD_NEW_COND: return "ADD_NEW_COND";
+        default: return "UNKNOWN";
+    }
+}
 
 #endif // MUTATION_H 

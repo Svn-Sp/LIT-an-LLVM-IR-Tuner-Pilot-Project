@@ -37,7 +37,7 @@ void genetic_tuning(){
     std::string result;
     Run original_run;
     measure_time(result, original_run, results, "lli original.ll");
-    int random_runs = RUN_COUNT * exploration_share;
+    int random_runs = EVALUATIONS_BUDGET * exploration_share;
     for (int t = 0; t < random_runs; t++){
         llvm::outs() << "----------------------------------------\n";
         llvm::outs() << "Running test " << t << "\n";
@@ -71,7 +71,7 @@ void genetic_tuning(){
     int elite_count = std::max(1, static_cast<int>(valid_runs.size() * elitism_share));
     std::vector<Run> elite_runs(valid_runs.begin(), valid_runs.begin() + elite_count);
     
-    for (int t = random_runs; t < RUN_COUNT; t++){
+    for (int t = random_runs; t < EVALUATIONS_BUDGET; t++){
         llvm::outs() << "----------------------------------------\n";
         llvm::outs() << "Running genetic test " << t << "\n";
         

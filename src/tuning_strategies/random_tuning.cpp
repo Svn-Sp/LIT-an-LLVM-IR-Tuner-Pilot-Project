@@ -30,9 +30,8 @@
 void random_tuning(){
     std::vector<std::tuple<double, double, std::string>> results;
     std::vector<Run> runs;
-    // Function to copy content from original.ll to modified.ll
     std::string result;
-    for (int t = 0; t < RUN_COUNT; t++){
+    for (int t = 0; t < EVALUATIONS_BUDGET; t++){
         llvm::outs() << "----------------------------------------\n";
         llvm::outs() << "Running test " << t << "\n";
         copyOriginalToModified(ORIGINAL_CODE, MODIFIED_CODE);

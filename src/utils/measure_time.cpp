@@ -10,8 +10,8 @@
 #include <cmath>
 #include "core/run.cpp"
 
-#define TIMEOUT_SECONDS 5
-#define REPETITIONS 2
+#define TIMEOUT_SECONDS 3
+#define REPETITIONS 3
 
 int call_executable(const std::string& cmd, std::string* output, int timeout_seconds = TIMEOUT_SECONDS) {
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -75,7 +75,7 @@ int call_executable(const std::string& cmd, std::string* output, int timeout_sec
     return timeout_occurred ? 1 : WEXITSTATUS(status);
 }
 
-void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple<double, double, std::string>>& results, const std::string& cmd = "lli modified.ll"){
+std::tuple<double, double> measure_time(std::string& result, Run& run_instance, std::vector<std::tuple<double, double, std::string>>& results, const std::string& cmd = "lli modified.ll"){
     result = "";
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
@@ -106,6 +106,7 @@ void measure_time(std::string& result, Run& run_instance, std::vector<std::tuple
         run_instance.result = 0;
     }
     run_instance.saveToDb();
+    return std::make_tuple(avg, stddev);
 }
 
 #endif // MEASURE_TIME_CPP

@@ -6,6 +6,7 @@
 #include <cmath>
 #include <sqlite3.h>
 #include "constants.h"
+#include <chrono>
 
 std::string Run::asString() {
     std::stringstream ss;
@@ -43,7 +44,7 @@ bool Run::saveToDb() {
     }
     
     // Insert into run table (ignoring code_id for now)
-    std::string runSql = "INSERT INTO run (code_id, result, avg_rt, std_dev_rt) VALUES (NULL, ?, ?, ?)";
+    std::string runSql = "INSERT INTO run (time_stamp, code_id, result, avg_rt, std_dev_rt) VALUES (?, NULL, ?, ?, ?)";
     sqlite3_stmt* runStmt;
     rc = sqlite3_prepare_v2(db, runSql.c_str(), -1, &runStmt, nullptr);
     if (rc != SQLITE_OK) {
@@ -51,14 +52,15 @@ bool Run::saveToDb() {
         sqlite3_close(db);
         return false;
     }
-    
+    std::string timeStamp = std::to_string(std::chrono::system_clock::now().time_since_epoch().count());
+    sqlite3_bind_text(runStmt, 1, timeStamp.c_str(), -1, SQLITE_TRANSIENT);
     if (std::isfinite(result)) {
-        sqlite3_bind_double(runStmt, 1, result);
+        sqlite3_bind_double(runStmt, 2, result);
     } else {
-        sqlite3_bind_null(runStmt, 1);
+        sqlite3_bind_null(runStmt, 2);
     }
-    sqlite3_bind_double(runStmt, 2, avgDuration);
-    sqlite3_bind_double(runStmt, 3, stddevDuration);
+    sqlite3_bind_double(runStmt, 3, avgDuration);
+    sqlite3_bind_double(runStmt, 4, stddevDuration);
     
     rc = sqlite3_step(runStmt);
     if (rc != SQLITE_DONE) {

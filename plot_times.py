@@ -22,10 +22,10 @@ data["Result"] = pd.to_numeric(data["Result"], errors="coerce")
 data = data.dropna(subset=["Average Duration (s)", "Standard Deviation (s)", "Run"])
 
 # Filter out outliers (runs that took >= 5 seconds)
-filtered_data = data[data["Average Duration (s)"] < 5]
+filtered_data = data[data["Average Duration (s)"] < 3]
 
 # Correct value
-correct_value = 71177369600
+correct_value = 3.130682
 
 # Create the figure and axis
 plt.figure(figsize=(12, 6))
@@ -58,7 +58,7 @@ if not runs_with_results.empty:
         normalized_distances = runs_with_results["Distance"] * 0  # All zeros
 
     # Custom colormap: green for correct, red for incorrect
-    cmap = LinearSegmentedColormap.from_list("GreenToRed", ["green", "yellow", "red"])
+    cmap = LinearSegmentedColormap.from_list("GreenToRed", ["green", "red"])
 
     # Plot each point with its color based on distance
     scatter = plt.scatter(

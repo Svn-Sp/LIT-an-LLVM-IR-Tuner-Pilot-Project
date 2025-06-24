@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS code (
 
 CREATE TABLE IF NOT EXISTS run (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TEXT NOT NULL,
     code_id INTEGER,
     result REAL,
     avg_rt REAL NOT NULL,
