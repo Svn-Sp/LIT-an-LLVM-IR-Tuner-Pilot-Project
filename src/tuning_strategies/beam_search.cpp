@@ -133,7 +133,7 @@ void beam_search(){
     std::random_device rd;
     std::mt19937 gen(rd());
     Run run;
-    measure_time(result, run, results, "lli original.ll"); //Get original time
+    auto [og_avg_time, og_std_dev_time] = measure_time(result, run, results, "lli original.ll"); //Get original time
 
     int evaluations = 0;
     while(true){
@@ -172,7 +172,7 @@ void beam_search(){
         
         if(!result.empty()){
             llvm::outs() << "Mutation successful\n";
-            score = 1.0;
+            score = og_avg_time / avg_time;
             if(decisions.size() > 0){
                 selectedNode->addChild(mutationType, decisions, score, avg_time, std_dev_time, result);
             }

@@ -46,6 +46,9 @@ add_library(tuning_strategies
 # Add the main executable
 add_executable(main src/main.cpp)
 
+# Add the rebuild from CSV executable
+add_executable(rebuild_from_csv src/rebuild_from_csv.cpp)
+
 # Set include directories for all targets
 target_include_directories(core 
     PUBLIC 
@@ -72,6 +75,11 @@ target_include_directories(main
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
 )
+target_include_directories(rebuild_from_csv 
+    PUBLIC 
+        ${CMAKE_SOURCE_DIR}/src
+        ${LLVM_INCLUDE_DIRS}
+)
 
 # Add LLVM definitions to all targets
 target_compile_definitions(core PRIVATE ${LLVM_DEFINITIONS})
@@ -79,6 +87,7 @@ target_compile_definitions(utils PRIVATE ${LLVM_DEFINITIONS})
 target_compile_definitions(mutations PRIVATE ${LLVM_DEFINITIONS})
 target_compile_definitions(tuning_strategies PRIVATE ${LLVM_DEFINITIONS})
 target_compile_definitions(main PRIVATE ${LLVM_DEFINITIONS})
+target_compile_definitions(rebuild_from_csv PRIVATE ${LLVM_DEFINITIONS})
 
 # Link libraries
 target_link_libraries(core
@@ -106,6 +115,16 @@ target_link_libraries(tuning_strategies
 )
 
 target_link_libraries(main
+    PRIVATE
+    core
+    utils
+    mutations
+    tuning_strategies
+    ${SQLite3_LIBRARIES}
+    ${llvm_libs}
+)
+
+target_link_libraries(rebuild_from_csv
     PRIVATE
     core
     utils

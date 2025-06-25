@@ -41,4 +41,14 @@ inline std::string mutation_type_to_string(MutationType type) {
     }
 }
 
+inline MutationType stringToMutationType(const std::string& typeStr) {
+    if (typeStr == "ADD_RANDOM_ARITHMETIC") return ADD_RANDOM_ARITHMETIC;
+    if (typeStr == "REPLACE_ARITHMETIC") return REPLACE_ARITHMETIC;
+    if (typeStr == "MOVE_BLOCKWISE") return MOVE_BLOCKWISE;
+    if (typeStr == "ADD_NEW_COND") return ADD_NEW_COND;
+    
+    std::cerr << "Warning: Unknown mutation type: " << typeStr << std::endl;
+    throw std::runtime_error("Unknown mutation type: " + typeStr);
+}
+
 #endif // MUTATION_H 

@@ -5,6 +5,11 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
+FILTERED=True
+CORRECT_VALUE = 3.130682
+MIN_VALUE = CORRECT_VALUE * 0.8
+MAX_VALUE = CORRECT_VALUE * 1.2
+
 # Read the CSV file
 data = pd.read_csv(sys.argv[1])
 
@@ -23,9 +28,9 @@ data = data.dropna(subset=["Average Duration (s)", "Standard Deviation (s)", "Ru
 
 # Filter out outliers (runs that took >= 5 seconds)
 filtered_data = data[data["Average Duration (s)"] < 3]
+filtered_data = filtered_data[filtered_data["Result"] > MIN_VALUE]
+filtered_data = filtered_data[filtered_data["Result"] < MAX_VALUE]
 
-# Correct value
-correct_value = 3.130682
 
 # Create the figure and axis
 plt.figure(figsize=(12, 6))
@@ -49,7 +54,7 @@ plt.errorbar(
 runs_with_results = filtered_data[~no_result_mask]
 if not runs_with_results.empty:
     # Calculate distance to correct value
-    runs_with_results["Distance"] = abs(runs_with_results["Result"] - correct_value)
+    runs_with_results["Distance"] = abs(runs_with_results["Result"] - CORRECT_VALUE)
     # Normalize distances for color mapping (0 = correct, 1 = furthest)
     max_distance = runs_with_results["Distance"].max()
     if max_distance > 0:  # Avoid division by zero
