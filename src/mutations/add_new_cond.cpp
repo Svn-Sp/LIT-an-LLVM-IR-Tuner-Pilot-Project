@@ -38,7 +38,7 @@ public:
 
         if (NonDeclFunctions.empty()) {
             errs() << "No non-declaration functions found in the module.\n";
-            return nullptr;
+            return std::move(M); // Return unchanged module instead of nullptr
         }
         
         // Select a random function
@@ -162,7 +162,7 @@ public:
         std::uniform_int_distribution<> dis(0, 1000000);
         Twine Name = Twine("newblock") + Twine(dis(gen));
         BasicBlock* NewBlock = BasicBlock::Create(M->getContext(), Name, SelectedFunction);
-        llvm::outs()<<"NewBlock: "<<NewBlock<<"\n";
+        // llvm::outs()<<"NewBlock: "<<NewBlock<<"\n";
         // Get the original successor of the terminator
         BasicBlock* OriginalSuccessor = nullptr;
         if (BranchInst* BI = dyn_cast<BranchInst>(Terminator)) {
@@ -185,7 +185,7 @@ public:
         if (SelectedBB->getTerminator()) {
             SelectedBB->getTerminator()->eraseFromParent();
         }
-        llvm::outs()<<"Mutation done"<<"\n";
+        // llvm::outs()<<"Mutation done"<<"\n";
         return std::move(M);
     }
 };

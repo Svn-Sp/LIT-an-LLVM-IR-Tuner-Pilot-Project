@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include "llvm/Support/raw_ostream.h"
+#include <iostream>
+#include "core/run.h"
 
 void copyOriginalToModified(std::string original_code, std::string modified_code) {
     std::ifstream src(original_code, std::ios::binary);
@@ -25,18 +26,19 @@ void copyOriginalToModified(std::string original_code, std::string modified_code
     dst.close();
 }
 
-int writeResultsToCSV(std::string filename, std::vector<std::tuple<double, double, std::string>> results) {
+int writeResultsToCSV(std::string filename, std::vector<Run> results) {
     std::ofstream csvFile(filename);
     if (csvFile.is_open()) {
         // Write header
-        csvFile << "Run,Average Duration (s),Standard Deviation (s),Result\n";
+        csvFile << "Run,Success,Average Duration (s),Standard Deviation (s),Result\n";
         
         // Write data
         for (size_t i = 0; i < results.size(); i++) {
             csvFile << i << "," 
-                   << std::get<0>(results[i]) << "," 
-                   << std::get<1>(results[i]) << "," 
-                   << std::get<2>(results[i]) << "\n";
+                   << results[i].success << ","
+                   << results[i].avgDuration << "," 
+                   << results[i].stddevDuration << "," 
+                   << results[i].result << "\n";
         }
         
         csvFile.close();

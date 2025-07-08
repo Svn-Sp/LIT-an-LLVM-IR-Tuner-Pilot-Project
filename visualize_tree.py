@@ -1,25 +1,25 @@
-import pandas as pd
-from pyvis.network import Network
 import json
-import os
 import math
+import os
+import sys
 
-
-CORRECT_RESULT = 3.130682
+from pyvis.network import Network
 
 # Check if JSON file exists
-if not os.path.exists("beam_search_tree.json"):
-    print("Error: beam_search_tree.json not found!")
+if not os.path.exists(sys.argv[1]):
+    print(f"Error: {sys.argv[1]} not found!")
     exit(1)
 
-with open("beam_search_tree.json", "r") as f:
+with open(sys.argv[1], "r") as f:
     data = json.load(f)
+
 
 def generate_name(dict_):
     name = dict_["mutationType"]
     name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
-    name += f" | {dict_['result']}"
+    name += f" | {dict_['result']:.4f}"
     return name
+
 
 def collect_avg_times(node, times_list):
     """Recursively collect all avg_time values from the tree"""
@@ -27,6 +27,7 @@ def collect_avg_times(node, times_list):
         times_list.append(node["avg_time"])
     for child in node.get("children", []):
         collect_avg_times(child, times_list)
+
 
 def collect_results(node, results_list):
     """Recursively collect all result values from the tree"""
@@ -39,68 +40,66 @@ def collect_results(node, results_list):
     for child in node.get("children", []):
         collect_results(child, results_list)
 
+
 def interpolate_color(value, min_val, max_val):
     """Interpolate color from green (lowest) to red (highest)"""
     if max_val == min_val:
         return "#00FF00"  # Green if all values are the same
-    
+
     # Normalize value between 0 and 1
-    normalized = (value - min_val) / (max_val - min_val)
-    
+    normalized = value / max_val  # Since min_val is always 0
+
     # Interpolate from green (0, 255, 0) to red (255, 0, 0)
     red = int(255 * normalized)
     green = int(255 * (1 - normalized))
     blue = 0
-    
+
     return f"#{red:02X}{green:02X}{blue:02X}"
 
-def calculate_distance_to_correct(result_value):
-    """Calculate distance to CORRECT_RESULT"""
-    try:
-        result_float = float(result_value)
-        return abs(result_float - CORRECT_RESULT)
-    except (ValueError, TypeError):
-        return float('inf')  # Return infinity for invalid values
 
 def calculate_node_size(avg_time, min_time, max_time):
     """Calculate node size based on speed (avg_time) - faster = larger"""
     if max_time == min_time:
         return 40  # Default size if all times are the same
-    
+
     # Normalize time between 0 and 1 (faster = smaller time = larger node)
     normalized = 1 - ((avg_time - min_time) / (max_time - min_time))
-    
+
     # Node size from 20 (slowest) to 60 (fastest)
     return 20 + (normalized * 40)
+
 
 def interpolate_correctness_color(distance):
     """Interpolate color based on logarithmic distance to correct result"""
     # Use logarithmic scale to emphasize differences between close results
     if distance == 0:
         return "#00FF00"  # Green for perfect match
-    elif distance == float('inf'):
+    elif distance == float("inf"):
         return "#FF0000"  # Red for invalid values
-    
+
     # Use logarithmic scale: log(1 + distance) to handle small distances
     log_distance = math.log(1 + distance)
-    
+
     # Apply a more aggressive logarithmic scaling to make good results very distinct
     # and bad results appear similar
     # Use a smaller max_log_distance to compress the range more
     max_log_distance = 2  # Reduced from 5 to make the effect more pronounced
     normalized = min(1.0, log_distance / max_log_distance)
-    
+
     # Apply additional compression for very bad results
     # This makes results beyond a certain threshold all appear similar
     if normalized > 0.8:
-        normalized = 0.8 + (normalized - 0.8) * 0.2  # Compress the top 20% into the top 4%
-    
+        normalized = (
+            0.8 + (normalized - 0.8) * 0.2
+        )  # Compress the top 20% into the top 4%
+
     # Interpolate from green (correct) to red (incorrect)
     red = int(255 * normalized)
     green = int(255 * (1 - normalized))
     blue = 0
-    
+
     return f"#{red:02X}{green:02X}{blue:02X}"
+
 
 # Collect all avg_time values to determine the range
 all_times = []
@@ -111,7 +110,7 @@ if all_times:
     min_time = min(all_times)
     max_time = max(all_times)
     print(f"Time range: {min_time:.4f} to {max_time:.4f}")
-    
+
     # Calculate threshold for top 30% fastest nodes
     sorted_times = sorted(all_times)
     threshold_index = int(len(sorted_times) * 0.3)
@@ -130,9 +129,8 @@ if "children" in data and len(data["children"]) > 0:
     collect_results(data["children"][0], all_results)
 
 if all_results:
-    distances = [calculate_distance_to_correct(result) for result in all_results]
-    min_dist = min(distances)
-    max_dist = max(distances)
+    min_dist = min(all_results)
+    max_dist = max(all_results)
     print(f"Distance to correct result range: {min_dist:.6f} to {max_dist:.6f}")
     print(f"Using logarithmic scaling for deviation visualization")
 else:
@@ -210,48 +208,58 @@ net.add_node(0, "Root", color="#FF6B6B", level=0)
 
 id_counter = 1
 
+
 def add_node_and_children(node, net, parent_id, level=1):
     global id_counter
-    
+
     # Generate node name
     node_name = generate_name(node)
-    
+
     # Add node with color based on correctness (distance to correct result)
     result_value = node.get("result", "0")
-    distance = calculate_distance_to_correct(result_value)
-    correctness_color = interpolate_correctness_color(distance)
-    
+    correctness_color = interpolate_correctness_color(result_value)
+
     # Calculate node size based on speed (avg_time)
     avg_time = node.get("avg_time", 0.0)
     node_size = calculate_node_size(avg_time, min_time, max_time)
-    
+
     # Check if this node is in the top 30% fastest
     is_fast = avg_time <= speed_threshold
-    
+
     # Create detailed label
     decisions = node.get("decisions", [])
     decisions_str = ",".join(map(str, decisions[:3]))  # Show first 3 decisions
     if len(decisions) > 3:
         decisions_str += "..."
-    
+
     # Add node with correctness color and speed-based size
     # Add border for top 30% fastest nodes
     if is_fast:
-        net.add_node(id_counter, node_name, color=correctness_color, level=level, size=node_size, 
-                    borderWidth=3, borderColor="#0066FF")
+        net.add_node(
+            id_counter,
+            node_name,
+            color=correctness_color,
+            level=level,
+            size=node_size,
+            borderWidth=3,
+            borderColor="#0066FF",
+        )
     else:
-        net.add_node(id_counter, node_name, color=correctness_color, level=level, size=node_size)
-    
+        net.add_node(
+            id_counter, node_name, color=correctness_color, level=level, size=node_size
+        )
+
     # Use score for edge label
     score = node.get("score", 0.0)
     net.add_edge(parent_id, id_counter, label=f"{score:.2f}")
-    
+
     current_id = id_counter
     id_counter += 1
-    
+
     # Process children
     for child in node.get("children", []):
         add_node_and_children(child, net, current_id, level + 1)
+
 
 # Process the tree starting from the root
 if "children" in data and len(data["children"]) > 0:
@@ -269,4 +277,3 @@ print("Node colors represent correctness: Green = correct, Red = incorrect")
 print("Node size represents speed: Larger = faster")
 print("Blue border around nodes indicates top 30% fastest nodes")
 print("Scores are displayed directly on the edges")
-

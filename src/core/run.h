@@ -9,12 +9,12 @@
 class Run {
 public:
     std::vector<std::tuple<MutationType, std::vector<int>>> mutations;
+    bool success;
     double avgDuration;
     double stddevDuration;
     double result;
     
     std::string asString();
-    bool saveToDb();
 };
 
 #endif // RUN_H

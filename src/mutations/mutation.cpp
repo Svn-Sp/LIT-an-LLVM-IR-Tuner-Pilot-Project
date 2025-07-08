@@ -21,7 +21,6 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     // Parse input LLVM IR file
     SMDiagnostic Err;
     std::unique_ptr<Module> M = parseAssemblyFile(input_file, Err, Context);
-
     if (!M) {
         printf("Failed to parse %s\n", input_file);
         return {};
@@ -53,7 +52,6 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     raw_fd_ostream Out(output_file, EC);
     updatedM->print(Out, nullptr);
     Out.close();
-    
     // Return the decisions made during this mutation
     std::vector<int> decisions;
     for (int i = 0; i < dm.num_decisions; i++) {

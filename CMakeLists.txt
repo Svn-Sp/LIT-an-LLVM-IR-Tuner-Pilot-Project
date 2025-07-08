@@ -41,6 +41,12 @@ add_library(mutations
 add_library(tuning_strategies
     src/tuning_strategies/random_tuning.cpp
     src/tuning_strategies/genetic_tuning.cpp
+    src/tuning_strategies/beam_search.cpp
+)
+
+add_library(output
+    src/output/output.cpp
+    src/output/scalar.cpp
 )
 
 # Add the main executable

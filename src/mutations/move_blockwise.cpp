@@ -100,7 +100,8 @@ public:
 
         // Safety check: ensure we have at least one function
         if (NonDeclFunctions.empty()) {
-            return std::move(M); // Return unchanged module instead of nullptr
+            errs() << "No non-declaration functions found in the module.\n";
+            return nullptr; // Return unchanged module instead of nullptr
         }
 
         // Make sure decision index is in bounds

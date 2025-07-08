@@ -4,86 +4,124 @@
 #include <sys/select.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <signal.h>
 #include <string>
 #include <cstdio>
 #include <chrono>
 #include <cmath>
+#include <vector>
+#include <typeinfo>
+#include <filesystem>
+#include <iostream>
+#include <ctime>
 #include "core/run.cpp"
+#include "output/output.cpp"
+#include "output/scalar.cpp"
 
 #define TIMEOUT_SECONDS 3
-#define REPETITIONS 3
+#define REPETITIONS 5
 
-int call_executable(const std::string& cmd, std::string* output, int timeout_seconds = TIMEOUT_SECONDS) {
-    FILE* pipe = popen(cmd.c_str(), "r");
-    if (!pipe) {
-        return -1;  // Error opening pipe
+int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECONDS) {
+    // Use fork and exec for better process control
+    pid_t pid = fork();
+    
+    if (pid == -1) {
+        // Fork failed
+        std::cerr << "Error: Failed to fork process" << std::endl;
+        return -1;
     }
     
-    // Set up file descriptor for the pipe
-    int fd = fileno(pipe);
-    fd_set fds;
-    struct timeval tv;
-    
-    char buffer[1024];
-    output->clear();
-    bool timeout_occurred = false;
-    
-    while (true) {
-        // Set up the file descriptor set
-        FD_ZERO(&fds);
-        FD_SET(fd, &fds);
+    if (pid == 0) {
+        // Child process
+        // Redirect output to /dev/null to avoid hanging on output
+        int devnull = open("/dev/null", O_WRONLY);
+        if (devnull != -1) {
+            dup2(devnull, STDOUT_FILENO);
+            dup2(devnull, STDERR_FILENO);
+            close(devnull);
+        }
         
-        // Set the timeout
-        tv.tv_sec = timeout_seconds;
-        tv.tv_usec = 0;
+        // Parse the command (assuming format: "lli program_file")
+        size_t space_pos = cmd.find(' ');
+        if (space_pos == std::string::npos) {
+            std::cerr << "Error: Invalid command format: " << cmd << std::endl;
+            exit(1);
+        }
         
-        // Wait for data or timeout
-        int ret = select(fd + 1, &fds, NULL, NULL, &tv);
+        std::string program_file = cmd.substr(space_pos + 1);
         
-        if (ret == -1) {
-            // Select error
-            break;
-        } else if (ret == 0) {
-            // Timeout occurred
+        // Execute the command
+        execlp("lli", "lli", program_file.c_str(), nullptr);
+        
+        // If we get here, exec failed
+        std::cerr << "Error: Failed to execute command: " << cmd << std::endl;
+        exit(1);
+    } else {
+        // Parent process
+        int status;
+        time_t start_time = time(nullptr);
+        
+        while (true) {
+            // Check if process has finished
+            pid_t result = waitpid(pid, &status, WNOHANG);
             
-            // Mark timeout and break out of the loop
-            timeout_occurred = true;
-            break;
-        } else {
-            // Data available, read it
-            size_t bytes_read = fread(buffer, 1, sizeof(buffer) - 1, pipe);
-            if (bytes_read <= 0) break;  // EOF or error
+            if (result == pid) {
+                // Process finished
+                if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+                    return 1;  // Success
+                } else {
+                    return -1;  // Process failed
+                }
+            } else if (result == -1) {
+                // Error in waitpid
+                std::cerr << "Error: waitpid failed" << std::endl;
+                return -1;
+            }
             
-            buffer[bytes_read] = '\0';
-            output->append(buffer);
+            // Check timeout
+            if (time(nullptr) - start_time >= timeout_seconds) {
+                // Timeout - kill the process
+                kill(pid, SIGTERM);
+                
+                // Give it a moment to terminate gracefully
+                sleep(1);
+                
+                // Force kill if still running
+                if (waitpid(pid, &status, WNOHANG) == 0) {
+                    kill(pid, SIGKILL);
+                    waitpid(pid, &status, 0);  // Wait for it to die
+                }
+                
+                std::cerr << "Error: Process timed out after " << timeout_seconds << " seconds" << std::endl;
+                return -1;
+            }
+            
+            // Sleep a bit before checking again
+            usleep(10000);  // 10ms
         }
     }
-    
-    // Kill the process if timeout occurred
-    if (timeout_occurred) {
-        // Get process group ID to kill all children
-        std::string kill_cmd = "pkill -f \"lli modified.ll\"";
-        system(kill_cmd.c_str());
-        
-        // Allow a moment for the process to terminate
-        usleep(100000);  // 100ms
-    }
-    
-    // Always close the pipe at the end
-    int status = pclose(pipe);
-    
-    return timeout_occurred ? 1 : WEXITSTATUS(status);
 }
 
-std::tuple<double, double> measure_time(std::string& result, Run& run_instance, std::vector<std::tuple<double, double, std::string>>& results, const std::string& cmd = "lli modified.ll"){
-    result = "";
+int measure_time(std::string program_file, std::string output_file, OutputBase& correct_result, Run& run_instance){
+    if (std::filesystem::exists(output_file)) {
+        std::filesystem::remove(output_file);
+    }
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
         auto start_time = std::chrono::high_resolution_clock::now();
-        call_executable(cmd, &result);
+        llvm::outs() << "Calling executable: " << program_file << "\n";
+        int success = call_executable("lli " + program_file);
         auto end_time = std::chrono::high_resolution_clock::now();
+        if (success != 1 || !std::filesystem::exists(output_file)) {
+            llvm::outs() << "Executable failed to run\n";
+            run_instance.success = false;
+            return -1;
+        }
         std::chrono::duration<double> elapsed = end_time - start_time;
-            durations.push_back(elapsed.count());
+        durations.push_back(elapsed.count());
     }
     
     double sum = 0.0;
@@ -95,18 +133,19 @@ std::tuple<double, double> measure_time(std::string& result, Run& run_instance, 
     variance /= durations.size();
     double stddev = std::sqrt(variance);
     
-    results.push_back(std::make_tuple(avg, stddev, result));
+    run_instance.success = true;
     run_instance.avgDuration = avg;
     run_instance.stddevDuration = stddev;
-    try {
-        run_instance.result = std::stod(result);
-    } catch (const std::invalid_argument& e) {
-        run_instance.result = 0;
-    } catch (const std::out_of_range& e) {
-        run_instance.result = 0;
+    if (typeid(correct_result) == typeid(Scalar)) {
+        Scalar result(output_file);
+        double distance = result.get_distance(correct_result);
+        llvm::outs() << "Measured Distance: " << distance << "\n";
+        run_instance.result = distance;
+    } else {
+        throw std::runtime_error("Output type not supported");
     }
-    run_instance.saveToDb();
-    return std::make_tuple(avg, stddev);
+    //run_instance.saveToDb();
+    return 1;
 }
 
 #endif // MEASURE_TIME_CPP

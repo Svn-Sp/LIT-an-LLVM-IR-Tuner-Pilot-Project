@@ -149,7 +149,18 @@ int main() {
     }
     
     // Copy original to temp file to start the process
-    std::filesystem::copy_file(originalFile, tempFile, std::filesystem::copy_options::overwrite_existing);
+    try {
+        std::error_code ec;
+        if (!std::filesystem::copy_file(originalFile, tempFile, std::filesystem::copy_options::overwrite_existing, ec)) {
+            std::cerr << "Error: Failed to copy '" << originalFile << "' to '" << tempFile 
+                      << "': " << ec.message() << std::endl;
+            return 1;
+        }
+        std::cout << "Copied original file to temporary file: " << tempFile << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception while copying file: " << e.what() << std::endl;
+        return 1;
+    }
     
     std::ifstream file(csvFile);
     std::string line;
@@ -194,10 +205,32 @@ int main() {
     file.close();
     
     // Copy final result to output file
-    std::filesystem::copy_file(tempFile, outputFile, std::filesystem::copy_options::overwrite_existing);
+    try {
+        std::error_code ec;
+        if (!std::filesystem::copy_file(tempFile, outputFile, std::filesystem::copy_options::overwrite_existing, ec)) {
+            std::cerr << "Error: Failed to copy final result from '" << tempFile << "' to '" << outputFile 
+                      << "': " << ec.message() << std::endl;
+            return 1;
+        }
+        std::cout << "Copied final result to: " << outputFile << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Exception while copying final result: " << e.what() << std::endl;
+        return 1;
+    }
     
-    // Clean up temp file
-    std::filesystem::remove(tempFile);
+    // Clean up temp file with proper error handling
+    try {
+        std::error_code ec;
+        if (!std::filesystem::remove(tempFile, ec)) {
+            std::cerr << "Warning: Failed to remove temporary file '" << tempFile 
+                      << "': " << ec.message() << std::endl;
+        } else {
+            std::cout << "Cleaned up temporary file: " << tempFile << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception while removing temporary file '" << tempFile 
+                  << "': " << e.what() << std::endl;
+    }
     
     std::cout << "Process completed successfully!" << std::endl;
     std::cout << "Applied " << stepCount << " mutations" << std::endl;

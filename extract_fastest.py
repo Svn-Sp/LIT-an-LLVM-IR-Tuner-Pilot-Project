@@ -3,8 +3,6 @@ import json
 import sys
 from typing import Dict, List, Optional, Tuple
 
-CORRECT_RESULT = 3.130682
-
 
 def load_beam_search_tree(file_path: str) -> Dict:
     """Load the beam search tree from JSON file."""
@@ -24,7 +22,7 @@ def find_fastest_correct_node(
     Returns: path to the fastest correct node
     """
     best_path = None
-    if "result" in node and abs(float(node["result"]) - CORRECT_RESULT) < 1e-6:
+    if "result" in node and float(node["result"]) == 0:
         best_path = current_path
     for child in node["children"]:
         if new_path := find_fastest_correct_node(child, current_path.copy() + [child]):
@@ -68,7 +66,7 @@ def save_mutations_to_csv(mutations: List[Dict], output_file: str):
 
 def main():
     # Load the beam search tree
-    tree_file = "beam_search_tree.json"
+    tree_file = sys.argv[1]
     print(f"Loading beam search tree from {tree_file}...")
     tree = load_beam_search_tree(tree_file)
 

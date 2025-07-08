@@ -1,5 +1,3 @@
-#define ORIGINAL_CODE "original.ll"
-#define MODIFIED_CODE "modified.ll"
 #define RESULTS_FILE "results.csv"
 #define EVALUATIONS_BUDGET 500000
 #define MIN_MUTATIONS 1

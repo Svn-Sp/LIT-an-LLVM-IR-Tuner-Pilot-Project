@@ -5,10 +5,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
 
-FILTERED=True
-CORRECT_VALUE = 3.130682
-MIN_VALUE = CORRECT_VALUE * 0.8
-MAX_VALUE = CORRECT_VALUE * 1.2
+FILTERED = True
 
 # Read the CSV file
 data = pd.read_csv(sys.argv[1])
@@ -28,8 +25,6 @@ data = data.dropna(subset=["Average Duration (s)", "Standard Deviation (s)", "Ru
 
 # Filter out outliers (runs that took >= 5 seconds)
 filtered_data = data[data["Average Duration (s)"] < 3]
-filtered_data = filtered_data[filtered_data["Result"] > MIN_VALUE]
-filtered_data = filtered_data[filtered_data["Result"] < MAX_VALUE]
 
 
 # Create the figure and axis
@@ -54,13 +49,12 @@ plt.errorbar(
 runs_with_results = filtered_data[~no_result_mask]
 if not runs_with_results.empty:
     # Calculate distance to correct value
-    runs_with_results["Distance"] = abs(runs_with_results["Result"] - CORRECT_VALUE)
     # Normalize distances for color mapping (0 = correct, 1 = furthest)
-    max_distance = runs_with_results["Distance"].max()
+    max_distance = runs_with_results["Result"].max()
     if max_distance > 0:  # Avoid division by zero
-        normalized_distances = runs_with_results["Distance"] / max_distance
+        normalized_distances = runs_with_results["Result"] / max_distance
     else:
-        normalized_distances = runs_with_results["Distance"] * 0  # All zeros
+        normalized_distances = runs_with_results["Result"] * 0  # All zeros
 
     # Custom colormap: green for correct, red for incorrect
     cmap = LinearSegmentedColormap.from_list("GreenToRed", ["green", "red"])
@@ -79,7 +73,7 @@ if not runs_with_results.empty:
 
     # Add a colorbar to show the distance scale
     cbar = plt.colorbar(scatter)
-    cbar.set_label("Distance to correct value (normalized)")
+    cbar.set_label("Result (Distance from correct value)")
 
     # Add error bars separately for runs with results
     for i, row in runs_with_results.iterrows():

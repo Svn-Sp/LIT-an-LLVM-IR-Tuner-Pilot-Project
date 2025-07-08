@@ -28,22 +28,22 @@
 #include "mutations/mutation_factory.cpp"
 #include "utils/measure_time.cpp"
 void random_tuning(){
-    std::vector<std::tuple<double, double, std::string>> results;
-    std::vector<Run> runs;
-    std::string result;
-    for (int t = 0; t < EVALUATIONS_BUDGET; t++){
-        llvm::outs() << "----------------------------------------\n";
-        llvm::outs() << "Running test " << t << "\n";
-        copyOriginalToModified(ORIGINAL_CODE, MODIFIED_CODE);
-        std::uniform_int_distribution<> mutationCountDistribution(MIN_MUTATIONS, MAX_MUTATIONS);
-        int mutationCount = mutationCountDistribution(gen);
-        Run run_instance;
-        for (int i = 0; i < mutationCount; i++) {
-            applyRandomMutation(run_instance);
-        }
-        measure_time(result, run_instance, results);
-        runs.push_back(run_instance);
-        llvm::outs() << run_instance.asString() << "\n";
-    }  
-    writeResultsToCSV("random_results.csv", results);
+    // std::vector<std::tuple<double, double, std::string>> results;
+    // std::vector<Run> runs;
+    // std::string result;
+    // for (int t = 0; t < EVALUATIONS_BUDGET; t++){
+    //     llvm::outs() << "----------------------------------------\n";
+    //     llvm::outs() << "Running test " << t << "\n";
+    //     copyOriginalToModified(ORIGINAL_CODE, MODIFIED_CODE);
+    //     std::uniform_int_distribution<> mutationCountDistribution(MIN_MUTATIONS, MAX_MUTATIONS);
+    //     int mutationCount = mutationCountDistribution(gen);
+    //     Run run_instance;
+    //     for (int i = 0; i < mutationCount; i++) {
+    //         applyRandomMutation(run_instance);
+    //     }
+    //     measure_time(result, run_instance, results);
+    //     runs.push_back(run_instance);
+    //     llvm::outs() << run_instance.asString() << "\n";
+    // }  
+    // writeResultsToCSV("random_results.csv", results);
 }

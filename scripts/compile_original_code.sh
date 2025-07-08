@@ -1,1 +1,1 @@
-clang -emit-llvm -S -c original_code.c -o original.ll
+clang -emit-llvm -S -c "$1" -o "$2"

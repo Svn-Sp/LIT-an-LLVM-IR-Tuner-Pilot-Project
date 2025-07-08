@@ -33,6 +33,10 @@ class ReplaceArithmetic : public Mutation {
                     NonDeclFunctions.push_back(&F);
                 }
             }
+            if (NonDeclFunctions.empty()) {
+                errs() << "No non-declaration functions found in the module.\n";
+                return nullptr; // Return unchanged module instead of nullptr
+            }
 
             // Select a random function
             Function* SelectedFunction = NonDeclFunctions[this->dm.make_decision(0, NonDeclFunctions.size() - 1)];

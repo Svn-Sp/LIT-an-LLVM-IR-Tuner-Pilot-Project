@@ -13,12 +13,12 @@
 
 
 
-std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance) {
+std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance, std::string modified_file) {
     AddRandomArithmetic addRandomArithmetic;
     ReplaceArithmetic replaceArithmetic;
     MoveBlockwise moveBlockwise;
     AddNewCond addNewCond;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 3); 
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 3);
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
@@ -28,26 +28,26 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     switch (mutationType) {
         case ADD_RANDOM_ARITHMETIC:
             decisions = addRandomArithmetic.run(
-                MODIFIED_CODE,
-                MODIFIED_CODE
+                modified_file.c_str(),
+                modified_file.c_str()
             );
             break;
         case REPLACE_ARITHMETIC:
             decisions = replaceArithmetic.run(
-                MODIFIED_CODE,
-                MODIFIED_CODE
+                modified_file.c_str(),
+                modified_file.c_str()
             );
             break;
         case MOVE_BLOCKWISE:
             decisions = moveBlockwise.run(
-                MODIFIED_CODE,
-                MODIFIED_CODE
+                modified_file.c_str(),
+                modified_file.c_str()
             );
             break;
         case ADD_NEW_COND:
             decisions = addNewCond.run(
-                MODIFIED_CODE,
-                MODIFIED_CODE
+                modified_file.c_str(),
+                modified_file.c_str()
             );
             break;
     }
@@ -55,7 +55,7 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     return std::make_tuple(mutationType, decisions);
 }
 
-void reapplyMutation(Run& run_instance, MutationType mutationType, const std::vector<int>& decisions) {
+void reapplyMutation(Run& run_instance, MutationType mutationType, const std::vector<int>& decisions, std::string modified_file) {
     // Safety check: empty decisions vector
     if (decisions.empty()) {
         llvm::outs() << "Warning: Empty decisions vector for mutation type " << mutationType << "\n";
@@ -75,25 +75,25 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
         switch (mutationType) {
             case ADD_RANDOM_ARITHMETIC: {
                 AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);
-                result_decisions = addRandomArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                result_decisions = addRandomArithmeticCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case REPLACE_ARITHMETIC: {
                 ReplaceArithmetic replaceArithmeticCustom(decisionsArray);
-                result_decisions = replaceArithmeticCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                result_decisions = replaceArithmeticCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case MOVE_BLOCKWISE: {
                 MoveBlockwise moveBlockwiseCustom(decisionsArray);
-                result_decisions = moveBlockwiseCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                result_decisions = moveBlockwiseCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case ADD_NEW_COND: {
                 AddNewCond addNewCondCustom(decisionsArray);
-                result_decisions = addNewCondCustom.run(MODIFIED_CODE, MODIFIED_CODE);
+                result_decisions = addNewCondCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
@@ -106,11 +106,14 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             run_instance.mutations.push_back(std::make_tuple(mutationType, result_decisions));
         } else {
             llvm::outs() << "Warning: Mutation application failed for type " << mutationType << "\n";
+            throw std::runtime_error("Mutation reapplication failed");
         }
     } catch (const std::exception& e) {
         llvm::outs() << "Exception in reapplyMutation: " << e.what() << "\n";
+        throw std::runtime_error("Mutation reapplication failed");
     } catch (...) {
         llvm::outs() << "Unknown exception in reapplyMutation\n";
+        throw std::runtime_error("Mutation reapplication failed");
     }
     
     // Clean up

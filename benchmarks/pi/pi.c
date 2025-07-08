@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <string.h>
+#include <libgen.h>
 
 void myadd(float *sum,float *addend) {
 /*
@@ -51,5 +53,16 @@ int main(int argc, char *argv[]) {
 
       pi = computation(ztot, yran, ymult, ymod, x, y, z, pi, prod, low, ixran, itot, j, iprod);
       printf("%f\n", pi);
+      
+      // Get the directory of the current file
+      char filepath[256];
+      strcpy(filepath, __FILE__);
+      char *dir = dirname(filepath);
+      char output_path[512];
+      snprintf(output_path, sizeof(output_path), "%s/output.txt", dir);
+      
+      FILE *file = fopen(output_path, "w");
+      fprintf(file, "%f\n", pi);
+      fclose(file);
       return 0;
 }

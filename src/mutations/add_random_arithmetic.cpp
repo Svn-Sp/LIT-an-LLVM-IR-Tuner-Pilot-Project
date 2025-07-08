@@ -45,6 +45,10 @@ public:
                 ValidFunctions.push_back(&F);
             }
         }
+        if (ValidFunctions.empty()) {
+            errs() << "No valid functions found in the module.\n";
+            return nullptr; // Return unchanged module instead of nullptr
+        }
         
         // Select a random function
         //llvm::outs() << "Decision maker index: " << this->dm.current_decision << "\n";
@@ -61,7 +65,7 @@ public:
         
         if (BasicBlocks.empty()) {
             errs() << "No basic blocks found in the selected function.\n";
-            return nullptr;
+            return nullptr; // Return unchanged module instead of nullptr
         }
         
         // Select a random basic block
