@@ -112,12 +112,14 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
         auto start_time = std::chrono::high_resolution_clock::now();
-        llvm::outs() << "Calling executable: " << program_file << "\n";
         int success = call_executable("lli " + program_file);
         auto end_time = std::chrono::high_resolution_clock::now();
         if (success != 1 || !std::filesystem::exists(output_file)) {
             llvm::outs() << "Executable failed to run\n";
             run_instance.success = false;
+            run_instance.avgDuration = 0;
+            run_instance.stddevDuration = 0;
+            run_instance.result = 0;
             return -1;
         }
         std::chrono::duration<double> elapsed = end_time - start_time;

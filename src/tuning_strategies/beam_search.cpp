@@ -140,7 +140,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
     int evaluations = 0;
     while(true){
         
-        std::uniform_int_distribution<> dis(MIN_MUTATIONS, MAX_MUTATIONS);
+        std::uniform_int_distribution<> dis(0, MAX_MUTATIONS);
         int depth = dis(gen);
         
         llvm::outs() << "Copying original to modified\n";
@@ -168,7 +168,14 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
             children=selectedNode->children;
         }
         llvm::outs() << "Applying random mutation:\n";
-        auto [mutationType, decisions] = applyRandomMutation(run, modified_file);
+        MutationType mutationType;
+        std::vector<int> decisions;
+        while(true){
+            std::tie(mutationType, decisions) = applyRandomMutation(run, modified_file);
+            if (decisions.size() > 0){
+                break;
+            }
+        }
         int success = measure_time(modified_file, output_file, correct_result, run);
         evaluations++;
         runs.push_back(run);
@@ -177,18 +184,14 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         if(success == 1){
             llvm::outs() << "Mutation successful\n";
             score = 1.0;
-            if(decisions.size() > 0){
-                selectedNode->addChild(mutationType, decisions, score, run.avgDuration, run.stddevDuration, run.result);
-            }
+            selectedNode->addChild(mutationType, decisions, score, run.avgDuration, run.stddevDuration, run.result);
         } else {
             llvm::outs() << "Mutation failed\n";
             score = 0.0;
         }
-        if (evaluations % 10 == 0){
-            llvm::outs() << "Writing results to CSV and JSON\n";
-            writeResultsToCSV(csv_file_name, runs);
-            write_tree_to_json(tree_file_name, root);
-        }
+        llvm::outs() << "Writing results to CSV and JSON\n";
+        writeResultsToCSV(csv_file_name, runs);
+        write_tree_to_json(tree_file_name, root);
         if(evaluations >= EVALUATIONS_BUDGET){
             writeResultsToCSV(csv_file_name, runs);
             write_tree_to_json(tree_file_name, root);

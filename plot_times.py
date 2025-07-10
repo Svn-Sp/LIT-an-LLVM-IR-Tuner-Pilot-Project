@@ -31,7 +31,7 @@ filtered_data = data[data["Average Duration (s)"] < 3]
 plt.figure(figsize=(12, 6))
 
 # Create a basic plot for runs without results
-no_result_mask = filtered_data["Result"].isna()
+no_result_mask = filtered_data["Success"] == 0
 runs_without_results = filtered_data[no_result_mask]
 plt.errorbar(
     runs_without_results["Run"],
@@ -48,22 +48,18 @@ plt.errorbar(
 # Create a colorful plot for runs with results
 runs_with_results = filtered_data[~no_result_mask]
 if not runs_with_results.empty:
-    # Calculate distance to correct value
-    # Normalize distances for color mapping (0 = correct, 1 = furthest)
-    max_distance = runs_with_results["Result"].max()
-    if max_distance > 0:  # Avoid division by zero
-        normalized_distances = runs_with_results["Result"] / max_distance
-    else:
-        normalized_distances = runs_with_results["Result"] * 0  # All zeros
+    # Create binary color mapping: 0 = green (correct), 1 = red (incorrect)
+    # Results with value 0 are correct (green), all others are incorrect (red)
+    color_values = (runs_with_results["Result"] != 0).astype(int)
 
-    # Custom colormap: green for correct, red for incorrect
+    # Custom colormap: green for correct (0), red for incorrect (1)
     cmap = LinearSegmentedColormap.from_list("GreenToRed", ["green", "red"])
 
-    # Plot each point with its color based on distance
+    # Plot each point with its color based on correctness
     scatter = plt.scatter(
         runs_with_results["Run"],
         runs_with_results["Average Duration (s)"],
-        c=normalized_distances,
+        c=color_values,
         cmap=cmap,
         s=80,  # Size of markers
         zorder=3,  # Draw on top
@@ -71,9 +67,11 @@ if not runs_with_results.empty:
         label="With Result",
     )
 
-    # Add a colorbar to show the distance scale
+    # Add a colorbar to show the correctness scale
     cbar = plt.colorbar(scatter)
-    cbar.set_label("Result (Distance from correct value)")
+    cbar.set_label("Result (0 = Correct, 1 = Incorrect)")
+    cbar.set_ticks([0, 1])
+    cbar.set_ticklabels(["Correct", "Incorrect"])
 
     # Add error bars separately for runs with results
     for i, row in runs_with_results.iterrows():
