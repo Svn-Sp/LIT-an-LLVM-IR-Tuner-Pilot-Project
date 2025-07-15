@@ -104,7 +104,8 @@ def interpolate_correctness_color(distance):
 # Collect all avg_time values to determine the range
 all_times = []
 if "children" in data and len(data["children"]) > 0:
-    collect_avg_times(data["children"][0], all_times)
+    for child in data["children"]:
+        collect_avg_times(child, all_times)
 
 if all_times:
     min_time = min(all_times)
@@ -126,7 +127,8 @@ else:
 # Collect all result values to determine distance range
 all_results = []
 if "children" in data and len(data["children"]) > 0:
-    collect_results(data["children"][0], all_results)
+    for child in data["children"]:
+        collect_results(child, all_results)
 
 if all_results:
     min_dist = min(all_results)
@@ -263,7 +265,8 @@ def add_node_and_children(node, net, parent_id, level=1):
 
 # Process the tree starting from the root
 if "children" in data and len(data["children"]) > 0:
-    add_node_and_children(data["children"][0], net, 0)
+    for child in data["children"]:
+        add_node_and_children(child, net, 0)
 else:
     print("No children found in the tree data")
 

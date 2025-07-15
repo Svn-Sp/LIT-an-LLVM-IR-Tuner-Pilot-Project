@@ -20,6 +20,7 @@
 #include "core/run.cpp"
 #include "output/output.cpp"
 #include "output/scalar.cpp"
+#include "output/array.cpp"
 
 #define TIMEOUT_SECONDS 3
 #define REPETITIONS 5
@@ -140,6 +141,11 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
     run_instance.stddevDuration = stddev;
     if (typeid(correct_result) == typeid(Scalar)) {
         Scalar result(output_file);
+        double distance = result.get_distance(correct_result);
+        llvm::outs() << "Measured Distance: " << distance << "\n";
+        run_instance.result = distance;
+    } else if (typeid(correct_result) == typeid(ArrayOutput)) {
+        ArrayOutput result(output_file);
         double distance = result.get_distance(correct_result);
         llvm::outs() << "Measured Distance: " << distance << "\n";
         run_instance.result = distance;

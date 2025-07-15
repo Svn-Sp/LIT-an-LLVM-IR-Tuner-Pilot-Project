@@ -8,6 +8,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Find required packages
 find_package(SQLite3 REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+)
+FetchContent_MakeAvailable(googletest)
+include(FetchContent)
+FetchContent_Declare(
+  nlohmann_json
+  URL https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
+
 
 # Get LLVM configuration
 llvm_map_components_to_libnames(llvm_libs
@@ -47,44 +61,61 @@ add_library(tuning_strategies
 add_library(output
     src/output/output.cpp
     src/output/scalar.cpp
+    src/output/array.cpp
 )
 
-# Add the main executable
 add_executable(main src/main.cpp)
-
-# Add the rebuild from CSV executable
 add_executable(rebuild_from_csv src/rebuild_from_csv.cpp)
+add_executable(tests tests/test_array_output.cpp)
 
 # Set include directories for all targets
 target_include_directories(core 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 target_include_directories(utils 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 target_include_directories(mutations 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
+)
+target_include_directories(output 
+    PUBLIC 
+        ${CMAKE_SOURCE_DIR}/src
+        ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 target_include_directories(tuning_strategies 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 target_include_directories(main 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 target_include_directories(rebuild_from_csv 
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/src
         ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
+)
+target_include_directories(tests 
+    PUBLIC 
+        ${CMAKE_SOURCE_DIR}/src
+        ${LLVM_INCLUDE_DIRS}
+        ${nlohmann_json_SOURCE_DIR}/include
 )
 
 # Add LLVM definitions to all targets
@@ -101,7 +132,16 @@ target_link_libraries(core
     ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
-
+target_link_libraries(tests
+    PRIVATE
+    output
+    core
+    utils
+    mutations
+    tuning_strategies
+    GTest::gtest
+    GTest::gtest_main
+)
 target_link_libraries(utils
     PRIVATE
     ${SQLite3_LIBRARIES}

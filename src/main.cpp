@@ -8,6 +8,7 @@
 #include <memory>
 #include "output/output.cpp"
 #include "output/scalar.cpp"
+#include "output/array.cpp"
 
 int main(int argc, char** argv) {
     std::string file_to_tune = argv[1];
@@ -18,6 +19,9 @@ int main(int argc, char** argv) {
     std::unique_ptr<OutputBase> correct_result;
     if (output_type == "scalar") {
         correct_result = std::make_unique<Scalar>(correct_result_file);
+    }
+    else if (output_type == "array") {
+        correct_result = std::make_unique<ArrayOutput>(correct_result_file);
     }
     std::vector<Run> runs;
     beam_search(file_to_tune, modified_file, output_file, *correct_result, runs);
