@@ -18,6 +18,7 @@ def generate_name(dict_):
     name = dict_["mutationType"]
     name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
     name += f" | {dict_['result']:.4f}"
+    name += f" | {dict_['avg_path_run_score']} | {dict_['path_size']}"
     return name
 
 

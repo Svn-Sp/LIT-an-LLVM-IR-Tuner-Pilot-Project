@@ -29,6 +29,7 @@
 #include "mutations/mutation.h"
 #include "utils/randomness_utils.cpp"
 #include "output/output.cpp"
+#include <iomanip>  // Add this for std::fixed and std::setprecision
 
 class BeamSearchTreeNode {
     public:
@@ -37,33 +38,74 @@ class BeamSearchTreeNode {
         double avg_time;
         double std_dev_time;
         double result;
-        double score;
+        int path_size;
+        double run_score;
+        double avg_path_run_score;
         MutationType mutationType;
         std::vector<int> decisions;
         BeamSearchTreeNode(){
-            //root node constructor
+            //root node constavg_path_run_scoreructor
             this->parent = nullptr;
-            this->score = 1.0;
             this->avg_time = 0.0;
             this->std_dev_time = 0.0;
+            this->path_size = 0;
+            this->avg_path_run_score = 0.5;
+            this->run_score = 0.5;
         }
-        BeamSearchTreeNode(BeamSearchTreeNode* parent, MutationType mutationType, std::vector<int> decisions, double score, double avg_time, double std_dev_time, double result){
+        BeamSearchTreeNode(BeamSearchTreeNode* parent, MutationType mutationType, std::vector<int> decisions,  double avg_time, double std_dev_time, double result, double og_runtime, double max_runtime){
             this->parent = parent;
             this->mutationType = mutationType;
             this->decisions = decisions;
-            this->score = score;
             this->avg_time = avg_time;
             this->std_dev_time = std_dev_time;
             this->result = result;
+            this->path_size = 1;
+            this->run_score = this->calculate_run_score(og_runtime, max_runtime);
+            this->avg_path_run_score = this->run_score;
+            this->bubble_up_run_score(this->run_score);
+
         }
-        void addChild(MutationType mutationType, std::vector<int> decisions, double score, double avg_time, double std_dev_time, double result){
-            BeamSearchTreeNode* child = new BeamSearchTreeNode(this, mutationType, decisions, score, avg_time, std_dev_time, result);
+        void add_child(MutationType mutationType, std::vector<int> decisions,  double avg_time, double std_dev_time, double result, double og_runtime, double max_runtime){
+            BeamSearchTreeNode* child = new BeamSearchTreeNode(this, mutationType, decisions, avg_time, std_dev_time, result, og_runtime, max_runtime);
             if (child) {
                 children.push_back(child);
             } else {
                 llvm::outs() << "Warning: Failed to create child node\n";
             }
         }
+        float calculate_run_score(float og_runtime, float max_runtime) {
+            float peak = og_runtime / 2; //Assume that the highest speedup we can reasonably expect is 2x
+            if (this->result == 0) {
+                return 0.5 + std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);
+            }else{
+                double unclamped_score;
+                if (this->avg_time < peak){
+                    float min_rt = og_runtime/5;
+                    unclamped_score = (this->avg_time - min_rt) / (peak - min_rt);
+                }else{
+                    unclamped_score = (max_runtime - this->avg_time) / (max_runtime - peak);
+                }
+                return std::clamp(unclamped_score, 0.0, 1.0);
+            }
+        }
+        void bubble_up_run_score(float new_run_score){
+            if (this->parent == nullptr){
+                return;
+            }
+            this->parent->path_size++;
+            float old_avg_path_run_score = this->parent->avg_path_run_score;
+            this->parent->avg_path_run_score = old_avg_path_run_score * ((float)(this->parent->path_size-1) / (float)this->parent->path_size) + new_run_score * (1.0f / (float)this->parent->path_size);
+            // Build moving average
+            this->parent->bubble_up_run_score(new_run_score);
+        }
+        float calculate_score(){
+            //formular: score(v)=0.8*max(avg_path_run_score, run_score) + 0.2*(1-size of path compared to siblings)
+            int total_path_size = this->parent->path_size - 1;
+            int path_size = this->path_size;
+            float relative_size = (float)path_size / (float)total_path_size;
+            return 0.8*std::max(this->avg_path_run_score, this->run_score) + 0.2*(1-relative_size);
+        }
+
 };
 
 std::string vector_to_json_array(const std::vector<int>& vec) {
@@ -82,10 +124,11 @@ std::string node_to_json(const BeamSearchTreeNode* node, int depth = 0) {
     std::string indent(depth * 2, ' ');
     
     ss << indent << "{\n";
-    ss << indent << "  \"score\": " << node->score << ",\n";
     
     // Only include mutation info if this is not the root node
     if (node->parent != nullptr) {
+        ss << indent << "  \"avg_path_run_score\": " << node->avg_path_run_score << ",\n";
+        ss << indent << "  \"path_size\": " << node->path_size << ",\n";
         ss << indent << "  \"mutationType\": \"" << mutation_type_to_string(node->mutationType) << "\",\n";
         ss << indent << "  \"decisions\": " << vector_to_json_array(node->decisions) << ",\n";
         ss << indent << "  \"avg_time\": " << node->avg_time << ",\n";
@@ -132,6 +175,8 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
     BeamSearchTreeNode* root = new BeamSearchTreeNode();
     Run run;
     measure_time(program_file, output_file, correct_result, run);
+    float og_runtime = run.avgDuration;
+    float max_runtime = og_runtime * 1.25; // Assume max runtime for now
     runs.push_back(run);
 
     // auto [og_avg_time, og_std_dev_time] = measure_time(result, run, results, "lli original.ll"); //Get original time
@@ -148,11 +193,11 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         Run run;
         BeamSearchTreeNode* selectedNode = root;
         int current_depth = 0;
-        
+
         std::vector<BeamSearchTreeNode*> children = root->children;
         std::vector<double> scores = {};
         for (auto child : children){
-            scores.push_back(child->score);
+            scores.push_back(child->calculate_score());
         }
         llvm::outs() << "Reapplying mutations:\n";
         while(children.size() > 0 && current_depth < depth && std::any_of(scores.begin(), scores.end(), [](double score) { return score > 0; })){
@@ -163,7 +208,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
             current_depth++;
             scores.clear();
             for (auto child : selectedNode->children){
-                scores.push_back(child->score);
+                scores.push_back(child->calculate_score());
             }
             children=selectedNode->children;
         }
@@ -177,17 +222,17 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
             }
         }
         int success = measure_time(modified_file, output_file, correct_result, run);
+        if (run.avgDuration > max_runtime){
+            max_runtime = run.avgDuration;
+        }
         evaluations++;
         runs.push_back(run);
-        double score;
         
         if(success == 1){
             llvm::outs() << "Mutation successful\n";
-            score = 1.0;
-            selectedNode->addChild(mutationType, decisions, score, run.avgDuration, run.stddevDuration, run.result);
+            selectedNode->add_child(mutationType, decisions, run.avgDuration, run.stddevDuration, run.result, og_runtime, max_runtime);
         } else {
             llvm::outs() << "Mutation failed\n";
-            score = 0.0;
         }
         llvm::outs() << "Writing results to CSV and JSON\n";
         writeResultsToCSV(csv_file_name, runs);

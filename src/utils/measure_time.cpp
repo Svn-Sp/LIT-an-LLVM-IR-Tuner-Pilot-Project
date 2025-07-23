@@ -55,7 +55,7 @@ int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECOND
         std::string program_file = cmd.substr(space_pos + 1);
         
         // Execute the command
-        execlp("lli", "lli", program_file.c_str(), nullptr);
+        execlp("bash", "bash", "-c", ("taskset -c 0 /usr/bin/time -f \"%e\" lli \"" + program_file + "\" > /dev/null 2>&1").c_str(), nullptr);
         
         // If we get here, exec failed
         std::cerr << "Error: Failed to execute command: " << cmd << std::endl;
