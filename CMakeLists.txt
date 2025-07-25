@@ -45,11 +45,11 @@ add_library(utils
 
 add_library(mutations
     src/mutations/mutation_factory.cpp
+    src/mutations/unsafe_mem_2_reg.cpp
     src/mutations/add_random_arithmetic.cpp
     src/mutations/add_new_cond.cpp
     src/mutations/mutation.cpp
     src/mutations/move_blockwise.cpp
-    src/mutations/replace_arithmetic.cpp
 )
 
 add_library(tuning_strategies

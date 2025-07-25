@@ -92,12 +92,6 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
                 success = !result_decisions.empty();
                 break;
             }
-            case REPLACE_ARITHMETIC: {
-                ReplaceArithmetic replaceArithmeticCustom(decisionsArray);
-                result_decisions = replaceArithmeticCustom.run(inputFile.c_str(), outputFile.c_str());
-                success = !result_decisions.empty();
-                break;
-            }
             case MOVE_BLOCKWISE: {
                 MoveBlockwise moveBlockwiseCustom(decisionsArray);
                 result_decisions = moveBlockwiseCustom.run(inputFile.c_str(), outputFile.c_str());
@@ -107,6 +101,12 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
             case ADD_NEW_COND: {
                 AddNewCond addNewCondCustom(decisionsArray);
                 result_decisions = addNewCondCustom.run(inputFile.c_str(), outputFile.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case UNSAFE_MEM_2_REG: {
+                UnsafeMem2Reg unsafeMem2RegCustom(decisionsArray);
+                result_decisions = unsafeMem2RegCustom.run(inputFile.c_str(), outputFile.c_str());
                 success = !result_decisions.empty();
                 break;
             }

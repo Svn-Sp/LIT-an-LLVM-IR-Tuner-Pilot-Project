@@ -5,19 +5,19 @@
 #include "core/run.h"
 #include "utils/randomness_utils.cpp"
 #include "mutations/add_random_arithmetic.cpp"
-#include "mutations/replace_arithmetic.cpp"
 #include "mutations/move_blockwise.cpp"
+#include "mutations/unsafe_mem_2_reg.cpp"
 #include "mutations/add_new_cond.cpp"
 #include <random>
 #include "constants.h"
 
-
+extern std::mt19937 gen;
 
 std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance, std::string modified_file) {
     AddRandomArithmetic addRandomArithmetic;
-    ReplaceArithmetic replaceArithmetic;
     MoveBlockwise moveBlockwise;
     AddNewCond addNewCond;
+    UnsafeMem2Reg unsafeMem2Reg;
     std::uniform_int_distribution<> mutationTypeDistribution(0, 3);
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
@@ -32,12 +32,6 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
                 modified_file.c_str()
             );
             break;
-        case REPLACE_ARITHMETIC:
-            decisions = replaceArithmetic.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
-            break;
         case MOVE_BLOCKWISE:
             decisions = moveBlockwise.run(
                 modified_file.c_str(),
@@ -46,6 +40,12 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
             break;
         case ADD_NEW_COND:
             decisions = addNewCond.run(
+                modified_file.c_str(),
+                modified_file.c_str()
+            );
+            break;
+        case UNSAFE_MEM_2_REG:
+            decisions = unsafeMem2Reg.run(
                 modified_file.c_str(),
                 modified_file.c_str()
             );
@@ -79,12 +79,6 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
                 success = !result_decisions.empty();
                 break;
             }
-            case REPLACE_ARITHMETIC: {
-                ReplaceArithmetic replaceArithmeticCustom(decisionsArray);
-                result_decisions = replaceArithmeticCustom.run(modified_file.c_str(), modified_file.c_str());
-                success = !result_decisions.empty();
-                break;
-            }
             case MOVE_BLOCKWISE: {
                 MoveBlockwise moveBlockwiseCustom(decisionsArray);
                 result_decisions = moveBlockwiseCustom.run(modified_file.c_str(), modified_file.c_str());
@@ -94,6 +88,12 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             case ADD_NEW_COND: {
                 AddNewCond addNewCondCustom(decisionsArray);
                 result_decisions = addNewCondCustom.run(modified_file.c_str(), modified_file.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case UNSAFE_MEM_2_REG: {
+                UnsafeMem2Reg unsafeMem2RegCustom(decisionsArray);
+                result_decisions = unsafeMem2RegCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }

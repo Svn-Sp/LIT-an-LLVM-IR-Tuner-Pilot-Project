@@ -64,14 +64,24 @@ int main(int argc, char *argv[]) {
   FILE *json_file = fopen(output_path, "w");
   if (json_file) {
     fprintf(json_file, "[\n");
+    // Write dvec1 first
     for (int i = 0; i < size; i++) {
-      fprintf(json_file, "  %.17g%s\n", dvec1[i], (i < size - 1) ? "," : "");
+      fprintf(json_file, "  %.17g,\n", dvec1[i]);
+    }
+    // Write dvec2 second
+    for (int i = 0; i < size; i++) {
+      fprintf(json_file, "  %.17g%s\n", dvec2[i], (i < size - 1) ? "," : "");
     }
     fprintf(json_file, "]");
     fclose(json_file);
-    printf("dvec1 written to dvec1.json\n");
+    printf("dvec1 and dvec2 concatenated and written to dvec1.json\n");
   } else {
     fprintf(stderr, "Failed to open dvec1.json for writing\n");
   }
+  
+  // Free allocated memory
+  free(dvec1);
+  free(dvec2);
+  
   return 0;
 }

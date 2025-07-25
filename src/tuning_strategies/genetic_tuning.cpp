@@ -18,7 +18,6 @@
 #include <algorithm> // For sorting functions
 #include "mutations/move_blockwise.cpp"
 #include "mutations/mutation.h"
-#include "mutations/replace_arithmetic.cpp"
 #include "mutations/add_random_arithmetic.cpp"
 #include <csetjmp>  // Added for setjmp/longjmp
 #include <sstream>  // Add this for stringstream

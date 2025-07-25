@@ -116,7 +116,7 @@ public:
 
         // Safety check: ensure SelectedFunction is valid
         if (!SelectedFunction) {
-            return std::move(M); // Return unchanged module
+            return nullptr; // Return unchanged module
         }
 
         // Find all basic blocks in the selected function
@@ -134,7 +134,7 @@ public:
         }
 
         if (!validFunction || BasicBlocks.empty()) {
-            return std::move(M); // Return unchanged module
+            return nullptr; // Return unchanged module
         }
 
         // Make sure decision index is in bounds
@@ -149,13 +149,13 @@ public:
 
         // Safety check: ensure SelectedBB is valid
         if (!SelectedBB) {
-            return std::move(M); // Return unchanged module
+            return nullptr; // Return unchanged module
         }
 
         std::tuple<Instruction*, Instruction*, Instruction*> Insts = selectRandomInstructions(SelectedBB, this->dm);
         
         if (std::get<0>(Insts) == nullptr || std::get<1>(Insts) == nullptr || std::get<2>(Insts) == nullptr) {
-            return std::move(M); // Return unchanged module instead of nullptr
+            return nullptr;
         }
         
         // Safety check: ensure instructions are valid before splicing
@@ -168,7 +168,7 @@ public:
             );
         } catch (...) {
             // If any exception occurs during splicing, return the unchanged module
-            return std::move(M);
+            return nullptr;
         }
         
         return std::move(M);

@@ -18,7 +18,6 @@ def generate_name(dict_):
     name = dict_["mutationType"]
     name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
     name += f" | {dict_['result']:.4f}"
-    name += f" | {dict_['avg_path_run_score']} | {dict_['path_size']}"
     return name
 
 
@@ -252,9 +251,14 @@ def add_node_and_children(node, net, parent_id, level=1):
             id_counter, node_name, color=correctness_color, level=level, size=node_size
         )
 
-    # Use score for edge label
+    # Use score for edge label, weight, and title
     score = node.get("score", 0.0)
-    net.add_edge(parent_id, id_counter, label=f"{score:.2f}")
+    net.add_edge(
+        parent_id,
+        id_counter,
+        label=f"{score:.2f}",
+        weight=score,
+    )
 
     current_id = id_counter
     id_counter += 1

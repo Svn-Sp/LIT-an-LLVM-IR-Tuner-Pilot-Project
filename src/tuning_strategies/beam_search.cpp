@@ -16,7 +16,6 @@
 #include <random>
 #include "mutations/move_blockwise.cpp"
 #include "mutations/mutation.h"
-#include "mutations/replace_arithmetic.cpp"
 #include "mutations/add_random_arithmetic.cpp"
 #include <csetjmp>  // Added for setjmp/longjmp
 #include <sstream>  // Add this for stringstream
@@ -76,7 +75,7 @@ class BeamSearchTreeNode {
         float calculate_run_score(float og_runtime, float max_runtime) {
             float peak = og_runtime / 2; //Assume that the highest speedup we can reasonably expect is 2x
             if (this->result == 0) {
-                return 0.5 + std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);
+                return 0.6 + 0.4*std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);
             }else{
                 double unclamped_score;
                 if (this->avg_time < peak){
@@ -85,7 +84,7 @@ class BeamSearchTreeNode {
                 }else{
                     unclamped_score = (max_runtime - this->avg_time) / (max_runtime - peak);
                 }
-                return std::clamp(unclamped_score, 0.0, 1.0);
+                return 0.4*std::clamp(unclamped_score, 0.0, 1.0);
             }
         }
         void bubble_up_run_score(float new_run_score){
@@ -98,7 +97,7 @@ class BeamSearchTreeNode {
             // Build moving average
             this->parent->bubble_up_run_score(new_run_score);
         }
-        float calculate_score(){
+        float calculate_score() const {
             //formular: score(v)=0.8*max(avg_path_run_score, run_score) + 0.2*(1-size of path compared to siblings)
             int total_path_size = this->parent->path_size - 1;
             int path_size = this->path_size;
@@ -129,6 +128,7 @@ std::string node_to_json(const BeamSearchTreeNode* node, int depth = 0) {
     if (node->parent != nullptr) {
         ss << indent << "  \"avg_path_run_score\": " << node->avg_path_run_score << ",\n";
         ss << indent << "  \"path_size\": " << node->path_size << ",\n";
+        ss << indent << "  \"score\": " << node->calculate_score() << ",\n"; //Remove for speed up
         ss << indent << "  \"mutationType\": \"" << mutation_type_to_string(node->mutationType) << "\",\n";
         ss << indent << "  \"decisions\": " << vector_to_json_array(node->decisions) << ",\n";
         ss << indent << "  \"avg_time\": " << node->avg_time << ",\n";
@@ -184,10 +184,6 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
     llvm::outs() << "Starting beam search\n";
     int evaluations = 0;
     while(true){
-        
-        std::uniform_int_distribution<> dis(0, MAX_MUTATIONS);
-        int depth = dis(gen);
-        
         llvm::outs() << "Copying original to modified\n";
         copyOriginalToModified(program_file, modified_file);
         Run run;
@@ -200,12 +196,19 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
             scores.push_back(child->calculate_score());
         }
         llvm::outs() << "Reapplying mutations:\n";
-        while(children.size() > 0 && current_depth < depth && std::any_of(scores.begin(), scores.end(), [](double score) { return score > 0; })){
+        while(children.size() > 0 && current_depth < MAX_MUTATIONS && std::any_of(scores.begin(), scores.end(), [](double score) { return score > 0; })){
+            current_depth++;
+            std::discrete_distribution<> exit_distribution({0.98, 0.02});
+            int new_path = exit_distribution(gen);
+            if(new_path==1){
+                children = {};
+                scores = {};
+                continue;
+            }
             std::discrete_distribution<> distribution(scores.begin(), scores.end());
             int index = distribution(gen);
             selectedNode = selectedNode->children[index];
             reapplyMutation(run, selectedNode->mutationType, selectedNode->decisions, modified_file);
-            current_depth++;
             scores.clear();
             for (auto child : selectedNode->children){
                 scores.push_back(child->calculate_score());

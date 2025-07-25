@@ -38,7 +38,7 @@ public:
 
         if (NonDeclFunctions.empty()) {
             errs() << "No non-declaration functions found in the module.\n";
-            return std::move(M); // Return unchanged module instead of nullptr
+            return nullptr; // Return unchanged module instead of nullptr
         }
         
         // Select a random function
@@ -88,7 +88,7 @@ public:
         // Ensure we have at least two registers to compare
         if (UsedRegisters.size() < 2) {
             errs() << "Not enough registers to perform the mutation.\n";
-            return std::move(M);
+            return nullptr;
         }
         
         // Select two random registers

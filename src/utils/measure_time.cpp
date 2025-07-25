@@ -22,10 +22,10 @@
 #include "output/scalar.cpp"
 #include "output/array.cpp"
 
-#define TIMEOUT_SECONDS 3
+#define TIMEOUT_SECONDS 6
 #define REPETITIONS 5
 
-int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECONDS) {
+int call_executable(const std::string& program_file, int timeout_seconds = TIMEOUT_SECONDS) {
     // Use fork and exec for better process control
     pid_t pid = fork();
     
@@ -37,6 +37,9 @@ int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECOND
     
     if (pid == 0) {
         // Child process
+        // Create a new process group to make it easier to kill all children
+        setpgid(0, 0);
+        
         // Redirect output to /dev/null to avoid hanging on output
         int devnull = open("/dev/null", O_WRONLY);
         if (devnull != -1) {
@@ -45,55 +48,65 @@ int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECOND
             close(devnull);
         }
         
-        // Parse the command (assuming format: "lli program_file")
-        size_t space_pos = cmd.find(' ');
-        if (space_pos == std::string::npos) {
-            std::cerr << "Error: Invalid command format: " << cmd << std::endl;
-            exit(1);
-        }
-        
-        std::string program_file = cmd.substr(space_pos + 1);
-        
         // Execute the command
         execlp("bash", "bash", "-c", ("taskset -c 0 /usr/bin/time -f \"%e\" lli \"" + program_file + "\" > /dev/null 2>&1").c_str(), nullptr);
         
         // If we get here, exec failed
-        std::cerr << "Error: Failed to execute command: " << cmd << std::endl;
+        std::cerr << "Error: Failed to execute command: " << program_file << std::endl;
         exit(1);
     } else {
         // Parent process
         int status;
         time_t start_time = time(nullptr);
         
+        // Set the process group for the child
+        setpgid(pid, pid);
+        
         while (true) {
             // Check if process has finished
             pid_t result = waitpid(pid, &status, WNOHANG);
             
             if (result == pid) {
-                // Process finished
+                // Process finished - ensure all children are killed
+                killpg(pid, SIGTERM);
+                sleep(1);
+                
+                // Force kill any remaining processes in the group
+                if (killpg(pid, 0) == 0) {
+                    killpg(pid, SIGKILL);
+                    sleep(1);
+                }
+                
                 if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
                     return 1;  // Success
                 } else {
                     return -1;  // Process failed
                 }
             } else if (result == -1) {
-                // Error in waitpid
+                // Error in waitpid - kill the process group
+                killpg(pid, SIGTERM);
+                sleep(1);
+                
+                // Force kill if still running
+                if (killpg(pid, 0) == 0) {
+                    killpg(pid, SIGKILL);
+                    sleep(1);
+                }
+                
                 std::cerr << "Error: waitpid failed" << std::endl;
                 return -1;
             }
             
             // Check timeout
             if (time(nullptr) - start_time >= timeout_seconds) {
-                // Timeout - kill the process
-                kill(pid, SIGTERM);
-                
-                // Give it a moment to terminate gracefully
+                // Timeout - kill the process group
+                killpg(pid, SIGTERM);
                 sleep(1);
                 
                 // Force kill if still running
-                if (waitpid(pid, &status, WNOHANG) == 0) {
-                    kill(pid, SIGKILL);
-                    waitpid(pid, &status, 0);  // Wait for it to die
+                if (killpg(pid, 0) == 0) {
+                    killpg(pid, SIGKILL);
+                    sleep(1);
                 }
                 
                 std::cerr << "Error: Process timed out after " << timeout_seconds << " seconds" << std::endl;
@@ -106,6 +119,13 @@ int call_executable(const std::string& cmd, int timeout_seconds = TIMEOUT_SECOND
     }
 }
 
+// Helper function to kill any lingering lli processes
+void cleanup_lli_processes() {
+    // Kill any remaining lli processes that might be hanging
+    system("pkill -f 'lli ' > /dev/null 2>&1");
+    usleep(100000);  // 100ms to let processes terminate
+}
+
 int measure_time(std::string program_file, std::string output_file, OutputBase& correct_result, Run& run_instance){
     if (std::filesystem::exists(output_file)) {
         std::filesystem::remove(output_file);
@@ -113,8 +133,12 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
         auto start_time = std::chrono::high_resolution_clock::now();
-        int success = call_executable("lli " + program_file);
+        int success = call_executable(program_file);
         auto end_time = std::chrono::high_resolution_clock::now();
+        
+        // Clean up after each execution
+        cleanup_lli_processes();
+        
         if (success != 1 || !std::filesystem::exists(output_file)) {
             llvm::outs() << "Executable failed to run\n";
             run_instance.success = false;
@@ -126,6 +150,9 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
         std::chrono::duration<double> elapsed = end_time - start_time;
         durations.push_back(elapsed.count());
     }
+    
+    // Final cleanup
+    cleanup_lli_processes();
     
     double sum = 0.0;
     for (double d : durations) sum += d;
