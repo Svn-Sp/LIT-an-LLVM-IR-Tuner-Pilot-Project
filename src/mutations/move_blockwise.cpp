@@ -167,7 +167,6 @@ public:
                 ++std::get<1>(Insts)->getIterator()
             );
         } catch (...) {
-            // If any exception occurs during splicing, return the unchanged module
             return nullptr;
         }
         

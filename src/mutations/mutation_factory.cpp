@@ -8,6 +8,7 @@
 #include "mutations/move_blockwise.cpp"
 #include "mutations/unsafe_mem_2_reg.cpp"
 #include "mutations/add_new_cond.cpp"
+#include "mutations/delete_random_instruction.cpp"
 #include <random>
 #include "constants.h"
 
@@ -18,7 +19,8 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     MoveBlockwise moveBlockwise;
     AddNewCond addNewCond;
     UnsafeMem2Reg unsafeMem2Reg;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 3);
+    DeleteRandomInstruction deleteRandomInstruction;
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 4);
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
@@ -46,6 +48,12 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
             break;
         case UNSAFE_MEM_2_REG:
             decisions = unsafeMem2Reg.run(
+                modified_file.c_str(),
+                modified_file.c_str()
+            );
+            break;
+        case DELETE_RANDOM_INSTRUCTION:
+            decisions = deleteRandomInstruction.run(
                 modified_file.c_str(),
                 modified_file.c_str()
             );
@@ -94,6 +102,12 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             case UNSAFE_MEM_2_REG: {
                 UnsafeMem2Reg unsafeMem2RegCustom(decisionsArray);
                 result_decisions = unsafeMem2RegCustom.run(modified_file.c_str(), modified_file.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case DELETE_RANDOM_INSTRUCTION: {
+                DeleteRandomInstruction deleteRandomInstructionCustom(decisionsArray);
+                result_decisions = deleteRandomInstructionCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
