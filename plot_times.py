@@ -23,16 +23,13 @@ data["Result"] = pd.to_numeric(data["Result"], errors="coerce")
 # Drop any rows with NaN values in critical columns
 data = data.dropna(subset=["Average Duration (s)", "Standard Deviation (s)", "Run"])
 
-# Filter out outliers (runs that took >= 5 seconds)
-filtered_data = data[data["Average Duration (s)"] < 3]
-
 
 # Create the figure and axis
 plt.figure(figsize=(12, 6))
 
 # Create a basic plot for runs without results
-no_result_mask = filtered_data["Success"] == 0
-runs_without_results = filtered_data[no_result_mask]
+no_result_mask = data["Success"] == 0
+runs_without_results = data[no_result_mask]
 plt.errorbar(
     runs_without_results["Run"],
     runs_without_results["Average Duration (s)"],
@@ -46,7 +43,7 @@ plt.errorbar(
 )
 
 # Create a colorful plot for runs with results
-runs_with_results = filtered_data[~no_result_mask]
+runs_with_results = data[~no_result_mask]
 if not runs_with_results.empty:
     # Create binary color mapping: 0 = green (correct), 1 = red (incorrect)
     # Results with value 0 are correct (green), all others are incorrect (red)

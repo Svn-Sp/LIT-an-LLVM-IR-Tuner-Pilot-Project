@@ -28,7 +28,8 @@ enum MutationType {
     MOVE_BLOCKWISE,
     ADD_NEW_COND,
     UNSAFE_MEM_2_REG,
-    DELETE_RANDOM_INSTRUCTION
+    DELETE_RANDOM_INSTRUCTION,
+    SPLIT_LOOP
 };
 
 // Add string conversion functionality
@@ -39,6 +40,7 @@ inline std::string mutation_type_to_string(MutationType type) {
         case ADD_NEW_COND: return "ADD_NEW_COND";
         case UNSAFE_MEM_2_REG: return "UNSAFE_MEM_2_REG";
         case DELETE_RANDOM_INSTRUCTION: return "DELETE_RANDOM_INSTRUCTION";
+        case SPLIT_LOOP: return "SPLIT_LOOP";
         default: return "UNKNOWN";
     }
 }
@@ -49,6 +51,7 @@ inline MutationType stringToMutationType(const std::string& typeStr) {
     if (typeStr == "ADD_NEW_COND") return ADD_NEW_COND;
     if (typeStr == "UNSAFE_MEM_2_REG") return UNSAFE_MEM_2_REG;
     if (typeStr == "DELETE_RANDOM_INSTRUCTION") return DELETE_RANDOM_INSTRUCTION;
+    if (typeStr == "SPLIT_LOOP") return SPLIT_LOOP;
     std::cerr << "Warning: Unknown mutation type: " << typeStr << std::endl;
     throw std::runtime_error("Unknown mutation type: " + typeStr);
 }

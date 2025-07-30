@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < size; i++) {
     printf("%f\n", dvec1[i]);
   }
-  // INSERT_YOUR_CODE
   char filepath[256];
   strcpy(filepath, __FILE__);
   char *dir = dirname(filepath);

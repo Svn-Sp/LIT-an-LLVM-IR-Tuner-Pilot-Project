@@ -118,6 +118,18 @@ std::string vector_to_json_array(const std::vector<int>& vec) {
     return ss.str();
 }
 
+std::string safe_double_to_json(double value) {
+    if (std::isinf(value)) {
+        return value > 0 ? "\"Infinity\"" : "\"-Infinity\"";
+    } else if (std::isnan(value)) {
+        return "\"NaN\"";
+    } else {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision(6) << value;
+        return ss.str();
+    }
+}
+
 std::string node_to_json(const BeamSearchTreeNode* node, int depth = 0) {
     std::stringstream ss;
     std::string indent(depth * 2, ' ');
@@ -126,14 +138,14 @@ std::string node_to_json(const BeamSearchTreeNode* node, int depth = 0) {
     
     // Only include mutation info if this is not the root node
     if (node->parent != nullptr) {
-        ss << indent << "  \"avg_path_run_score\": " << node->avg_path_run_score << ",\n";
+        ss << indent << "  \"avg_path_run_score\": " << safe_double_to_json(node->avg_path_run_score) << ",\n";
         ss << indent << "  \"path_size\": " << node->path_size << ",\n";
-        ss << indent << "  \"score\": " << node->calculate_score() << ",\n"; //Remove for speed up
+        ss << indent << "  \"score\": " << safe_double_to_json(node->calculate_score()) << ",\n"; //Remove for speed up
         ss << indent << "  \"mutationType\": \"" << mutation_type_to_string(node->mutationType) << "\",\n";
         ss << indent << "  \"decisions\": " << vector_to_json_array(node->decisions) << ",\n";
-        ss << indent << "  \"avg_time\": " << node->avg_time << ",\n";
-        ss << indent << "  \"std_dev_time\": " << node->std_dev_time << ",\n";
-        ss << indent << "  \"result\": " << node->result << ",\n";
+        ss << indent << "  \"avg_time\": " << safe_double_to_json(node->avg_time) << ",\n";
+        ss << indent << "  \"std_dev_time\": " << safe_double_to_json(node->std_dev_time) << ",\n";
+        ss << indent << "  \"result\": " << safe_double_to_json(node->result) << ",\n";
     }
     
     ss << indent << "  \"children\": [\n";

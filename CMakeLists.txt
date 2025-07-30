@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find required packages
-find_package(SQLite3 REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 include(FetchContent)
 FetchContent_Declare(
@@ -50,6 +49,7 @@ add_library(mutations
     src/mutations/add_new_cond.cpp
     src/mutations/mutation.cpp
     src/mutations/move_blockwise.cpp
+    src/mutations/split_loop.cpp
 )
 
 add_library(tuning_strategies
@@ -129,7 +129,6 @@ target_compile_definitions(rebuild_from_csv PRIVATE ${LLVM_DEFINITIONS})
 # Link libraries
 target_link_libraries(core
     PRIVATE
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 target_link_libraries(tests
@@ -144,19 +143,16 @@ target_link_libraries(tests
 )
 target_link_libraries(utils
     PRIVATE
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 
 target_link_libraries(mutations
     PRIVATE
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 
 target_link_libraries(tuning_strategies
     PRIVATE
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 
@@ -166,7 +162,6 @@ target_link_libraries(main
     utils
     mutations
     tuning_strategies
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 
@@ -176,7 +171,6 @@ target_link_libraries(rebuild_from_csv
     utils
     mutations
     tuning_strategies
-    ${SQLite3_LIBRARIES}
     ${llvm_libs}
 )
 

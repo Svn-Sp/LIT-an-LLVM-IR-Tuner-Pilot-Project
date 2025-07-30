@@ -6,6 +6,7 @@
 #include "llvm/AsmParser/Parser.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/IRReader/IRReader.h"
+#include "llvm/IR/Verifier.h"
 
 using namespace llvm;
 
@@ -38,7 +39,6 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     llvm::raw_string_ostream rso(irString);
     updatedM->print(rso, nullptr);
     rso.flush();
-
     llvm::LLVMContext TempContext;
 
     // Try to parse the IR from the string

@@ -23,7 +23,7 @@
 #include "output/array.cpp"
 
 #define TIMEOUT_SECONDS 6
-#define REPETITIONS 5
+#define REPETITIONS 2
 
 int call_executable(const std::string& program_file, int timeout_seconds = TIMEOUT_SECONDS) {
     // Use fork and exec for better process control

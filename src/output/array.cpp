@@ -35,8 +35,7 @@ class ArrayOutput : public Output<std::vector<float>> {
         }
         std::vector<float> read_output(std::string output_file) override {
             std::ifstream file(output_file);
-            json json_data;
-            file >> json_data;
+            json json_data = json::parse(file);
             std::vector<float> result;
             for (const auto& value : json_data) {
                 result.push_back(value.get<float>());

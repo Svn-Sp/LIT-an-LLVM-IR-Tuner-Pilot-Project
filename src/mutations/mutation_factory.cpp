@@ -9,6 +9,7 @@
 #include "mutations/unsafe_mem_2_reg.cpp"
 #include "mutations/add_new_cond.cpp"
 #include "mutations/delete_random_instruction.cpp"
+#include "mutations/split_loop.cpp"
 #include <random>
 #include "constants.h"
 
@@ -20,7 +21,8 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     AddNewCond addNewCond;
     UnsafeMem2Reg unsafeMem2Reg;
     DeleteRandomInstruction deleteRandomInstruction;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 4);
+    SplitLoop splitLoop;
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 5);
     // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
@@ -54,6 +56,12 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
             break;
         case DELETE_RANDOM_INSTRUCTION:
             decisions = deleteRandomInstruction.run(
+                modified_file.c_str(),
+                modified_file.c_str()
+            );
+            break;
+        case SPLIT_LOOP:
+            decisions = splitLoop.run(
                 modified_file.c_str(),
                 modified_file.c_str()
             );
@@ -108,6 +116,12 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             case DELETE_RANDOM_INSTRUCTION: {
                 DeleteRandomInstruction deleteRandomInstructionCustom(decisionsArray);
                 result_decisions = deleteRandomInstructionCustom.run(modified_file.c_str(), modified_file.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case SPLIT_LOOP: {
+                SplitLoop splitLoopCustom(decisionsArray);
+                result_decisions = splitLoopCustom.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }

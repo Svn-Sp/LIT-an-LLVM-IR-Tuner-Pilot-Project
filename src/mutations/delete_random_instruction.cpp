@@ -20,6 +20,7 @@
 #include "llvm/Transforms/Utils/PromoteMemToReg.h"
 #include "mutations/mutation.h"
 #include "llvm/IR/Dominators.h"
+#include "llvm/IR/Verifier.h"
 #include "utils/utils.cpp"
 #include "utils/randomness_utils.cpp"
 #include "utils/is_optimizable.cpp"
@@ -42,7 +43,7 @@ public:
 
         if (NonDeclFunctions.empty()) {
             errs() << "No non-declaration functions found in the module.\n";
-            return nullptr; // Return unchanged module instead of nullptr
+            return nullptr;
         }
         
         // Select a random function
@@ -80,10 +81,16 @@ public:
         int instructionIndex = this->dm.make_decision(0, Instructions.size() - 1);
         Instruction* InstructionToDelete = Instructions[instructionIndex];
 
+        // Store the instruction's parent basic block before deletion
+        BasicBlock* parentBB = InstructionToDelete->getParent();
+        if (!InstructionToDelete->use_empty()) {
+            errs() << "Instruction still has uses, skipping deletion.\n";
+            return nullptr;
+        }
+
         // Delete the selected instruction
         InstructionToDelete->eraseFromParent();
 
         return std::move(M);
-
     }
 };

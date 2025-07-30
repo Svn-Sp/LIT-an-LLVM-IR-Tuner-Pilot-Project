@@ -101,15 +101,11 @@ public:
         // Safety check: ensure we have at least one function
         if (NonDeclFunctions.empty()) {
             errs() << "No non-declaration functions found in the module.\n";
-            return nullptr; // Return unchanged module instead of nullptr
+            return nullptr;
         }
 
         // Make sure decision index is in bounds
         int funcIndex = this->dm.make_decision(0, NonDeclFunctions.size() - 1);
-        if (funcIndex < 0 || funcIndex >= static_cast<int>(NonDeclFunctions.size())) {
-            // If the decision is out of bounds, default to the first function
-            funcIndex = 0;
-        }
 
         // Select a random function
         Function* SelectedFunction = NonDeclFunctions[funcIndex];
