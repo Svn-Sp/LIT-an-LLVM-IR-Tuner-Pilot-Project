@@ -25,8 +25,10 @@
 #define TIMEOUT_SECONDS 6
 #define REPETITIONS 2
 
-int call_executable(const std::string& program_file, int timeout_seconds = TIMEOUT_SECONDS) {
+int call_executable(const std::string& program_file,  double& time_result, int timeout_seconds = TIMEOUT_SECONDS) {
     // Use fork and exec for better process control
+    int time_fd[2];
+    pipe(time_fd);
     pid_t pid = fork();
     
     if (pid == -1) {
@@ -36,6 +38,7 @@ int call_executable(const std::string& program_file, int timeout_seconds = TIMEO
     }
     
     if (pid == 0) {
+        close(time_fd[0]);
         // Child process
         // Create a new process group to make it easier to kill all children
         setpgid(0, 0);
@@ -49,11 +52,19 @@ int call_executable(const std::string& program_file, int timeout_seconds = TIMEO
         }
         
         // Execute the command
-        execlp("bash", "bash", "-c", ("taskset -c 0 /usr/bin/time -f \"%e\" lli \"" + program_file + "\" > /dev/null 2>&1").c_str(), nullptr);
-        
-        // If we get here, exec failed
-        std::cerr << "Error: Failed to execute command: " << program_file << std::endl;
-        exit(1);
+        std::string cmd = "taskset -c 5 lli " + program_file + " > /dev/null 2>&1";
+        auto start_time = std::chrono::high_resolution_clock::now();
+        int ret = system(cmd.c_str());
+        auto end_time = std::chrono::high_resolution_clock::now();
+        if (ret != 0) {
+            std::cerr << "Failed to run program: " << program_file << std::endl;
+            exit(1);
+        }
+        std::chrono::duration<double> elapsed = end_time - start_time;
+        double time = elapsed.count();
+        write(time_fd[1], &time, sizeof(time));
+        close(time_fd[1]);
+        exit(0);
     } else {
         // Parent process
         int status;
@@ -78,6 +89,8 @@ int call_executable(const std::string& program_file, int timeout_seconds = TIMEO
                 }
                 
                 if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
+                    read(time_fd[0], &time_result, sizeof(time_result));
+                    close(time_fd[0]);
                     return 1;  // Success
                 } else {
                     return -1;  // Process failed
@@ -132,9 +145,8 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
     }
     std::vector<double> durations;
     for (int run = 0; run < REPETITIONS; run++) {
-        auto start_time = std::chrono::high_resolution_clock::now();
-        int success = call_executable(program_file);
-        auto end_time = std::chrono::high_resolution_clock::now();
+        double time_result;
+        int success = call_executable(program_file, time_result);
         
         // Clean up after each execution
         cleanup_lli_processes();
@@ -147,8 +159,7 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
             run_instance.result = 0;
             return -1;
         }
-        std::chrono::duration<double> elapsed = end_time - start_time;
-        durations.push_back(elapsed.count());
+        durations.push_back(time_result);
     }
     
     // Final cleanup
