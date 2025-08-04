@@ -8,6 +8,13 @@
 #include <iostream>
 #include "core/run.h"
 
+std::string sanitizeFileName(std::string file_name) {
+    std::string sanitized_file_name = file_name;
+    std::replace(sanitized_file_name.begin(), sanitized_file_name.end(), '/', '_');
+    std::replace(sanitized_file_name.begin(), sanitized_file_name.end(), '.', '_');
+    return sanitized_file_name;
+}
+
 void copyOriginalToModified(std::string original_code, std::string modified_code) {
     std::ifstream src(original_code, std::ios::binary);
     std::ofstream dst(modified_code, std::ios::binary);

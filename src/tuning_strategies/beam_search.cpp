@@ -26,9 +26,14 @@
 #include "mutations/mutation_factory.cpp"
 #include "utils/measure_time.cpp"
 #include "mutations/mutation.h"
+#include "utils/file_management.cpp"
 #include "utils/randomness_utils.cpp"
 #include "output/output.cpp"
-#include <iomanip>  // Add this for std::fixed and std::setprecision
+#include <iomanip>  
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 
 class BeamSearchTreeNode {
     public:
@@ -48,8 +53,8 @@ class BeamSearchTreeNode {
             this->avg_time = 0.0;
             this->std_dev_time = 0.0;
             this->path_size = 0;
-            this->avg_path_run_score = 0.5;
-            this->run_score = 0.5;
+            this->avg_path_run_score = 1;
+            this->run_score = 1;
         }
         BeamSearchTreeNode(BeamSearchTreeNode* parent, MutationType mutationType, std::vector<int> decisions,  double avg_time, double std_dev_time, double result, double og_runtime, double max_runtime){
             this->parent = parent;
@@ -75,7 +80,7 @@ class BeamSearchTreeNode {
         float calculate_run_score(float og_runtime, float max_runtime) {
             float peak = og_runtime / 2; //Assume that the highest speedup we can reasonably expect is 2x
             if (this->result == 0) {
-                return 0.6 + 0.4*std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);
+                return 0.8 + 0.2*std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);
             }else{
                 double unclamped_score;
                 if (this->avg_time < peak){
@@ -84,7 +89,7 @@ class BeamSearchTreeNode {
                 }else{
                     unclamped_score = (max_runtime - this->avg_time) / (max_runtime - peak);
                 }
-                return 0.4*std::clamp(unclamped_score, 0.0, 1.0);
+                return 0.2*std::clamp(unclamped_score, 0.0, 1.0);
             }
         }
         void bubble_up_run_score(float new_run_score){
@@ -178,12 +183,11 @@ int write_tree_to_json(std::string file_name, BeamSearchTreeNode* root) {
         return -1;
     }
 }
-
 void beam_search(std::string program_file, std::string modified_file, std::string output_file, OutputBase& correct_result, std::vector<Run>& runs){
-    std::string sanitized_program_file = program_file;
-    std::replace(sanitized_program_file.begin(), sanitized_program_file.end(), '/', '_');
+    std::string sanitized_program_file = sanitizeFileName(program_file);
     std::string csv_file_name = "beam_search_results_" + sanitized_program_file + ".csv";
     std::string tree_file_name = "beam_search_tree_" + sanitized_program_file + ".json";
+
     BeamSearchTreeNode* root = new BeamSearchTreeNode();
     Run run;
     measure_time(program_file, output_file, correct_result, run);
@@ -191,10 +195,10 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
     float max_runtime = og_runtime * 1.25; // Assume max runtime for now
     runs.push_back(run);
 
-    // auto [og_avg_time, og_std_dev_time] = measure_time(result, run, results, "lli original.ll"); //Get original time
-
     llvm::outs() << "Starting beam search\n";
     int evaluations = 0;
+    std::vector<BeamSearchTreeNode*> children;
+    std::vector<double> scores;
     while(true){
         llvm::outs() << "Copying original to modified\n";
         copyOriginalToModified(program_file, modified_file);
@@ -202,23 +206,23 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         BeamSearchTreeNode* selectedNode = root;
         int current_depth = 0;
 
-        std::vector<BeamSearchTreeNode*> children = root->children;
-        std::vector<double> scores = {};
+        children = root->children;
+        scores.clear();
         for (auto child : children){
             scores.push_back(child->calculate_score());
         }
         llvm::outs() << "Reapplying mutations:\n";
-        while(children.size() > 0 && current_depth < MAX_MUTATIONS && std::any_of(scores.begin(), scores.end(), [](double score) { return score > 0; })){
+        while(children.size() > 0 && current_depth < MAX_MUTATIONS){
             current_depth++;
-            std::discrete_distribution<> exit_distribution({0.98, 0.02});
-            int new_path = exit_distribution(gen);
-            if(new_path==1){
-                children = {};
-                scores = {};
-                continue;
-            }
+            scores.push_back(0.2); //Weight of adding new node at this level
             std::discrete_distribution<> distribution(scores.begin(), scores.end());
             int index = distribution(gen);
+            if(index==scores.size()-1){
+                llvm::outs() << "Create new child\n";
+                children = {};
+                scores = {};
+                break;
+            }
             selectedNode = selectedNode->children[index];
             reapplyMutation(run, selectedNode->mutationType, selectedNode->decisions, modified_file);
             scores.clear();
@@ -242,7 +246,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         }
         evaluations++;
         runs.push_back(run);
-        
+
         if(success == 1){
             llvm::outs() << "Mutation successful\n";
             selectedNode->add_child(mutationType, decisions, run.avgDuration, run.stddevDuration, run.result, og_runtime, max_runtime);
@@ -253,9 +257,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         writeResultsToCSV(csv_file_name, runs);
         write_tree_to_json(tree_file_name, root);
         if(evaluations >= EVALUATIONS_BUDGET){
-            writeResultsToCSV(csv_file_name, runs);
-            write_tree_to_json(tree_file_name, root);
             return;
         }
-    }  
+    }
 }

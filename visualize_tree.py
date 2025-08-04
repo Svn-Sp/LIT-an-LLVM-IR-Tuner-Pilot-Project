@@ -17,7 +17,10 @@ with open(sys.argv[1], "r") as f:
 def generate_name(dict_):
     name = dict_["mutationType"]
     name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
-    name += f" | {dict_['result']:.4f}"
+    if type(dict_["result"]) == float:
+        name += f" | {dict_['result']:.4f}"
+    else:
+        name += f" | {dict_['result']}"
     return name
 
 
@@ -219,6 +222,8 @@ def add_node_and_children(node, net, parent_id, level=1):
 
     # Add node with color based on correctness (distance to correct result)
     result_value = node.get("result", "0")
+    if type(result_value) != float:
+        result_value = float("inf")
     correctness_color = interpolate_correctness_color(result_value)
 
     # Calculate node size based on speed (avg_time)

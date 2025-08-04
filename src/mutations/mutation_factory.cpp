@@ -23,7 +23,6 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     DeleteRandomInstruction deleteRandomInstruction;
     SplitLoop splitLoop;
     std::uniform_int_distribution<> mutationTypeDistribution(0, 5);
-    // Randomly select which mutation to run
     int mutationTypeVal = mutationTypeDistribution(gen);
     
     std::vector<int> decisions;
@@ -75,7 +74,7 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
     // Safety check: empty decisions vector
     if (decisions.empty()) {
         llvm::outs() << "Warning: Empty decisions vector for mutation type " << mutationType << "\n";
-        return;
+        throw std::runtime_error("Empty decisions vector for mutation type " + std::to_string(mutationType));
     }
     
     // Convert vector to array for the constructors
@@ -144,7 +143,6 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
         throw std::runtime_error("Mutation reapplication failed");
     }
     
-    // Clean up
     if (decisionsArray) {
         delete[] decisionsArray;
     }
