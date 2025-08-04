@@ -54,7 +54,7 @@ def calculate_node_size(avg_time, min_time, max_time, top_30_percent_threshold):
         final_normalized = top_normalized**3
 
         # Map to size range >40 (emphasized range for fast nodes)
-        return 40 + final_normalized
+        return 40 + min(final_normalized, 60)
     else:
         # For bottom 70%: use compressed range with minimal differences
         # Normalize within the bottom 70% range (from max_time to threshold)
