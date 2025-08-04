@@ -35,7 +35,16 @@ class ArrayOutput : public Output<std::vector<float>> {
         }
         std::vector<float> read_output(std::string output_file) override {
             std::ifstream file(output_file);
-            json json_data = json::parse(file);
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            std::string content = buffer.str();
+            // Replace all occurrences "-nan" with "0"
+            size_t pos = 0;
+            while ((pos = content.find("-nan", pos)) != std::string::npos) {
+                content.replace(pos, 4, "0");
+                pos += 1;
+            }
+            json json_data = json::parse(content);
             std::vector<float> result;
             for (const auto& value : json_data) {
                 result.push_back(value.get<float>());
