@@ -32,44 +32,40 @@ def collect_avg_times(node, times_list):
         collect_avg_times(child, times_list)
 
 
-def collect_results(node, results_list):
-    """Recursively collect all result values from the tree"""
-    if "result" in node:
-        try:
-            result_value = float(node["result"])
-            results_list.append(result_value)
-        except (ValueError, TypeError):
-            pass
-    for child in node.get("children", []):
-        collect_results(child, results_list)
-
-
-def interpolate_color(value, min_val, max_val):
-    """Interpolate color from green (lowest) to red (highest)"""
-    if max_val == min_val:
-        return "#00FF00"  # Green if all values are the same
-
-    # Normalize value between 0 and 1
-    normalized = value / max_val  # Since min_val is always 0
-
-    # Interpolate from green (0, 255, 0) to red (255, 0, 0)
-    red = int(255 * normalized)
-    green = int(255 * (1 - normalized))
-    blue = 0
-
-    return f"#{red:02X}{green:02X}{blue:02X}"
-
-
-def calculate_node_size(avg_time, min_time, max_time):
-    """Calculate node size based on speed (avg_time) - faster = larger"""
+def calculate_node_size(avg_time, min_time, max_time, top_30_percent_threshold):
+    """Calculate node size based on speed (avg_time) - faster = larger
+    Emphasizes differences among fast nodes (top 30%) while minimizing differences for slow ones"""
     if max_time == min_time:
         return 40  # Default size if all times are the same
 
-    # Normalize time between 0 and 1 (faster = smaller time = larger node)
-    normalized = 1 - ((avg_time - min_time) / (max_time - min_time))
+    # Check if this node is in the top 30% (faster than threshold)
+    is_top_30 = avg_time <= top_30_percent_threshold
 
-    # Node size from 20 (slowest) to 60 (fastest)
-    return 20 + (normalized * 40)
+    if is_top_30:
+        # For top 30%: use fine granularity with cubic emphasis
+        # Normalize within the top 30% range (from threshold to min_time)
+        top_range = max_time - top_30_percent_threshold
+        if top_range == 0:
+            top_normalized = 1.0
+        else:
+            top_normalized = (max_time - avg_time) / top_range
+
+        # Apply cubic transformation for fine granularity
+        final_normalized = top_normalized**3
+
+        # Map to size range >40 (emphasized range for fast nodes)
+        return 40 + final_normalized
+    else:
+        # For bottom 70%: use compressed range with minimal differences
+        # Normalize within the bottom 70% range (from max_time to threshold)
+        bottom_range = top_30_percent_threshold - min_time
+        if bottom_range == 0:
+            bottom_normalized = 0.0
+        else:
+            bottom_normalized = (top_30_percent_threshold - avg_time) / bottom_range
+
+        # Map to size range 20-40 (compressed range for slow nodes)
+        return 20 + (bottom_normalized * 20)
 
 
 def interpolate_correctness_color(distance):
@@ -77,31 +73,10 @@ def interpolate_correctness_color(distance):
     # Use logarithmic scale to emphasize differences between close results
     if distance == 0:
         return "#00FF00"  # Green for perfect match
-    elif distance == float("inf"):
+    if distance < 0.01:
+        return "#FFFF00"  # Yellow for close match
+    else:
         return "#FF0000"  # Red for invalid values
-
-    # Use logarithmic scale: log(1 + distance) to handle small distances
-    log_distance = math.log(1 + distance)
-
-    # Apply a more aggressive logarithmic scaling to make good results very distinct
-    # and bad results appear similar
-    # Use a smaller max_log_distance to compress the range more
-    max_log_distance = 2  # Reduced from 5 to make the effect more pronounced
-    normalized = min(1.0, log_distance / max_log_distance)
-
-    # Apply additional compression for very bad results
-    # This makes results beyond a certain threshold all appear similar
-    if normalized > 0.8:
-        normalized = (
-            0.8 + (normalized - 0.8) * 0.2
-        )  # Compress the top 20% into the top 4%
-
-    # Interpolate from green (correct) to red (incorrect)
-    red = int(255 * normalized)
-    green = int(255 * (1 - normalized))
-    blue = 0
-
-    return f"#{red:02X}{green:02X}{blue:02X}"
 
 
 # Collect all avg_time values to determine the range
@@ -110,36 +85,17 @@ if "children" in data and len(data["children"]) > 0:
     for child in data["children"]:
         collect_avg_times(child, all_times)
 
-if all_times:
-    min_time = min(all_times)
-    max_time = max(all_times)
-    print(f"Time range: {min_time:.4f} to {max_time:.4f}")
+min_time = min(all_times)
+max_time = max(all_times)
 
-    # Calculate threshold for top 30% fastest nodes
-    sorted_times = sorted(all_times)
-    threshold_index = int(len(sorted_times) * 0.3)
-    if threshold_index < len(sorted_times):
-        speed_threshold = sorted_times[threshold_index]
-        print(f"Top 30% speed threshold: {speed_threshold:.4f}")
-    else:
-        speed_threshold = max_time
-else:
-    min_time = max_time = 0.0
-    speed_threshold = 0.0
+sorted_times = sorted(all_times)
+threshold_index = int(len(sorted_times) * 0.3)
+top_30_percent_threshold = sorted_times[threshold_index]
+print(f"Top 30% speed threshold: {top_30_percent_threshold:.4f}")
 
-# Collect all result values to determine distance range
-all_results = []
-if "children" in data and len(data["children"]) > 0:
-    for child in data["children"]:
-        collect_results(child, all_results)
-
-if all_results:
-    min_dist = min(all_results)
-    max_dist = max(all_results)
-    print(f"Distance to correct result range: {min_dist:.6f} to {max_dist:.6f}")
-    print(f"Using logarithmic scaling for deviation visualization")
-else:
-    min_dist = max_dist = 0.0
+# Print statistics for debugging
+print(f"Time range: {min_time:.6f} to {max_time:.6f}")
+print(f"Number of nodes: {len(all_times)}")
 
 # Create network with hierarchical tree layout
 net = Network(height="900px", width="100%", bgcolor="#ffffff", font_color="#000000")
@@ -228,33 +184,13 @@ def add_node_and_children(node, net, parent_id, level=1):
 
     # Calculate node size based on speed (avg_time)
     avg_time = node.get("avg_time", 0.0)
-    node_size = calculate_node_size(avg_time, min_time, max_time)
+    node_size = calculate_node_size(
+        avg_time, min_time, max_time, top_30_percent_threshold
+    )
 
-    # Check if this node is in the top 30% fastest
-    is_fast = avg_time <= speed_threshold
-
-    # Create detailed label
-    decisions = node.get("decisions", [])
-    decisions_str = ",".join(map(str, decisions[:3]))  # Show first 3 decisions
-    if len(decisions) > 3:
-        decisions_str += "..."
-
-    # Add node with correctness color and speed-based size
-    # Add border for top 30% fastest nodes
-    if is_fast:
-        net.add_node(
-            id_counter,
-            node_name,
-            color=correctness_color,
-            level=level,
-            size=node_size,
-            borderWidth=3,
-            borderColor="#0066FF",
-        )
-    else:
-        net.add_node(
-            id_counter, node_name, color=correctness_color, level=level, size=node_size
-        )
+    net.add_node(
+        id_counter, node_name, color=correctness_color, level=level, size=node_size
+    )
 
     # Use score for edge label, weight, and title
     score = node.get("score", 0.0)
@@ -273,7 +209,6 @@ def add_node_and_children(node, net, parent_id, level=1):
         add_node_and_children(child, net, current_id, level + 1)
 
 
-# Process the tree starting from the root
 if "children" in data and len(data["children"]) > 0:
     for child in data["children"]:
         add_node_and_children(child, net, 0)
@@ -286,7 +221,8 @@ with open("beam_search_tree.html", "w") as f:
     f.write(html_content)
 print("Tree visualization saved to beam_search_tree.html")
 print("Open the HTML file in your web browser to view the hierarchical tree")
-print("Node colors represent correctness: Green = correct, Red = incorrect")
+print(
+    "Node colors represent correctness: Green = correct, Red = incorrect, Yellow = close"
+)
 print("Node size represents speed: Larger = faster")
-print("Blue border around nodes indicates top 30% fastest nodes")
 print("Scores are displayed directly on the edges")

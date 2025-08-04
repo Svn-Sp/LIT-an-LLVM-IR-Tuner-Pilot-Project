@@ -1,0 +1,1 @@
+clang++  -g "$1" -o "$2" `llvm-config --cxxflags --ldflags --system-libs --libs orcjit native mcjit` -fexceptions 
