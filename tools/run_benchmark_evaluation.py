@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-RUNS = 5
+RUNS = 3
 BASELINE_RUNS = 30
 
 
@@ -79,11 +79,11 @@ def full_evaulation(benchmark_name):
     o2_time = measure_time(opt_file_template.format(2), BASELINE_RUNS)
     o3_time = measure_time(opt_file_template.format(3), BASELINE_RUNS)
     original_time = measure_time(original_file, BASELINE_RUNS)
-    best_time = measure_time(f"{benchmark_folder}/bestfrombig.ll", BASELINE_RUNS)
+    # best_time = measure_time(f"{benchmark_folder}/bestfrombig.ll", BASELINE_RUNS)
     print(f"O1 time: {o1_time.time}")
     print(f"O2 time: {o2_time.time}")
     print(f"O3 time: {o3_time.time}")
-    print(f"Best time: {best_time.time}")
+    # print(f"Best time: {best_time.time}")
     with open(f"{result_folder}/baseline_times.json", "w") as f:
         f.write(
             json.dumps(
@@ -92,14 +92,14 @@ def full_evaulation(benchmark_name):
                     "o2": o2_time.to_dict(),
                     "o3": o3_time.to_dict(),
                     "original": original_time.to_dict(),
-                    "best": best_time.to_dict(),
+                    # "best": best_time.to_dict(),
                 },
                 indent=4,
             )
         )
-    # for run_number in range(RUNS):
-    #     run_benchmark_evaluation(benchmark_name, run_number)
-    #     print(f"Run {run_number} complete")
+    for run_number in range(RUNS):
+        run_benchmark_evaluation(benchmark_name, run_number)
+        print(f"Run {run_number} complete")
 
 
 def plot_results(benchmark_name):
@@ -144,12 +144,12 @@ def plot_results(benchmark_name):
         label="Original",
         linestyle="--",
     )
-    plt.plot(
-        xs,
-        [baseline_times["best"]["time"]] * len(xs),
-        label="Best",
-        linestyle="--",
-    )
+    # plt.plot(
+    #     xs,
+    #     [baseline_times["best"]["time"]] * len(xs),
+    #     label="Best",
+    #     linestyle="--",
+    # )
 
     plt.legend()
     plt.show()
