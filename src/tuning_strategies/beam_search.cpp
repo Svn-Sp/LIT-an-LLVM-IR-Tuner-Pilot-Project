@@ -214,7 +214,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         llvm::outs() << "Reapplying mutations:\n";
         while(children.size() > 0 && current_depth < MAX_MUTATIONS){
             current_depth++;
-            scores.push_back(0.2); //Weight of adding new node at this level
+            scores.push_back(0.1); //Weight of adding new node at this level
             std::discrete_distribution<> distribution(scores.begin(), scores.end());
             int index = distribution(gen);
             if(index==scores.size()-1){

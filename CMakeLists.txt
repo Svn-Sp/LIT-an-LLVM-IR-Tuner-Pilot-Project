@@ -49,7 +49,6 @@ add_library(mutations
     src/mutations/add_new_cond.cpp
     src/mutations/mutation.cpp
     src/mutations/move_blockwise.cpp
-    src/mutations/split_loop.cpp
 )
 
 add_library(tuning_strategies

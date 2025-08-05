@@ -9,13 +9,18 @@
 #include "output/output.cpp"
 #include "output/scalar.cpp"
 #include "output/array.cpp"
+#include "nlohmann/json.hpp"
 
 int main(int argc, char** argv) {
-    std::string file_to_tune = argv[1];
-    std::string modified_file = argv[2];
-    std::string output_file = argv[3];
-    std::string correct_result_file = argv[4];
-    std::string output_type = argv[5];
+    std::string config_file = argv[1];
+    std::ifstream config_file_stream(config_file);
+    nlohmann::json config;
+    config_file_stream >> config;
+    std::string file_to_tune = config["original"];
+    std::string modified_file = config["modified"];
+    std::string correct_result_file = config["correct_output"];
+    std::string output_file = config["output_file"];
+    std::string output_type = config["output_type"];
     std::unique_ptr<OutputBase> correct_result;
     if (output_type == "scalar") {
         correct_result = std::make_unique<Scalar>(correct_result_file);

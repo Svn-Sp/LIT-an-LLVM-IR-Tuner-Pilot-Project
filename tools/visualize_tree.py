@@ -65,7 +65,7 @@ def calculate_node_size(avg_time, min_time, max_time, top_30_percent_threshold):
             bottom_normalized = (top_30_percent_threshold - avg_time) / bottom_range
 
         # Map to size range 20-40 (compressed range for slow nodes)
-        return 20 + (bottom_normalized * 20)
+        return max(20, 20 + (bottom_normalized * 20))
 
 
 def interpolate_correctness_color(distance):

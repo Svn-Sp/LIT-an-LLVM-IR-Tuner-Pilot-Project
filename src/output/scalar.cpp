@@ -4,6 +4,7 @@
 #include <memory>
 #include "output.cpp"
 #include <fstream>
+#include <limits>
 
 class Scalar : public Output<float> {
     public:
@@ -23,12 +24,15 @@ class Scalar : public Output<float> {
             if (!file.is_open()) {
                 throw std::runtime_error("Could not open file: " + output_file);
             }
-            float value;
-            file >> value;
+            std::string content;
+            file >> content;
             if (file.fail()) {
-                throw std::runtime_error("Failed to read float value from file: " + output_file);
+                throw std::runtime_error("Failed to read from file: " + output_file);
             }
             file.close();
-            return value;
+            if (content == "nan" or content == "inf" or content == "-inf") {
+                return std::numeric_limits<float>::infinity();
+            }
+            return std::stof(content);
         }
 };

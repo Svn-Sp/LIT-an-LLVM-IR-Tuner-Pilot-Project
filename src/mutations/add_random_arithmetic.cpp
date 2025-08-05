@@ -32,9 +32,9 @@ std::vector<Instruction::BinaryOps> ArithmeticOps = {
 
 class AddRandomArithmetic : public Mutation {
 public:
-    AddRandomArithmetic() : Mutation(6) {
+    AddRandomArithmetic() : Mutation(5) {
     }
-    AddRandomArithmetic(int decisions[]) : Mutation(6, decisions) {
+    AddRandomArithmetic(int decisions[]) : Mutation(5, decisions) {
     }
 
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {
@@ -47,15 +47,10 @@ public:
         }
         if (ValidFunctions.empty()) {
             errs() << "No valid functions found in the module.\n";
-            return nullptr; // Return unchanged module instead of nullptr
+            return nullptr; 
         }
         
-        // Select a random function
-        //llvm::outs() << "Decision maker index: " << this->dm.current_decision << "\n";
-        //llvm::outs() << "Next decision: " << this->dm.decisions[this->dm.current_decision] << "\n";
-        //llvm::outs() << "ValidFunctions.size(): " << ValidFunctions.size() << "\n";
         Function* SelectedFunction = ValidFunctions[this->dm.make_decision(0, ValidFunctions.size() - 1)];
-        //llvm::outs() << "Selected function: " << SelectedFunction->getName() << "\n";
         
         // Find all basic blocks in the selected function
         std::vector<BasicBlock*> BasicBlocks;
@@ -65,15 +60,15 @@ public:
         
         if (BasicBlocks.empty()) {
             errs() << "No basic blocks found in the selected function.\n";
-            return nullptr; // Return unchanged module instead of nullptr
+            return nullptr; 
         }
         
         // Select a random basic block
-        BasicBlock* SelectedBB = BasicBlocks[this->dm.make_decision(0, BasicBlocks.size() - 1)];
+        BasicBlock* SelectedBB1 = BasicBlocks[this->dm.make_decision(0, BasicBlocks.size() - 1)];
         
         // Find arithmetic instructions
         std::vector<Instruction*> ArithmeticInstructions;
-        for (Instruction &I : *SelectedBB) {
+        for (Instruction &I : *SelectedBB1) {
             if (isArithmeticInstruction(I)) {
                 ArithmeticInstructions.push_back(&I);
             }
@@ -81,9 +76,9 @@ public:
 
         // Find instructions with numerical return type
         std::vector<Instruction*> NumericInstructions;
-        for (Instruction &I : *SelectedBB) {
-            if (I.getType()->isIntegerTy() || I.getType()->isFloatingPointTy()) {
-                NumericInstructions.push_back(&I);
+        for (Instruction* I : ArithmeticInstructions) {
+            if (I->getType()->isIntegerTy() || I->getType()->isFloatingPointTy()) {
+                NumericInstructions.push_back(I);
             }
         }
         
@@ -93,11 +88,11 @@ public:
             return nullptr;
         }
         
-        int FirstIdx = this->dm.make_decision(0, NumericInstructions.size() - 2);
-        int SecondIdx = this->dm.make_decision(FirstIdx + 1, NumericInstructions.size() - 1);
+        int Idx1 = this->dm.make_decision(0, NumericInstructions.size() - 2);
+        int Idx2 = this->dm.make_decision(Idx1 + 1, NumericInstructions.size() - 1);
         
-        Instruction* Inst1 = NumericInstructions[FirstIdx];
-        Instruction* Inst2 = NumericInstructions[SecondIdx];
+        Instruction* Inst1 = NumericInstructions[Idx1];
+        Instruction* Inst2 = NumericInstructions[Idx2];
     
 
         // Create a random arithmetic operation between Inst1 and Inst2
@@ -107,29 +102,27 @@ public:
         Type* Ty1 = Inst1->getType();
         Type* Ty2 = Inst2->getType();
         
-        // Choose the type for the operation (prefer the wider type)
-        Type* OpType = Ty1;
+        Type* OpType = nullptr;
         if (Ty1->isIntegerTy() && Ty2->isIntegerTy()) {
-            if (cast<IntegerType>(Ty2)->getBitWidth() > cast<IntegerType>(Ty1)->getBitWidth()) {
-                OpType = Ty2;
-            }
+            OpType = (cast<IntegerType>(Ty2)->getBitWidth() > cast<IntegerType>(Ty1)->getBitWidth()) ? Ty2 : Ty1;
         } else if (Ty1->isFloatingPointTy() && Ty2->isFloatingPointTy()) {
-            // For floating point, prefer double over float
-            if (Ty2->isDoubleTy() && !Ty1->isDoubleTy()) {
-                OpType = Ty2;
-            }
+            OpType = (Ty1 == Ty2) ? Ty1 : nullptr;
         } else if (Ty1->isIntegerTy() && Ty2->isFloatingPointTy()) {
-            // If mixing integer and float, use the float type
+            // Allow int->float (int to float)
             OpType = Ty2;
         } else if (Ty1->isFloatingPointTy() && Ty2->isIntegerTy()) {
-            OpType = Ty1;
+            OpType = nullptr;
+        }
+        if (!OpType) {
+            errs() << "Unsupported type combination for arithmetic operation.\n";
+            return nullptr;
         }
         
-        // Create casts if necessary
+        // Create IRBuilder positioned after the first use
+        IRBuilder<> Builder(Inst2->getNextNode());
         Value* Op1 = Inst1;
         Value* Op2 = Inst2;
-        IRBuilder<> Builder(Inst2->getNextNode());
-        
+        // Create casts if necessary
         if (Ty1 != OpType) {
             if (Ty1->isIntegerTy() && OpType->isIntegerTy()) {
                 Op1 = Builder.CreateIntCast(Inst1, OpType, true, "cast_op1");
@@ -141,6 +134,7 @@ public:
         }
         
         if (Ty2 != OpType) {
+            llvm::outs() << "Op2: " << Op2->getName() << "will be casted to " << OpType<< "\n";
             if (Ty2->isIntegerTy() && OpType->isIntegerTy()) {
                 Op2 = Builder.CreateIntCast(Inst2, OpType, true, "cast_op2");
             } else if (Ty2->isIntegerTy() && OpType->isFloatingPointTy()) {
@@ -152,37 +146,38 @@ public:
         
         // Create the new instruction
         Value* NewInst = nullptr;
+        std::string rand_suffix = std::to_string(rand());
         if (OpType->isFloatingPointTy()) {
             // For floating point types, use the FP operations
             switch (SelectedOp) {
-                case Instruction::Add: NewInst = Builder.CreateFAdd(Op1, Op2, "random_add"); break;
-                case Instruction::Sub: NewInst = Builder.CreateFSub(Op1, Op2, "random_sub"); break;
-                case Instruction::Mul: NewInst = Builder.CreateFMul(Op1, Op2, "random_mul"); break;
+                case Instruction::Add: NewInst = Builder.CreateFAdd(Op1, Op2, "random_add_" + rand_suffix); break;
+                case Instruction::Sub: NewInst = Builder.CreateFSub(Op1, Op2, "random_sub_" + rand_suffix); break;
+                case Instruction::Mul: NewInst = Builder.CreateFMul(Op1, Op2, "random_mul_" + rand_suffix); break;
                 case Instruction::UDiv:
-                case Instruction::SDiv: NewInst = Builder.CreateFDiv(Op1, Op2, "random_div"); break;
+                case Instruction::SDiv: NewInst = Builder.CreateFDiv(Op1, Op2, "random_div_" + rand_suffix); break;
                 default: break;
             }
         } else {
             // For integer types, use the regular operations
             switch (SelectedOp) {
-                case Instruction::Add: NewInst = Builder.CreateAdd(Op1, Op2, "random_add"); break;
-                case Instruction::Sub: NewInst = Builder.CreateSub(Op1, Op2, "random_sub"); break;
-                case Instruction::Mul: NewInst = Builder.CreateMul(Op1, Op2, "random_mul"); break;
-                case Instruction::UDiv: NewInst = Builder.CreateUDiv(Op1, Op2, "random_udiv"); break;
-                case Instruction::SDiv: NewInst = Builder.CreateSDiv(Op1, Op2, "random_sdiv"); break;
+                case Instruction::Add: NewInst = Builder.CreateAdd(Op1, Op2, "random_add_" + rand_suffix); break;
+                case Instruction::Sub: NewInst = Builder.CreateSub(Op1, Op2, "random_sub_" + rand_suffix); break;
+                case Instruction::Mul: NewInst = Builder.CreateMul(Op1, Op2, "random_mul_" + rand_suffix); break;
+                case Instruction::UDiv: NewInst = Builder.CreateUDiv(Op1, Op2, "random_udiv_" + rand_suffix); break;
+                case Instruction::SDiv: NewInst = Builder.CreateSDiv(Op1, Op2, "random_sdiv_" + rand_suffix); break;
                 default: break;
             }
         }
         
-
-        // Randomly select one of the original instructions to replace
-        Instruction* targetToReplace = (this->dm.make_decision(0, 1) == 0) ? Inst1 : Inst2;
-        
-        if (NewInst) {
-            // Replace all uses of the selected target with our new instruction
-            targetToReplace->replaceAllUsesWith(NewInst);
+        bool skip_first_use = false;
+        for (auto &U : Inst2->uses()) {
+            if (!skip_first_use) { //Skip first use 
+                skip_first_use = true;
+                continue;
+            }
+            U.set(NewInst);
         }
-        
         return std::move(M);
     }
 };
+
