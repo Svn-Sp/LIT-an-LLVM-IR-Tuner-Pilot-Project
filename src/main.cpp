@@ -12,6 +12,10 @@
 #include "nlohmann/json.hpp"
 
 int main(int argc, char** argv) {
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <config_file> <results_file>" << std::endl;
+        return 1;
+    }
     std::string config_file = argv[1];
     std::ifstream config_file_stream(config_file);
     nlohmann::json config;
@@ -28,8 +32,9 @@ int main(int argc, char** argv) {
     else if (output_type == "array") {
         correct_result = std::make_unique<ArrayOutput>(correct_result_file);
     }
+    std::string results_file_prefix = argv[2];
     std::vector<Run> runs;
-    beam_search(file_to_tune, modified_file, output_file, *correct_result, runs);
+    beam_search(file_to_tune, modified_file, output_file, *correct_result, runs, results_file_prefix);
     // random_tuning();
     // genetic_tuning();
 }

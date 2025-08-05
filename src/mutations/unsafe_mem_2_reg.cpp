@@ -77,12 +77,14 @@ public:
         
         // Create a dominator tree for the function
         DominatorTree DT;
+        llvm::outs() << "Recalculating dominator tree\n";
         DT.recalculate(*SelectedFunction);
         
         // Promote the selected alloca to register
         std::vector<AllocaInst*> AllocasToPromote = {AllocaToPromote};
+        llvm::outs() << "Promoting alloca to register\n";
         PromoteMemToReg(AllocasToPromote, DT);
-
+        llvm::outs() << "Promotion complete\n";
         return std::move(M);
 
     }

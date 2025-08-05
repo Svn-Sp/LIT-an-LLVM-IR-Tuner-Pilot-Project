@@ -1,5 +1,5 @@
 #define RESULTS_FILE "results.csv"
-#define EVALUATIONS_BUDGET 300
+#define EVALUATIONS_BUDGET 10
 #define MIN_MUTATIONS 1
 #define MAX_MUTATIONS 400
 #define DB_PATH "results.sqlite"
