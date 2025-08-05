@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 RUNS = 5
-BASELINE_RUNS = 10
+BASELINE_RUNS = 30
 
 
 def get_result_folder_name(benchmark_name):
@@ -34,11 +34,15 @@ class RuntimeMeasurementResult:
 
 
 def measure_time(file, runs) -> RuntimeMeasurementResult:
+    print(f"Measuring time for {file}")
     times = []
     for _ in range(runs):
         start_time = time.time()
         subprocess.run(
             [
+                "taskset",
+                "-c",
+                "5",
                 "lli",
                 file,
             ]
@@ -75,7 +79,7 @@ def full_evaulation(benchmark_name):
     o2_time = measure_time(opt_file_template.format(2), BASELINE_RUNS)
     o3_time = measure_time(opt_file_template.format(3), BASELINE_RUNS)
     original_time = measure_time(original_file, BASELINE_RUNS)
-    best_time = measure_time(f"{result_folder}/bestfrombig.ll", BASELINE_RUNS)
+    best_time = measure_time(f"{benchmark_folder}/bestfrombig.ll", BASELINE_RUNS)
     print(f"O1 time: {o1_time.time}")
     print(f"O2 time: {o2_time.time}")
     print(f"O3 time: {o3_time.time}")
@@ -88,6 +92,7 @@ def full_evaulation(benchmark_name):
                     "o2": o2_time.to_dict(),
                     "o3": o3_time.to_dict(),
                     "original": original_time.to_dict(),
+                    "best": best_time.to_dict(),
                 },
                 indent=4,
             )
@@ -137,6 +142,12 @@ def plot_results(benchmark_name):
         xs,
         [baseline_times["original"]["time"]] * len(xs),
         label="Original",
+        linestyle="--",
+    )
+    plt.plot(
+        xs,
+        [baseline_times["best"]["time"]] * len(xs),
+        label="Best",
         linestyle="--",
     )
 
