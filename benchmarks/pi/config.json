@@ -1,0 +1,7 @@
+{
+    "original": "benchmarks/pi/original.ll",
+    "modified": "benchmarks/pi/modified.ll",
+    "correct_output": "benchmarks/pi/result.txt",
+    "output_file": "benchmarks/pi/output.txt",
+    "output_type": "scalar"
+}

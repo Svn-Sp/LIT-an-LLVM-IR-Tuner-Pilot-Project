@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-RUNS = 3
-BASELINE_RUNS = 30
+RUNS = 1
+BASELINE_RUNS = 10
 
 
 def get_result_folder_name(benchmark_name):

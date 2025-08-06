@@ -10,6 +10,7 @@
 #include "llvm/ADT/Statistic.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/IR/Verifier.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/raw_ostream.h"
@@ -80,6 +81,14 @@ public:
         llvm::outs() << "Recalculating dominator tree\n";
         DT.recalculate(*SelectedFunction);
         
+        if (llvm::verifyFunction(*SelectedFunction, &llvm::errs())) {
+            llvm::outs() << "Function is invalid";
+        }
+
+        if (!DT.verify()) {
+            llvm::outs() << "Dominator tree is invalid";
+        }
+
         // Promote the selected alloca to register
         std::vector<AllocaInst*> AllocasToPromote = {AllocaToPromote};
         llvm::outs() << "Promoting alloca to register\n";

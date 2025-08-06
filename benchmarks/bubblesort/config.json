@@ -1,0 +1,7 @@
+{
+    "original": "benchmarks/bubblesort/original.ll",
+    "modified": "benchmarks/bubblesort/modified.ll",
+    "correct_output": "benchmarks/bubblesort/correct.json",
+    "output_file": "benchmarks/bubblesort/output.json",
+    "output_type": "array"
+}

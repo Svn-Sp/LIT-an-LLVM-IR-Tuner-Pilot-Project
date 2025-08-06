@@ -5,5 +5,5 @@ build/
 *.ll
 *.db
 *.sqlite
-*.json
+/*.json
 *.html
