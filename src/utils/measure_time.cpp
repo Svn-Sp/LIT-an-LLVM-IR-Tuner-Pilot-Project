@@ -18,10 +18,11 @@
 #include <iostream>
 #include <ctime>
 #include "core/run.cpp"
+
 #include "output/output.cpp"
 #include "output/scalar.cpp"
 #include "output/array.cpp"
-
+#include "output/matrix2d.cpp"
 #define TIMEOUT_SECONDS 6
 #define REPETITIONS 2
 
@@ -184,6 +185,11 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
         run_instance.result = distance;
     } else if (typeid(correct_result) == typeid(ArrayOutput)) {
         ArrayOutput result(output_file);
+        double distance = result.get_distance(correct_result);
+        llvm::outs() << "Measured Distance: " << distance << "\n";
+        run_instance.result = distance;
+    }else if (typeid(correct_result) == typeid(Matrix2DOutput)) {
+        Matrix2DOutput result(output_file);
         double distance = result.get_distance(correct_result);
         llvm::outs() << "Measured Distance: " << distance << "\n";
         run_instance.result = distance;

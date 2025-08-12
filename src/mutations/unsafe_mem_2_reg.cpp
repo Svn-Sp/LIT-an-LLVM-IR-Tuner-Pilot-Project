@@ -26,6 +26,33 @@
 #include "utils/is_optimizable.cpp"
 using namespace llvm;
 
+bool simpleIsAllocaPromotable(AllocaInst *AI) {
+    std::vector<const Value *> worklist;
+    worklist.push_back(AI);
+    while (!worklist.empty()) {
+        const Value *V = worklist.back();
+        worklist.pop_back();
+        for (const Use &U : V->uses()) {
+            const User *Usr = U.getUser();
+            if (const LoadInst *LI = dyn_cast<LoadInst>(Usr)) {
+                continue;
+            }
+            if (const StoreInst *SI = dyn_cast<StoreInst>(Usr)) {
+                if (SI->getPointerOperand() == V) {
+                    continue;
+                }
+                return false;
+            }
+            if (isa<GetElementPtrInst>(Usr) || isa<BitCastInst>(Usr)) {
+                worklist.push_back(Usr);
+                continue;
+            }
+            return false;
+        }
+    }
+    return true;
+}
+
 class UnsafeMem2Reg : public Mutation {
 public:
     UnsafeMem2Reg() : Mutation(3) {
@@ -78,22 +105,16 @@ public:
         
         // Create a dominator tree for the function
         DominatorTree DT;
-        llvm::outs() << "Recalculating dominator tree\n";
         DT.recalculate(*SelectedFunction);
         
-        if (llvm::verifyFunction(*SelectedFunction, &llvm::errs())) {
-            llvm::outs() << "Function is invalid";
-        }
-
-        if (!DT.verify()) {
-            llvm::outs() << "Dominator tree is invalid";
-        }
-
         // Promote the selected alloca to register
         std::vector<AllocaInst*> AllocasToPromote = {AllocaToPromote};
-        llvm::outs() << "Promoting alloca to register\n";
-        PromoteMemToReg(AllocasToPromote, DT);
-        llvm::outs() << "Promotion complete\n";
+        if (simpleIsAllocaPromotable(AllocaToPromote)) {
+            PromoteMemToReg(AllocasToPromote, DT);
+        } else {
+            llvm::outs() << "Alloca is not promotable\n";
+            return nullptr;
+        }
         return std::move(M);
 
     }

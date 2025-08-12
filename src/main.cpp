@@ -10,6 +10,7 @@
 #include "output/scalar.cpp"
 #include "output/array.cpp"
 #include "nlohmann/json.hpp"
+#include "output/matrix2d.cpp"
 
 int main(int argc, char** argv) {
     if (argc != 3) {
@@ -31,6 +32,9 @@ int main(int argc, char** argv) {
     }
     else if (output_type == "array") {
         correct_result = std::make_unique<ArrayOutput>(correct_result_file);
+    }
+    else if (output_type == "matrix2d") {
+        correct_result = std::make_unique<Matrix2DOutput>(correct_result_file);
     }
     std::string results_file_prefix = argv[2];
     std::vector<Run> runs;
