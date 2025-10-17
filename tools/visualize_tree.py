@@ -18,9 +18,9 @@ def generate_name(dict_):
     name = dict_["mutationType"]
     name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
     if type(dict_["result"]) == float:
-        name += f" | {dict_['result']:.4f}"
+        name += f" | {str(dict_['result'])[:6]}"
     else:
-        name += f" | {dict_['result']}"
+        name += f" | {dict_['result'][:6]}"
     return name
 
 

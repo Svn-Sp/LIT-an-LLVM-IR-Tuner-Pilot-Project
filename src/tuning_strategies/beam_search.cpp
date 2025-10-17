@@ -78,6 +78,7 @@ class BeamSearchTreeNode {
             }
         }
         float calculate_run_score(float og_runtime, float max_runtime) {
+            max_runtime = std::max(max_runtime, og_runtime * 2);
             float peak = og_runtime / 2; //Assume that the highest speedup we can reasonably expect is 2x
             if (this->result == 0) {
                 return 0.8 + 0.2*std::clamp((max_runtime - this->avg_time) / (max_runtime - peak), 0.0, 1.0);

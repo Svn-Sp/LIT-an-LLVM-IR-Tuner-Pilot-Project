@@ -2,7 +2,7 @@ import os
 import sys
 import time
 
-N = 20
+N = 10
 
 
 def main(file1, file2):

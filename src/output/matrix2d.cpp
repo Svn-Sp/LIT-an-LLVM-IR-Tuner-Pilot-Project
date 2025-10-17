@@ -47,6 +47,7 @@ class Matrix2DOutput : public Output<std::vector<std::vector<double>>> {
                 content.replace(pos, 4, "0");
                 pos += 4;
             }
+            pos = 0;
             while ((pos = content.find("null", pos)) != std::string::npos) {
                 content.replace(pos, 4, "0.0");
                 pos += 4;

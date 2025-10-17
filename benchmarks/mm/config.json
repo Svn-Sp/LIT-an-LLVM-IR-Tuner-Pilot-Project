@@ -1,6 +1,6 @@
 {
-    "original": "benchmarks/mm/modified.ll",
-    "modified": "benchmarks/mm/modified2.ll",
+    "original": "benchmarks/mm/main.ll",
+    "modified": "benchmarks/mm/modified.ll",
     "correct_output": "benchmarks/mm/correct.json",
     "output_file": "benchmarks/mm/output.json",
     "output_type": "matrix2d"

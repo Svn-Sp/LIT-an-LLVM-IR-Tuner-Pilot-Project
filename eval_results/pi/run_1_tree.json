@@ -1,0 +1,3595 @@
+{
+  "children": [
+    {
+      "avg_path_run_score": 0.129465,
+      "path_size": 28,
+      "score": 0.284060,
+      "mutationType": "ADD_RANDOM_ARITHMETIC",
+      "decisions": [0,2,2,3,0],
+      "avg_time": 0.101337,
+      "std_dev_time": 0.000274,
+      "result": 3.130681,
+      "children": [
+        {
+          "avg_path_run_score": 0.099185,
+          "path_size": 4,
+          "score": 0.249718,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,5,9,47],
+          "avg_time": 0.098929,
+          "std_dev_time": 0.001863,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.101543,
+              "path_size": 1,
+              "score": 0.214568,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,18],
+              "avg_time": 0.095865,
+              "std_dev_time": 0.002568,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.100531,
+              "path_size": 2,
+              "score": 0.148916,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,1,0,2,0],
+              "avg_time": 0.095340,
+              "std_dev_time": 0.002088,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.098250,
+                  "path_size": 1,
+                  "score": 0.078600,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,31,47],
+                  "avg_time": 0.097227,
+                  "std_dev_time": 0.001319,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.125695,
+          "path_size": 3,
+          "score": 0.278333,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,5,14,39],
+          "avg_time": 0.099730,
+          "std_dev_time": 0.000536,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.142443,
+              "path_size": 2,
+              "score": 0.113954,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,6,8,9,9],
+              "avg_time": 0.095740,
+              "std_dev_time": 0.001489,
+              "result": 3.130682,
+              "children": [
+                {
+                  "avg_path_run_score": 0.183041,
+                  "path_size": 1,
+                  "score": 0.146433,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,34,33],
+                  "avg_time": 0.089455,
+                  "std_dev_time": 0.004225,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.126343,
+          "path_size": 3,
+          "score": 0.278852,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,5,53,31],
+          "avg_time": 0.099031,
+          "std_dev_time": 0.000377,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.104809,
+              "path_size": 1,
+              "score": 0.183847,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,1,2,1],
+              "avg_time": 0.094514,
+              "std_dev_time": 0.001938,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.180335,
+              "path_size": 1,
+              "score": 0.244268,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,2,3,9,22],
+              "avg_time": 0.094931,
+              "std_dev_time": 0.003850,
+              "result": 3.130680,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.132247,
+          "path_size": 5,
+          "score": 0.268761,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,2,4,8],
+          "avg_time": 0.100357,
+          "std_dev_time": 0.000980,
+          "result": 0.869319,
+          "children": [
+            {
+              "avg_path_run_score": 0.144501,
+              "path_size": 2,
+              "score": 0.215601,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,2,29],
+              "avg_time": 0.093095,
+              "std_dev_time": 0.001336,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.180762,
+                  "path_size": 1,
+                  "score": 0.144609,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,1,2,1],
+                  "avg_time": 0.094067,
+                  "std_dev_time": 0.003014,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.140776,
+              "path_size": 2,
+              "score": 0.212621,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,12],
+              "avg_time": 0.096030,
+              "std_dev_time": 0.000307,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.180409,
+                  "path_size": 1,
+                  "score": 0.144327,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,13],
+                  "avg_time": 0.094780,
+                  "std_dev_time": 0.003363,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.130999,
+          "path_size": 3,
+          "score": 0.282577,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,1,2,2],
+          "avg_time": 0.093590,
+          "std_dev_time": 0.006924,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.105811,
+              "path_size": 1,
+              "score": 0.184649,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,19],
+              "avg_time": 0.094100,
+              "std_dev_time": 0.002223,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.180142,
+              "path_size": 1,
+              "score": 0.244114,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,4,9,48],
+              "avg_time": 0.095320,
+              "std_dev_time": 0.002590,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.155127,
+          "path_size": 6,
+          "score": 0.279657,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,4,47,54],
+          "avg_time": 0.093780,
+          "std_dev_time": 0.002213,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.155199,
+              "path_size": 3,
+              "score": 0.204159,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,2,3,1],
+              "avg_time": 0.094823,
+              "std_dev_time": 0.003751,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.180767,
+                  "path_size": 2,
+                  "score": 0.144977,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,0,0,27,0],
+                  "avg_time": 0.093138,
+                  "std_dev_time": 0.004639,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.180314,
+                      "path_size": 1,
+                      "score": 0.144251,
+                      "mutationType": "UNSAFE_MEM_2_REG",
+                      "decisions": [0,0,4],
+                      "avg_time": 0.094974,
+                      "std_dev_time": 0.004223,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.179290,
+              "path_size": 2,
+              "score": 0.263432,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,3,2],
+              "avg_time": 0.098190,
+              "std_dev_time": 0.000828,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.179857,
+                  "path_size": 1,
+                  "score": 0.143885,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,16,15],
+                  "avg_time": 0.095898,
+                  "std_dev_time": 0.004393,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.132952,
+          "path_size": 3,
+          "score": 0.284139,
+          "mutationType": "MOVE_BLOCKWISE",
+          "decisions": [0,0,23,24,12],
+          "avg_time": 0.092743,
+          "std_dev_time": 0.004189,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.144882,
+              "path_size": 2,
+              "score": 0.115905,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,2,30,35,1],
+              "avg_time": 0.092953,
+              "std_dev_time": 0.004209,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.181180,
+                  "path_size": 1,
+                  "score": 0.144944,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,9],
+                  "avg_time": 0.093221,
+                  "std_dev_time": 0.001407,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.268673,
+      "path_size": 74,
+      "score": 0.828030,
+      "mutationType": "MOVE_BLOCKWISE",
+      "decisions": [0,3,0,1,0],
+      "avg_time": 0.117390,
+      "std_dev_time": 0.001991,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.115095,
+          "path_size": 11,
+          "score": 0.261939,
+          "mutationType": "MOVE_BLOCKWISE",
+          "decisions": [0,2,6,28,9],
+          "avg_time": 0.105014,
+          "std_dev_time": 0.008134,
+          "result": 0.001433,
+          "children": [
+            {
+              "avg_path_run_score": 0.105161,
+              "path_size": 3,
+              "score": 0.224129,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,26,28,17],
+              "avg_time": 0.110270,
+              "std_dev_time": 0.001208,
+              "result": 0.001433,
+              "children": [
+                {
+                  "avg_path_run_score": 0.074323,
+                  "path_size": 1,
+                  "score": 0.159458,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,4,4],
+                  "avg_time": 0.107123,
+                  "std_dev_time": 0.000591,
+                  "result": 0.001433,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.174445,
+                  "path_size": 1,
+                  "score": 0.239556,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,0,18,25,20],
+                  "avg_time": 0.106846,
+                  "std_dev_time": 0.004676,
+                  "result": 0.001433,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.108105,
+              "path_size": 3,
+              "score": 0.226484,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,4,14,37],
+              "avg_time": 0.108570,
+              "std_dev_time": 0.001148,
+              "result": 0.001433,
+              "children": [
+                {
+                  "avg_path_run_score": 0.077173,
+                  "path_size": 1,
+                  "score": 0.161738,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,1],
+                  "avg_time": 0.105944,
+                  "std_dev_time": 0.002887,
+                  "result": 0.001433,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.176320,
+                  "path_size": 1,
+                  "score": 0.241056,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,27],
+                  "avg_time": 0.103054,
+                  "std_dev_time": 0.004363,
+                  "result": 0.001433,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.073151,
+              "path_size": 1,
+              "score": 0.238521,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,3,2],
+              "avg_time": 0.107607,
+              "std_dev_time": 0.000102,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.157892,
+              "path_size": 3,
+              "score": 0.266314,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,2,17,33,18],
+              "avg_time": 0.104825,
+              "std_dev_time": 0.001732,
+              "result": 0.271011,
+              "children": [
+                {
+                  "avg_path_run_score": 0.196900,
+                  "path_size": 2,
+                  "score": 0.157520,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,2,32],
+                  "avg_time": 0.064457,
+                  "std_dev_time": 0.002908,
+                  "result": 3.130680,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.198402,
+                      "path_size": 1,
+                      "score": 0.158722,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,3,2],
+                      "avg_time": 0.058377,
+                      "std_dev_time": 0.001108,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.110391,
+          "path_size": 14,
+          "score": 0.249957,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,2,3,2],
+          "avg_time": 0.099734,
+          "std_dev_time": 0.002511,
+          "result": 0.869318,
+          "children": [
+            {
+              "avg_path_run_score": 0.104818,
+              "path_size": 3,
+              "score": 0.240368,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,3,4,1],
+              "avg_time": 0.093131,
+              "std_dev_time": 0.004060,
+              "result": 0.739494,
+              "children": [
+                {
+                  "avg_path_run_score": 0.103150,
+                  "path_size": 2,
+                  "score": 0.082520,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,12],
+                  "avg_time": 0.095671,
+                  "std_dev_time": 0.003463,
+                  "result": 0.739494,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.104289,
+                      "path_size": 1,
+                      "score": 0.083431,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,3,38,29],
+                      "avg_time": 0.094729,
+                      "std_dev_time": 0.003199,
+                      "result": 0.739494,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.107301,
+              "path_size": 4,
+              "score": 0.224303,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,6,0,9,0],
+              "avg_time": 0.094530,
+              "std_dev_time": 0.002630,
+              "result": 0.869318,
+              "children": [
+                {
+                  "avg_path_run_score": 0.105291,
+                  "path_size": 2,
+                  "score": 0.150900,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,2,34,35,23],
+                  "avg_time": 0.096101,
+                  "std_dev_time": 0.003719,
+                  "result": 0.869318,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.109610,
+                      "path_size": 1,
+                      "score": 0.087688,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,0,23],
+                      "avg_time": 0.092529,
+                      "std_dev_time": 0.005925,
+                      "result": 140722320.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.113852,
+                  "path_size": 1,
+                  "score": 0.224415,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,2],
+                  "avg_time": 0.090774,
+                  "std_dev_time": 0.003177,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.113084,
+              "path_size": 2,
+              "score": 0.259698,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,8],
+              "avg_time": 0.092809,
+              "std_dev_time": 0.000217,
+              "result": 0.869318,
+              "children": [
+                {
+                  "avg_path_run_score": 0.117237,
+                  "path_size": 1,
+                  "score": 0.093789,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,0,2,0],
+                  "avg_time": 0.089374,
+                  "std_dev_time": 0.002702,
+                  "result": 0.869318,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.120867,
+              "path_size": 4,
+              "score": 0.235155,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,11,15],
+              "avg_time": 0.100385,
+              "std_dev_time": 0.000757,
+              "result": 0.869318,
+              "children": [
+                {
+                  "avg_path_run_score": 0.099149,
+                  "path_size": 1,
+                  "score": 0.212652,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,2,4,2],
+                  "avg_time": 0.096855,
+                  "std_dev_time": 0.004271,
+                  "result": 0.826081,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.112130,
+                  "path_size": 1,
+                  "score": 0.223037,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,1],
+                  "avg_time": 0.091486,
+                  "std_dev_time": 0.003294,
+                  "result": 0.869318,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.181575,
+                  "path_size": 1,
+                  "score": 0.278593,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,7,33,34],
+                  "avg_time": 0.092421,
+                  "std_dev_time": 0.004251,
+                  "result": 0.869318,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.091969,
+          "path_size": 11,
+          "score": 0.247053,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,1,2,3],
+          "avg_time": 0.097956,
+          "std_dev_time": 0.003706,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.097899,
+              "path_size": 3,
+              "score": 0.225072,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,3,2],
+              "avg_time": 0.093881,
+              "std_dev_time": 0.004745,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.094112,
+                  "path_size": 1,
+                  "score": 0.175289,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,5,53,46],
+                  "avg_time": 0.098938,
+                  "std_dev_time": 0.002345,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.093246,
+                  "path_size": 1,
+                  "score": 0.174597,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,1],
+                  "avg_time": 0.099296,
+                  "std_dev_time": 0.001567,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.091209,
+              "path_size": 4,
+              "score": 0.193987,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,7],
+              "avg_time": 0.099612,
+              "std_dev_time": 0.002849,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.092295,
+                  "path_size": 2,
+                  "score": 0.140503,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,3,4,0],
+                  "avg_time": 0.100024,
+                  "std_dev_time": 0.002113,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.093103,
+                      "path_size": 1,
+                      "score": 0.074482,
+                      "mutationType": "UNSAFE_MEM_2_REG",
+                      "decisions": [0,0,12],
+                      "avg_time": 0.099355,
+                      "std_dev_time": 0.002749,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.087763,
+                  "path_size": 1,
+                  "score": 0.203544,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,47,41],
+                  "avg_time": 0.101564,
+                  "std_dev_time": 0.000118,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.085547,
+              "path_size": 3,
+              "score": 0.208438,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,0,8,5],
+              "avg_time": 0.105192,
+              "std_dev_time": 0.004122,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.089694,
+                  "path_size": 1,
+                  "score": 0.171755,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,36,26],
+                  "avg_time": 0.100765,
+                  "std_dev_time": 0.000504,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.087958,
+                  "path_size": 1,
+                  "score": 0.170367,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,9],
+                  "avg_time": 0.101483,
+                  "std_dev_time": 0.002939,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.094855,
+          "path_size": 8,
+          "score": 0.258360,
+          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+          "decisions": [0,0,15],
+          "avg_time": 0.096359,
+          "std_dev_time": 0.004332,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.110099,
+              "path_size": 3,
+              "score": 0.202365,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,0,25,0],
+              "avg_time": 0.108623,
+              "std_dev_time": 0.012160,
+              "result": 0.005444,
+              "children": [
+                {
+                  "avg_path_run_score": 0.088278,
+                  "path_size": 1,
+                  "score": 0.170623,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,1,3,0],
+                  "avg_time": 0.101351,
+                  "std_dev_time": 0.000950,
+                  "result": 0.308169,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.171323,
+                  "path_size": 1,
+                  "score": 0.237058,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,3],
+                  "avg_time": 0.113163,
+                  "std_dev_time": 0.003504,
+                  "result": 0.004731,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.082049,
+              "path_size": 4,
+              "score": 0.151354,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,3],
+              "avg_time": 0.117231,
+              "std_dev_time": 0.001368,
+              "result": 0.015684,
+              "children": [
+                {
+                  "avg_path_run_score": 0.092772,
+                  "path_size": 3,
+                  "score": 0.074217,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,1,1,2,1],
+                  "avg_time": 0.113665,
+                  "std_dev_time": 0.003480,
+                  "result": 0.015775,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.109906,
+                      "path_size": 2,
+                      "score": 0.090120,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,5,27,24],
+                      "avg_time": 0.091271,
+                      "std_dev_time": 0.003455,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.107161,
+                          "path_size": 1,
+                          "score": 0.085729,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,4,44,24],
+                          "avg_time": 0.093541,
+                          "std_dev_time": 0.003196,
+                          "result": 3.130681,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.095992,
+          "path_size": 7,
+          "score": 0.257616,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,0,1,3],
+          "avg_time": 0.101323,
+          "std_dev_time": 0.003247,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.084469,
+              "path_size": 2,
+              "score": 0.203008,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,3,0,1,0],
+              "avg_time": 0.101841,
+              "std_dev_time": 0.002197,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.081845,
+                  "path_size": 1,
+                  "score": 0.065476,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,4,24,38],
+                  "avg_time": 0.104012,
+                  "std_dev_time": 0.001452,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.129558,
+              "path_size": 2,
+              "score": 0.236980,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,5,0,2,0],
+              "avg_time": 0.103866,
+              "std_dev_time": 0.002280,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.176918,
+                  "path_size": 1,
+                  "score": 0.141534,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,5,23,44],
+                  "avg_time": 0.101844,
+                  "std_dev_time": 0.001882,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.077772,
+              "path_size": 2,
+              "score": 0.195551,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,4],
+              "avg_time": 0.107448,
+              "std_dev_time": 0.001215,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.082009,
+                  "path_size": 1,
+                  "score": 0.065608,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,6,0,9,1],
+                  "avg_time": 0.103944,
+                  "std_dev_time": 0.003506,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.626075,
+          "path_size": 17,
+          "score": 0.829353,
+          "mutationType": "MOVE_BLOCKWISE",
+          "decisions": [0,5,0,1,0],
+          "avg_time": 0.119287,
+          "std_dev_time": 0.000231,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.537829,
+              "path_size": 9,
+              "score": 0.761447,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,4,54,27],
+              "avg_time": 0.120311,
+              "std_dev_time": 0.000355,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.495411,
+                  "path_size": 6,
+                  "score": 0.756473,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,2,41,42,16],
+                  "avg_time": 0.103496,
+                  "std_dev_time": 0.003502,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.113240,
+                      "path_size": 2,
+                      "score": 0.210592,
+                      "mutationType": "ADD_RANDOM_ARITHMETIC",
+                      "decisions": [0,2,1,2,2],
+                      "avg_time": 0.096139,
+                      "std_dev_time": 0.003518,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.125600,
+                          "path_size": 1,
+                          "score": 0.100480,
+                          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                          "decisions": [0,0,24],
+                          "avg_time": 0.085915,
+                          "std_dev_time": 0.000187,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "avg_path_run_score": 0.620964,
+                      "path_size": 3,
+                      "score": 0.793424,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,4,54,7],
+                      "avg_time": 0.099903,
+                      "std_dev_time": 0.005091,
+                      "result": 0.000000,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.881396,
+                          "path_size": 1,
+                          "score": 0.805117,
+                          "mutationType": "MOVE_BLOCKWISE",
+                          "decisions": [0,1,0,1,0],
+                          "avg_time": 0.104197,
+                          "std_dev_time": 0.001907,
+                          "result": 0.000000,
+                          "children": [
+
+                          ]
+                        },
+                        {
+                          "avg_path_run_score": 0.089717,
+                          "path_size": 1,
+                          "score": 0.171774,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,4,28,47],
+                          "avg_time": 0.100756,
+                          "std_dev_time": 0.005076,
+                          "result": 0.000001,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.512781,
+                  "path_size": 2,
+                  "score": 0.835128,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,27],
+                  "avg_time": 0.114531,
+                  "std_dev_time": 0.001339,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.169152,
+                      "path_size": 1,
+                      "score": 0.135322,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,3,2],
+                      "avg_time": 0.117555,
+                      "std_dev_time": 0.001349,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.708272,
+              "path_size": 7,
+              "score": 0.790596,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,5,0,2,0],
+              "avg_time": 0.118167,
+              "std_dev_time": 0.001541,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.509624,
+                  "path_size": 2,
+                  "score": 0.811318,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,3,1,2,1],
+                  "avg_time": 0.118224,
+                  "std_dev_time": 0.001983,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.171767,
+                      "path_size": 1,
+                      "score": 0.137414,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,0,23],
+                      "avg_time": 0.112264,
+                      "std_dev_time": 0.003674,
+                      "result": 140725280.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.178983,
+                  "path_size": 1,
+                  "score": 0.309853,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,2,3,1],
+                  "avg_time": 0.097666,
+                  "std_dev_time": 0.002627,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.970685,
+                  "path_size": 3,
+                  "score": 0.876999,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,7,18],
+                  "avg_time": 0.113313,
+                  "std_dev_time": 0.003588,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.971057,
+                      "path_size": 1,
+                      "score": 0.876845,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,5,0,1,0],
+                      "avg_time": 0.113701,
+                      "std_dev_time": 0.000652,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    },
+                    {
+                      "avg_path_run_score": 0.969749,
+                      "path_size": 1,
+                      "score": 0.875799,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,0,19,24,21],
+                      "avg_time": 0.116348,
+                      "std_dev_time": 0.000049,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.627007,
+          "path_size": 5,
+          "score": 0.855419,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,3,10,28],
+          "avg_time": 0.122808,
+          "std_dev_time": 0.001085,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.574660,
+              "path_size": 4,
+              "score": 0.774976,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,1,0,2,0],
+              "avg_time": 0.118428,
+              "std_dev_time": 0.005114,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.181174,
+                  "path_size": 2,
+                  "score": 0.211995,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,1,2,2],
+                  "avg_time": 0.092247,
+                  "std_dev_time": 0.003269,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.180687,
+                      "path_size": 1,
+                      "score": 0.144550,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,0,17,20,8],
+                      "avg_time": 0.094218,
+                      "std_dev_time": 0.004568,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.967571,
+                  "path_size": 1,
+                  "score": 0.907390,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,7],
+                  "avg_time": 0.120755,
+                  "std_dev_time": 0.005411,
+                  "result": 0.000000,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.553506,
+      "path_size": 67,
+      "score": 0.824201,
+      "mutationType": "ADD_NEW_COND",
+      "decisions": [0,3,39,56],
+      "avg_time": 0.121892,
+      "std_dev_time": 0.000592,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.614244,
+          "path_size": 21,
+          "score": 0.812792,
+          "mutationType": "MOVE_BLOCKWISE",
+          "decisions": [0,5,0,2,0],
+          "avg_time": 0.119029,
+          "std_dev_time": 0.000932,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.511059,
+              "path_size": 14,
+              "score": 0.733512,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,46,37],
+              "avg_time": 0.120536,
+              "std_dev_time": 0.002853,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.130070,
+                  "path_size": 3,
+                  "score": 0.257902,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,3,1],
+                  "avg_time": 0.097408,
+                  "std_dev_time": 0.003288,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.146200,
+                      "path_size": 2,
+                      "score": 0.116960,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,6,1,9,1],
+                      "avg_time": 0.091796,
+                      "std_dev_time": 0.003059,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.181018,
+                          "path_size": 1,
+                          "score": 0.144814,
+                          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                          "decisions": [0,3,2],
+                          "avg_time": 0.093549,
+                          "std_dev_time": 0.003484,
+                          "result": 3.130681,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.101037,
+                  "path_size": 3,
+                  "score": 0.234676,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,2,0],
+                  "avg_time": 0.096883,
+                  "std_dev_time": 0.003574,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.102015,
+                      "path_size": 2,
+                      "score": 0.081612,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,7,34,27],
+                      "avg_time": 0.097429,
+                      "std_dev_time": 0.001463,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.106269,
+                          "path_size": 1,
+                          "score": 0.085015,
+                          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                          "decisions": [0,0,17],
+                          "avg_time": 0.093910,
+                          "std_dev_time": 0.005017,
+                          "result": 3.130681,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.708724,
+                  "path_size": 4,
+                  "score": 0.820531,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,8],
+                  "avg_time": 0.116112,
+                  "std_dev_time": 0.002267,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.660770,
+                      "path_size": 3,
+                      "score": 0.695648,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,3,9,38],
+                      "avg_time": 0.109092,
+                      "std_dev_time": 0.000569,
+                      "result": 0.000000,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.137437,
+                          "path_size": 1,
+                          "score": 0.209949,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,2,23,44],
+                          "avg_time": 0.081020,
+                          "std_dev_time": 0.002493,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        },
+                        {
+                          "avg_path_run_score": 0.975312,
+                          "path_size": 1,
+                          "score": 0.880250,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,4,26,48],
+                          "avg_time": 0.105092,
+                          "std_dev_time": 0.005509,
+                          "result": 0.000000,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.849903,
+                  "path_size": 1,
+                  "score": 0.864538,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,3,3,5,3],
+                  "avg_time": 0.117222,
+                  "std_dev_time": 0.005269,
+                  "result": 0.000000,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.967410,
+                  "path_size": 2,
+                  "score": 0.943159,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,0],
+                  "avg_time": 0.122535,
+                  "std_dev_time": 0.000811,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.968130,
+                      "path_size": 1,
+                      "score": 0.774504,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,3,3,5,2],
+                      "avg_time": 0.119624,
+                      "std_dev_time": 0.002880,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.936808,
+              "path_size": 4,
+              "score": 0.909447,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,27,36],
+              "avg_time": 0.121427,
+              "std_dev_time": 0.003436,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.967954,
+                  "path_size": 1,
+                  "score": 0.907697,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,5,51,41],
+                  "avg_time": 0.119979,
+                  "std_dev_time": 0.000968,
+                  "result": 0.000000,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.969772,
+                  "path_size": 2,
+                  "score": 0.844068,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,0,21,23,24],
+                  "avg_time": 0.112296,
+                  "std_dev_time": 0.000180,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.967792,
+                      "path_size": 1,
+                      "score": 0.774233,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,8,39,39],
+                      "avg_time": 0.120307,
+                      "std_dev_time": 0.001202,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.575766,
+              "path_size": 2,
+              "score": 0.954652,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,4,35,39],
+              "avg_time": 0.119248,
+              "std_dev_time": 0.002107,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.183216,
+                  "path_size": 1,
+                  "score": 0.146573,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,3,0],
+                  "avg_time": 0.089101,
+                  "std_dev_time": 0.003020,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.132533,
+          "path_size": 6,
+          "score": 0.287845,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,2,3,1],
+          "avg_time": 0.099700,
+          "std_dev_time": 0.000408,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.130842,
+              "path_size": 4,
+              "score": 0.144673,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,2,26,56],
+              "avg_time": 0.093979,
+              "std_dev_time": 0.002836,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.139088,
+                  "path_size": 3,
+                  "score": 0.111270,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,5,10,40],
+                  "avg_time": 0.087923,
+                  "std_dev_time": 0.000658,
+                  "result": 0.869319,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.148259,
+                      "path_size": 2,
+                      "score": 0.118607,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,5,9,55],
+                      "avg_time": 0.092172,
+                      "std_dev_time": 0.005283,
+                      "result": 0.869319,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.186046,
+                          "path_size": 1,
+                          "score": 0.148837,
+                          "mutationType": "MOVE_BLOCKWISE",
+                          "decisions": [0,0,18,19,25],
+                          "avg_time": 0.083375,
+                          "std_dev_time": 0.000951,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.179563,
+              "path_size": 1,
+              "score": 0.303650,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,7,24,51],
+              "avg_time": 0.096492,
+              "std_dev_time": 0.002777,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.419508,
+          "path_size": 13,
+          "score": 0.832143,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,2],
+          "avg_time": 0.121558,
+          "std_dev_time": 0.000977,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.147461,
+              "path_size": 2,
+              "score": 0.284635,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,2,27],
+              "avg_time": 0.090743,
+              "std_dev_time": 0.004835,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.180996,
+                  "path_size": 1,
+                  "score": 0.144797,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,8],
+                  "avg_time": 0.093594,
+                  "std_dev_time": 0.002843,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.431926,
+              "path_size": 10,
+              "score": 0.711593,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,10],
+              "avg_time": 0.118082,
+              "std_dev_time": 0.000850,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.137331,
+                  "path_size": 5,
+                  "score": 0.198754,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,2,1],
+                  "avg_time": 0.095362,
+                  "std_dev_time": 0.005237,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.134240,
+                      "path_size": 3,
+                      "score": 0.157392,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,2,27,38,27],
+                      "avg_time": 0.092827,
+                      "std_dev_time": 0.003211,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.146916,
+                          "path_size": 2,
+                          "score": 0.117533,
+                          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                          "decisions": [0,0,19],
+                          "avg_time": 0.091214,
+                          "std_dev_time": 0.005563,
+                          "result": 3.130681,
+                          "children": [
+                            {
+                              "avg_path_run_score": 0.181045,
+                              "path_size": 1,
+                              "score": 0.144836,
+                              "mutationType": "ADD_NEW_COND",
+                              "decisions": [0,3,44,34],
+                              "avg_time": 0.093494,
+                              "std_dev_time": 0.003608,
+                              "result": 3.130681,
+                              "children": [
+
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "avg_path_run_score": 0.181173,
+                      "path_size": 1,
+                      "score": 0.294938,
+                      "mutationType": "UNSAFE_MEM_2_REG",
+                      "decisions": [0,0,0],
+                      "avg_time": 0.093235,
+                      "std_dev_time": 0.004410,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.696196,
+                  "path_size": 4,
+                  "score": 0.787840,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,0,18,24,13],
+                  "avg_time": 0.118873,
+                  "std_dev_time": 0.002518,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.000000,
+                      "path_size": 1,
+                      "score": 0.133333,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,2,31],
+                      "avg_time": 0.459778,
+                      "std_dev_time": 0.003691,
+                      "result": 0.869319,
+                      "children": [
+
+                      ]
+                    },
+                    {
+                      "avg_path_run_score": 0.969437,
+                      "path_size": 2,
+                      "score": 0.842216,
+                      "mutationType": "UNSAFE_MEM_2_REG",
+                      "decisions": [0,0,8],
+                      "avg_time": 0.120770,
+                      "std_dev_time": 0.002130,
+                      "result": 0.000000,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.971311,
+                          "path_size": 1,
+                          "score": 0.777049,
+                          "mutationType": "UNSAFE_MEM_2_REG",
+                          "decisions": [0,0,4],
+                          "avg_time": 0.113187,
+                          "std_dev_time": 0.006574,
+                          "result": 0.000000,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.696422,
+          "path_size": 14,
+          "score": 0.845987,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,5],
+          "avg_time": 0.112834,
+          "std_dev_time": 0.003903,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.618332,
+              "path_size": 8,
+              "score": 0.765365,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,5,1,2,1],
+              "avg_time": 0.112818,
+              "std_dev_time": 0.000384,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.620058,
+                  "path_size": 5,
+                  "score": 0.747557,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,27,53],
+                  "avg_time": 0.111798,
+                  "std_dev_time": 0.006155,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.113776,
+                      "path_size": 1,
+                      "score": 0.241021,
+                      "mutationType": "ADD_RANDOM_ARITHMETIC",
+                      "decisions": [0,2,0,3,2],
+                      "avg_time": 0.090805,
+                      "std_dev_time": 0.001905,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    },
+                    {
+                      "avg_path_run_score": 0.707832,
+                      "path_size": 3,
+                      "score": 0.827019,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,4,44,21],
+                      "avg_time": 0.113262,
+                      "std_dev_time": 0.001645,
+                      "result": 0.000000,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.182251,
+                          "path_size": 1,
+                          "score": 0.245801,
+                          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                          "decisions": [0,0,14],
+                          "avg_time": 0.091054,
+                          "std_dev_time": 0.004329,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        },
+                        {
+                          "avg_path_run_score": 0.969970,
+                          "path_size": 1,
+                          "score": 0.875976,
+                          "mutationType": "ADD_RANDOM_ARITHMETIC",
+                          "decisions": [0,2,1,2,2],
+                          "avg_time": 0.115901,
+                          "std_dev_time": 0.004701,
+                          "result": 0.000000,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.492907,
+                  "path_size": 2,
+                  "score": 0.839244,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,5],
+                  "avg_time": 0.108710,
+                  "std_dev_time": 0.002760,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.115331,
+                      "path_size": 1,
+                      "score": 0.092265,
+                      "mutationType": "ADD_RANDOM_ARITHMETIC",
+                      "decisions": [0,2,0,1,2],
+                      "avg_time": 0.090162,
+                      "std_dev_time": 0.003716,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.788549,
+              "path_size": 5,
+              "score": 0.808961,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,2,16,29,16],
+              "avg_time": 0.114140,
+              "std_dev_time": 0.002535,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.971225,
+                  "path_size": 3,
+                  "score": 0.827393,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,0,2,0],
+                  "avg_time": 0.112316,
+                  "std_dev_time": 0.003277,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.970966,
+                      "path_size": 2,
+                      "score": 0.776773,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,3,42,30],
+                      "avg_time": 0.117514,
+                      "std_dev_time": 0.002151,
+                      "result": 0.000000,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.972759,
+                          "path_size": 1,
+                          "score": 0.778207,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,3,15,1],
+                          "avg_time": 0.110257,
+                          "std_dev_time": 0.005415,
+                          "result": 0.000000,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.171717,
+                  "path_size": 1,
+                  "score": 0.287374,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,2,53,49],
+                  "avg_time": 0.112365,
+                  "std_dev_time": 0.003838,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.155571,
+          "path_size": 3,
+          "score": 0.315366,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,2,52,35],
+          "avg_time": 0.095143,
+          "std_dev_time": 0.001414,
+          "result": 0.869319,
+          "children": [
+            {
+              "avg_path_run_score": 0.180824,
+              "path_size": 1,
+              "score": 0.244659,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,8,15],
+              "avg_time": 0.093941,
+              "std_dev_time": 0.003771,
+              "result": 0.869319,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.182602,
+              "path_size": 1,
+              "score": 0.246082,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,3,0,4,0],
+              "avg_time": 0.090344,
+              "std_dev_time": 0.002287,
+              "result": 0.869319,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.739022,
+          "path_size": 8,
+          "score": 0.951328,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,5,50,14],
+          "avg_time": 0.116925,
+          "std_dev_time": 0.003845,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.600879,
+              "path_size": 5,
+              "score": 0.833067,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,5,55,43],
+              "avg_time": 0.116032,
+              "std_dev_time": 0.001677,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.049683,
+                  "path_size": 2,
+                  "score": 0.139746,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,28],
+                  "avg_time": 0.029542,
+                  "std_dev_time": 0.004051,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.054127,
+                      "path_size": 1,
+                      "score": 0.043302,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,5,3],
+                      "avg_time": 0.031012,
+                      "std_dev_time": 0.002986,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.967563,
+                  "path_size": 2,
+                  "score": 0.874051,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,22,6],
+                  "avg_time": 0.121102,
+                  "std_dev_time": 0.004600,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.967728,
+                      "path_size": 1,
+                      "score": 0.774182,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,10,48,57],
+                      "avg_time": 0.120437,
+                      "std_dev_time": 0.004864,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.969158,
+              "path_size": 2,
+              "score": 0.918184,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,3,0,4,0],
+              "avg_time": 0.118745,
+              "std_dev_time": 0.002437,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.969752,
+                  "path_size": 1,
+                  "score": 0.775802,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,1,0,2,0],
+                  "avg_time": 0.116342,
+                  "std_dev_time": 0.003752,
+                  "result": 0.000000,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.969565,
+          "path_size": 1,
+          "score": 0.972622,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,7],
+          "avg_time": 0.116720,
+          "std_dev_time": 0.004025,
+          "result": 0.000000,
+          "children": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.271650,
+      "path_size": 47,
+      "score": 0.846956,
+      "mutationType": "MOVE_BLOCKWISE",
+      "decisions": [0,1,0,2,0],
+      "avg_time": 0.117333,
+      "std_dev_time": 0.001569,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.199295,
+          "path_size": 15,
+          "score": 0.802941,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,4],
+          "avg_time": 0.123304,
+          "std_dev_time": 0.000457,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.123627,
+              "path_size": 3,
+              "score": 0.256045,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,2,3,1],
+              "avg_time": 0.099549,
+              "std_dev_time": 0.001373,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.097265,
+                  "path_size": 1,
+                  "score": 0.177812,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,2,12,12],
+                  "avg_time": 0.097634,
+                  "std_dev_time": 0.002136,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.180981,
+                  "path_size": 1,
+                  "score": 0.244785,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,4,23,27],
+                  "avg_time": 0.093622,
+                  "std_dev_time": 0.003356,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.070716,
+              "path_size": 5,
+              "score": 0.185144,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,6,9],
+              "avg_time": 0.119537,
+              "std_dev_time": 0.003088,
+              "result": 3.130682,
+              "children": [
+                {
+                  "avg_path_run_score": 0.058539,
+                  "path_size": 1,
+                  "score": 0.196831,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,11],
+                  "avg_time": 0.113651,
+                  "std_dev_time": 0.003572,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.099801,
+                  "path_size": 2,
+                  "score": 0.179841,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,1,2,1],
+                  "avg_time": 0.097866,
+                  "std_dev_time": 0.002320,
+                  "result": 3.130682,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.102897,
+                      "path_size": 1,
+                      "score": 0.082317,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,0,5,11,10],
+                      "avg_time": 0.095305,
+                      "std_dev_time": 0.003916,
+                      "result": 3.130682,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.051134,
+                  "path_size": 1,
+                  "score": 0.190907,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,3,0,2,0],
+                  "avg_time": 0.116713,
+                  "std_dev_time": 0.002860,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.130080,
+              "path_size": 3,
+              "score": 0.261207,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,3,2],
+              "avg_time": 0.116314,
+              "std_dev_time": 0.004870,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.169177,
+                  "path_size": 1,
+                  "score": 0.235342,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,1],
+                  "avg_time": 0.117504,
+                  "std_dev_time": 0.000157,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.168964,
+                  "path_size": 1,
+                  "score": 0.235171,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,1],
+                  "avg_time": 0.117936,
+                  "std_dev_time": 0.002637,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.346508,
+              "path_size": 3,
+              "score": 0.841897,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,13],
+              "avg_time": 0.114724,
+              "std_dev_time": 0.003835,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.002438,
+                  "path_size": 1,
+                  "score": 0.101950,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,2,31],
+                  "avg_time": 0.454846,
+                  "std_dev_time": 0.001887,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.181143,
+                  "path_size": 1,
+                  "score": 0.244915,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,1,1],
+                  "avg_time": 0.093295,
+                  "std_dev_time": 0.004724,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.371592,
+          "path_size": 13,
+          "score": 0.818362,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,2],
+          "avg_time": 0.119827,
+          "std_dev_time": 0.000633,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.144240,
+              "path_size": 4,
+              "score": 0.248725,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,2,3,2],
+              "avg_time": 0.090294,
+              "std_dev_time": 0.001140,
+              "result": 0.869318,
+              "children": [
+                {
+                  "avg_path_run_score": 0.102831,
+                  "path_size": 1,
+                  "score": 0.215598,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,0,2,0],
+                  "avg_time": 0.095332,
+                  "std_dev_time": 0.004474,
+                  "result": 0.869318,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.180317,
+                  "path_size": 1,
+                  "score": 0.277587,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,3,4,1],
+                  "avg_time": 0.094968,
+                  "std_dev_time": 0.006022,
+                  "result": 0.739494,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.178800,
+                  "path_size": 1,
+                  "score": 0.276374,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,2,4,0],
+                  "avg_time": 0.098035,
+                  "std_dev_time": 0.001500,
+                  "result": 0.579905,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.501293,
+              "path_size": 4,
+              "score": 0.789603,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,53,25],
+              "avg_time": 0.129450,
+              "std_dev_time": 0.007228,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.394945,
+                  "path_size": 3,
+                  "score": 0.676649,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,7,4,14],
+                  "avg_time": 0.118915,
+                  "std_dev_time": 0.001792,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.169513,
+                      "path_size": 2,
+                      "score": 0.135610,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,3,2],
+                      "avg_time": 0.117840,
+                      "std_dev_time": 0.003944,
+                      "result": 3.130681,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.170014,
+                          "path_size": 1,
+                          "score": 0.136011,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,8,48,41],
+                          "avg_time": 0.115812,
+                          "std_dev_time": 0.000890,
+                          "result": 3.130681,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.521975,
+              "path_size": 2,
+              "score": 0.857135,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,3,47,36],
+              "avg_time": 0.111770,
+              "std_dev_time": 0.000837,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.180865,
+                  "path_size": 1,
+                  "score": 0.144692,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,3,2],
+                  "avg_time": 0.093859,
+                  "std_dev_time": 0.003181,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.180502,
+              "path_size": 2,
+              "score": 0.312674,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,15],
+              "avg_time": 0.090531,
+              "std_dev_time": 0.000821,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.178496,
+                  "path_size": 1,
+                  "score": 0.142797,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,6,7,10,7],
+                  "avg_time": 0.098651,
+                  "std_dev_time": 0.004163,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.097449,
+          "path_size": 1,
+          "score": 0.273611,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,2,3,0],
+          "avg_time": 0.097558,
+          "std_dev_time": 0.003209,
+          "result": 3.130681,
+          "children": [
+
+          ]
+        },
+        {
+          "avg_path_run_score": 0.084477,
+          "path_size": 3,
+          "score": 0.254538,
+          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+          "decisions": [0,3,2],
+          "avg_time": 0.117336,
+          "std_dev_time": 0.001935,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.034056,
+              "path_size": 1,
+              "score": 0.127244,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,5,41,49],
+              "avg_time": 0.123777,
+              "std_dev_time": 0.002167,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.169748,
+              "path_size": 1,
+              "score": 0.235799,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,5,38,19],
+              "avg_time": 0.116349,
+              "std_dev_time": 0.003909,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.155209,
+          "path_size": 3,
+          "score": 0.311123,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,0,3,4],
+          "avg_time": 0.094711,
+          "std_dev_time": 0.004659,
+          "result": 0.869319,
+          "children": [
+            {
+              "avg_path_run_score": 0.180646,
+              "path_size": 2,
+              "score": 0.144517,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,2,2],
+              "avg_time": 0.095553,
+              "std_dev_time": 0.001460,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.181265,
+                  "path_size": 1,
+                  "score": 0.145012,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,5],
+                  "avg_time": 0.093048,
+                  "std_dev_time": 0.002366,
+                  "result": 3.130679,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.231293,
+          "path_size": 10,
+          "score": 0.844168,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,8],
+          "avg_time": 0.113229,
+          "std_dev_time": 0.003551,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.106452,
+              "path_size": 1,
+              "score": 0.262939,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,2,2],
+              "avg_time": 0.093835,
+              "std_dev_time": 0.000385,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.154133,
+              "path_size": 4,
+              "score": 0.234417,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,1,3],
+              "avg_time": 0.103632,
+              "std_dev_time": 0.002078,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.178422,
+                  "path_size": 2,
+                  "score": 0.209405,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,2,16,40,7],
+                  "avg_time": 0.103033,
+                  "std_dev_time": 0.003470,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.180515,
+                      "path_size": 1,
+                      "score": 0.144412,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,2,49,3],
+                      "avg_time": 0.094566,
+                      "std_dev_time": 0.000036,
+                      "result": 0.869319,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.176922,
+                  "path_size": 1,
+                  "score": 0.274871,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,3,4,1],
+                  "avg_time": 0.101835,
+                  "std_dev_time": 0.004028,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.182596,
+              "path_size": 4,
+              "score": 0.257630,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,1,0],
+              "avg_time": 0.089239,
+              "std_dev_time": 0.003633,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.182155,
+                  "path_size": 2,
+                  "score": 0.212391,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,3,24,32],
+                  "avg_time": 0.093326,
+                  "std_dev_time": 0.000019,
+                  "result": 3.130681,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.183182,
+                      "path_size": 1,
+                      "score": 0.146546,
+                      "mutationType": "MOVE_BLOCKWISE",
+                      "decisions": [0,1,1,2,1],
+                      "avg_time": 0.089170,
+                      "std_dev_time": 0.004673,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.182928,
+                  "path_size": 1,
+                  "score": 0.279676,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,0,11,16,13],
+                  "avg_time": 0.089684,
+                  "std_dev_time": 0.003809,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.968360,
+          "path_size": 1,
+          "score": 0.970340,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,5,4,22],
+          "avg_time": 0.119157,
+          "std_dev_time": 0.002693,
+          "result": 0.000000,
+          "children": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.440488,
+      "path_size": 42,
+      "score": 0.838786,
+      "mutationType": "ADD_NEW_COND",
+      "decisions": [0,5,32,54],
+      "avg_time": 0.123358,
+      "std_dev_time": 0.002093,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.241063,
+          "path_size": 10,
+          "score": 0.829280,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,8],
+          "avg_time": 0.118185,
+          "std_dev_time": 0.002933,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.060454,
+              "path_size": 2,
+              "score": 0.214978,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,1,4],
+              "avg_time": 0.107141,
+              "std_dev_time": 0.003274,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.046630,
+                  "path_size": 1,
+                  "score": 0.037304,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,26],
+                  "avg_time": 0.029772,
+                  "std_dev_time": 0.003042,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.206021,
+              "path_size": 7,
+              "score": 0.729334,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,11],
+              "avg_time": 0.114655,
+              "std_dev_time": 0.002827,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.104198,
+                  "path_size": 4,
+                  "score": 0.154651,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,21],
+                  "avg_time": 0.092375,
+                  "std_dev_time": 0.004304,
+                  "result": 0.869319,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.102270,
+                      "path_size": 3,
+                      "score": 0.081816,
+                      "mutationType": "UNSAFE_MEM_2_REG",
+                      "decisions": [0,0,0],
+                      "avg_time": 0.108271,
+                      "std_dev_time": 0.000189,
+                      "result": 0.001421,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.058514,
+                          "path_size": 1,
+                          "score": 0.146811,
+                          "mutationType": "MOVE_BLOCKWISE",
+                          "decisions": [0,1,0,2,0],
+                          "avg_time": 0.113661,
+                          "std_dev_time": 0.003018,
+                          "result": 0.000784,
+                          "children": [
+
+                          ]
+                        },
+                        {
+                          "avg_path_run_score": 0.176750,
+                          "path_size": 1,
+                          "score": 0.241400,
+                          "mutationType": "UNSAFE_MEM_2_REG",
+                          "decisions": [0,0,5],
+                          "avg_time": 0.102183,
+                          "std_dev_time": 0.003434,
+                          "result": 0.001587,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.114113,
+                  "path_size": 1,
+                  "score": 0.257957,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,2,25],
+                  "avg_time": 0.090666,
+                  "std_dev_time": 0.003813,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.055131,
+                  "path_size": 1,
+                  "score": 0.210771,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,2],
+                  "avg_time": 0.115060,
+                  "std_dev_time": 0.003757,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.496128,
+          "path_size": 14,
+          "score": 0.804529,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,7,45,9],
+          "avg_time": 0.120893,
+          "std_dev_time": 0.001486,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.040001,
+              "path_size": 3,
+              "score": 0.187177,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,6,9],
+              "avg_time": 0.120630,
+              "std_dev_time": 0.000161,
+              "result": 3.130682,
+              "children": [
+                {
+                  "avg_path_run_score": 0.042005,
+                  "path_size": 1,
+                  "score": 0.133604,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,18],
+                  "avg_time": 0.120489,
+                  "std_dev_time": 0.002681,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.036334,
+                  "path_size": 1,
+                  "score": 0.129067,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,26],
+                  "avg_time": 0.122834,
+                  "std_dev_time": 0.003296,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.428605,
+              "path_size": 5,
+              "score": 0.788884,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,8,49,49],
+              "avg_time": 0.124520,
+              "std_dev_time": 0.000095,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.327692,
+                  "path_size": 4,
+                  "score": 0.668500,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,5,14,23],
+                  "avg_time": 0.123128,
+                  "std_dev_time": 0.001192,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.158381,
+                      "path_size": 3,
+                      "score": 0.126705,
+                      "mutationType": "ADD_NEW_COND",
+                      "decisions": [0,2,36,3],
+                      "avg_time": 0.091558,
+                      "std_dev_time": 0.003029,
+                      "result": 0.869319,
+                      "children": [
+                        {
+                          "avg_path_run_score": 0.181891,
+                          "path_size": 1,
+                          "score": 0.245513,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,5,43,60],
+                          "avg_time": 0.091782,
+                          "std_dev_time": 0.003333,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        },
+                        {
+                          "avg_path_run_score": 0.181296,
+                          "path_size": 1,
+                          "score": 0.245037,
+                          "mutationType": "ADD_NEW_COND",
+                          "decisions": [0,10,10,29],
+                          "avg_time": 0.092986,
+                          "std_dev_time": 0.005000,
+                          "result": 0.869319,
+                          "children": [
+
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.768347,
+              "path_size": 5,
+              "score": 0.793538,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,24,28,23],
+              "avg_time": 0.122113,
+              "std_dev_time": 0.000188,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.097466,
+                  "path_size": 1,
+                  "score": 0.227973,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,2,45,33],
+                  "avg_time": 0.097551,
+                  "std_dev_time": 0.003124,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.969103,
+                  "path_size": 2,
+                  "score": 0.875283,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,1,0,2,0],
+                  "avg_time": 0.117755,
+                  "std_dev_time": 0.003274,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.969153,
+                      "path_size": 1,
+                      "score": 0.775323,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,0,20],
+                      "avg_time": 0.117553,
+                      "std_dev_time": 0.001962,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.967987,
+                  "path_size": 1,
+                  "score": 0.924390,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,6,6,10,6],
+                  "avg_time": 0.119912,
+                  "std_dev_time": 0.002557,
+                  "result": 0.000000,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.151404,
+          "path_size": 5,
+          "score": 0.296733,
+          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+          "decisions": [0,6,9],
+          "avg_time": 0.119472,
+          "std_dev_time": 0.000782,
+          "result": 3.130682,
+          "children": [
+            {
+              "avg_path_run_score": 0.181538,
+              "path_size": 2,
+              "score": 0.245230,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,1,2],
+              "avg_time": 0.093161,
+              "std_dev_time": 0.002307,
+              "result": 3.130682,
+              "children": [
+                {
+                  "avg_path_run_score": 0.181867,
+                  "path_size": 1,
+                  "score": 0.145493,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,1,3,1],
+                  "avg_time": 0.091831,
+                  "std_dev_time": 0.005841,
+                  "result": 3.130682,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.180621,
+              "path_size": 1,
+              "score": 0.294497,
+              "mutationType": "ADD_RANDOM_ARITHMETIC",
+              "decisions": [0,2,0,3,1],
+              "avg_time": 0.094351,
+              "std_dev_time": 0.005708,
+              "result": 3.130682,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.168858,
+              "path_size": 1,
+              "score": 0.285087,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,11,14,8],
+              "avg_time": 0.118149,
+              "std_dev_time": 0.001828,
+              "result": 3.130682,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.686143,
+          "path_size": 6,
+          "score": 0.847382,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,0],
+          "avg_time": 0.118914,
+          "std_dev_time": 0.001375,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.654208,
+              "path_size": 5,
+              "score": 0.777196,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,3],
+              "avg_time": 0.112815,
+              "std_dev_time": 0.002104,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.580727,
+                  "path_size": 2,
+                  "score": 0.881622,
+                  "mutationType": "UNSAFE_MEM_2_REG",
+                  "decisions": [0,0,0],
+                  "avg_time": 0.101621,
+                  "std_dev_time": 0.003823,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.184425,
+                      "path_size": 1,
+                      "score": 0.147540,
+                      "mutationType": "ADD_RANDOM_ARITHMETIC",
+                      "decisions": [0,2,0,3,1],
+                      "avg_time": 0.086655,
+                      "std_dev_time": 0.003506,
+                      "result": 3.130681,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.569047,
+                  "path_size": 2,
+                  "score": 0.874851,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,4,39,39],
+                  "avg_time": 0.118746,
+                  "std_dev_time": 0.004111,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.169531,
+                      "path_size": 1,
+                      "score": 0.135625,
+                      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                      "decisions": [0,6,9],
+                      "avg_time": 0.116789,
+                      "std_dev_time": 0.003376,
+                      "result": 3.130682,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.572520,
+          "path_size": 6,
+          "score": 0.944119,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,3],
+          "avg_time": 0.122447,
+          "std_dev_time": 0.000941,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.439364,
+              "path_size": 3,
+              "score": 0.856091,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,17],
+              "avg_time": 0.115610,
+              "std_dev_time": 0.003937,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.178076,
+                  "path_size": 1,
+                  "score": 0.242461,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,1,2,4],
+                  "avg_time": 0.099500,
+                  "std_dev_time": 0.003669,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.169902,
+                  "path_size": 1,
+                  "score": 0.235921,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,3,2],
+                  "avg_time": 0.116038,
+                  "std_dev_time": 0.004776,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.575147,
+              "path_size": 2,
+              "score": 0.895329,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,6],
+              "avg_time": 0.117536,
+              "std_dev_time": 0.003205,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.181133,
+                  "path_size": 1,
+                  "score": 0.144907,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,2,33,15],
+                  "avg_time": 0.093315,
+                  "std_dev_time": 0.003066,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.047663,
+      "path_size": 10,
+      "score": 0.250591,
+      "mutationType": "MOVE_BLOCKWISE",
+      "decisions": [0,0,27,28,26],
+      "avg_time": 0.033961,
+      "std_dev_time": 0.000362,
+      "result": 3.130681,
+      "children": [
+        {
+          "avg_path_run_score": 0.034732,
+          "path_size": 4,
+          "score": 0.138897,
+          "mutationType": "MOVE_BLOCKWISE",
+          "decisions": [0,1,0,2,0],
+          "avg_time": 0.024527,
+          "std_dev_time": 0.004315,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.043686,
+              "path_size": 2,
+              "score": 0.101615,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,24,25,16],
+              "avg_time": 0.027610,
+              "std_dev_time": 0.004542,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.053810,
+                  "path_size": 1,
+                  "score": 0.043048,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,5,0,1,0],
+                  "avg_time": 0.030960,
+                  "std_dev_time": 0.004269,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.036630,
+              "path_size": 1,
+              "score": 0.162637,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,5,2],
+              "avg_time": 0.028118,
+              "std_dev_time": 0.005525,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.049482,
+          "path_size": 4,
+          "score": 0.151221,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,1,2,2],
+          "avg_time": 0.030352,
+          "std_dev_time": 0.002285,
+          "result": 3.130681,
+          "children": [
+            {
+              "avg_path_run_score": 0.033877,
+              "path_size": 1,
+              "score": 0.160435,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,20,26,16],
+              "avg_time": 0.027662,
+              "std_dev_time": 0.004416,
+              "result": 3.130681,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.056956,
+              "path_size": 2,
+              "score": 0.118798,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,16],
+              "avg_time": 0.032838,
+              "std_dev_time": 0.004243,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.048748,
+                  "path_size": 1,
+                  "score": 0.038998,
+                  "mutationType": "MOVE_BLOCKWISE",
+                  "decisions": [0,6,1,8,1],
+                  "avg_time": 0.030122,
+                  "std_dev_time": 0.001814,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.067825,
+          "path_size": 1,
+          "score": 0.232038,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,7],
+          "avg_time": 0.033278,
+          "std_dev_time": 0.001186,
+          "result": 3.130681,
+          "children": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.473606,
+      "path_size": 16,
+      "score": 0.963788,
+      "mutationType": "ADD_NEW_COND",
+      "decisions": [0,5,26,33],
+      "avg_time": 0.118526,
+      "std_dev_time": 0.002312,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.170909,
+          "path_size": 3,
+          "score": 0.296727,
+          "mutationType": "DELETE_RANDOM_INSTRUCTION",
+          "decisions": [0,0,17],
+          "avg_time": 0.122651,
+          "std_dev_time": 0.000327,
+          "result": 0.104625,
+          "children": [
+            {
+              "avg_path_run_score": 0.173046,
+              "path_size": 2,
+              "score": 0.138437,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,3,0,2,0],
+              "avg_time": 0.109706,
+              "std_dev_time": 0.011961,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.173061,
+                  "path_size": 1,
+                  "score": 0.138449,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,1,3,1],
+                  "avg_time": 0.109647,
+                  "std_dev_time": 0.001144,
+                  "result": 0.439704,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.809967,
+          "path_size": 5,
+          "score": 0.906582,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,7],
+          "avg_time": 0.122797,
+          "std_dev_time": 0.002595,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.968277,
+              "path_size": 1,
+              "score": 0.924622,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,8],
+              "avg_time": 0.119325,
+              "std_dev_time": 0.002862,
+              "result": 0.000000,
+              "children": [
+
+              ]
+            },
+            {
+              "avg_path_run_score": 0.573142,
+              "path_size": 2,
+              "score": 0.873203,
+              "mutationType": "MOVE_BLOCKWISE",
+              "decisions": [0,0,7,11,5],
+              "avg_time": 0.122913,
+              "std_dev_time": 0.004204,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.179781,
+                  "path_size": 1,
+                  "score": 0.143825,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,2,28,50],
+                  "avg_time": 0.096051,
+                  "std_dev_time": 0.002970,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.968713,
+              "path_size": 1,
+              "score": 0.924971,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,0,24],
+              "avg_time": 0.118443,
+              "std_dev_time": 0.002698,
+              "result": 0.000000,
+              "children": [
+
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.310668,
+          "path_size": 6,
+          "score": 0.895936,
+          "mutationType": "UNSAFE_MEM_2_REG",
+          "decisions": [0,0,10],
+          "avg_time": 0.116001,
+          "std_dev_time": 0.004623,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.181943,
+              "path_size": 3,
+              "score": 0.225555,
+              "mutationType": "ADD_NEW_COND",
+              "decisions": [0,2,39,32],
+              "avg_time": 0.093725,
+              "std_dev_time": 0.002295,
+              "result": 0.869319,
+              "children": [
+                {
+                  "avg_path_run_score": 0.183120,
+                  "path_size": 1,
+                  "score": 0.246496,
+                  "mutationType": "ADD_NEW_COND",
+                  "decisions": [0,8,28,48],
+                  "avg_time": 0.089295,
+                  "std_dev_time": 0.004133,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                },
+                {
+                  "avg_path_run_score": 0.181779,
+                  "path_size": 1,
+                  "score": 0.245423,
+                  "mutationType": "DELETE_RANDOM_INSTRUCTION",
+                  "decisions": [0,0,20],
+                  "avg_time": 0.092008,
+                  "std_dev_time": 0.002782,
+                  "result": 0.869319,
+                  "children": [
+
+                  ]
+                }
+              ]
+            },
+            {
+              "avg_path_run_score": 0.174128,
+              "path_size": 2,
+              "score": 0.259302,
+              "mutationType": "DELETE_RANDOM_INSTRUCTION",
+              "decisions": [0,3,2],
+              "avg_time": 0.118328,
+              "std_dev_time": 0.003805,
+              "result": 3.130681,
+              "children": [
+                {
+                  "avg_path_run_score": 0.179486,
+                  "path_size": 1,
+                  "score": 0.143588,
+                  "mutationType": "ADD_RANDOM_ARITHMETIC",
+                  "decisions": [0,2,0,2,1],
+                  "avg_time": 0.096649,
+                  "std_dev_time": 0.003656,
+                  "result": 3.130681,
+                  "children": [
+
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "avg_path_run_score": 0.182460,
+          "path_size": 1,
+          "score": 0.332635,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,1,2,2],
+          "avg_time": 0.090631,
+          "std_dev_time": 0.001229,
+          "result": 3.130681,
+          "children": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.174841,
+      "path_size": 4,
+      "score": 0.337085,
+      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+      "decisions": [0,6,9],
+      "avg_time": 0.117778,
+      "std_dev_time": 0.002629,
+      "result": 3.130682,
+      "children": [
+        {
+          "avg_path_run_score": 0.169214,
+          "path_size": 1,
+          "score": 0.268704,
+          "mutationType": "ADD_NEW_COND",
+          "decisions": [0,4,3,13],
+          "avg_time": 0.117431,
+          "std_dev_time": 0.003671,
+          "result": 3.130682,
+          "children": [
+
+          ]
+        },
+        {
+          "avg_path_run_score": 0.180553,
+          "path_size": 2,
+          "score": 0.211109,
+          "mutationType": "ADD_RANDOM_ARITHMETIC",
+          "decisions": [0,2,0,1,2],
+          "avg_time": 0.094552,
+          "std_dev_time": 0.002714,
+          "result": 3.130682,
+          "children": [
+            {
+              "avg_path_run_score": 0.180584,
+              "path_size": 1,
+              "score": 0.144467,
+              "mutationType": "UNSAFE_MEM_2_REG",
+              "decisions": [0,0,6],
+              "avg_time": 0.094426,
+              "std_dev_time": 0.004441,
+              "result": 3.130682,
+              "children": [
+
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
