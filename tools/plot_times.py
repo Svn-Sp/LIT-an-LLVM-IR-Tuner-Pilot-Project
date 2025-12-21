@@ -1,9 +1,13 @@
+import os
 import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
+
+# Create diagrams directory if it doesn't exist
+os.makedirs("diagrams", exist_ok=True)
 
 data = pd.read_csv(sys.argv[1])
 
@@ -90,7 +94,10 @@ plt.grid(True, linestyle="--", alpha=0.7)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig("execution_times_plot.png", dpi=300)
+input_filename = os.path.basename(sys.argv[1])
+output_filename = f"diagrams/{input_filename.replace('.csv', '_plot.png')}"
+plt.savefig(output_filename, dpi=300)
+print(f"Plot saved to {output_filename}")
 
 # Show the plot
 plt.show()

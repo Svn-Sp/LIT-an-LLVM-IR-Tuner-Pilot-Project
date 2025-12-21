@@ -1,5 +1,10 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
+
+# Create diagrams directory if it doesn't exist
+os.makedirs("diagrams", exist_ok=True)
 
 # Parameters
 rtog = 1.0
@@ -62,4 +67,10 @@ plt.legend(fontsize=10)
 plt.grid(True, linestyle="--", alpha=0.7)
 plt.tight_layout()
 
+# Save the figure
+output_filename = "diagrams/score_function.png"
+plt.savefig(output_filename, dpi=300, bbox_inches="tight")
+print(f"Plot saved to {output_filename}")
+
+plt.show()
 plt.show()

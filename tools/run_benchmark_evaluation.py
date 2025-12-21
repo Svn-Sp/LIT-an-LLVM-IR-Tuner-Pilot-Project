@@ -1,3 +1,4 @@
+import argparse
 import csv
 import json
 import os
@@ -10,6 +11,9 @@ from dataclasses import dataclass
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+# Create diagrams directory if it doesn't exist
+os.makedirs("diagrams", exist_ok=True)
 
 RUNS = 1
 BASELINE_RUNS = 10
@@ -105,10 +109,23 @@ def full_evaulation(benchmark_name):
 def plot_results(benchmark_name):
     all_tuner_results = []
     results_folder = get_result_folder_name(benchmark_name)
+
+    # Check if results folder exists
+    if not os.path.exists(results_folder):
+        print(f"Error: Results folder '{results_folder}' does not exist.")
+        print("Run with --run flag to generate results first.")
+        sys.exit(1)
+
     csv_files = []
     for filename in os.listdir(results_folder):
         if filename.startswith("run_") and filename.endswith("_results.csv"):
             csv_files.append(filename)
+
+    if not csv_files:
+        print(f"Error: No results CSV files found in '{results_folder}'.")
+        print("Run with --run flag to generate results first.")
+        sys.exit(1)
+
     for csv_file in csv_files:
         all_tuner_results.append([])
         csv_path = os.path.join(results_folder, csv_file)
@@ -133,28 +150,78 @@ def plot_results(benchmark_name):
         alpha=0.2,
     )
 
-    with open(f"{results_folder}/baseline_times.json", "r") as f:
-        baseline_times = json.load(f)
-    plt.plot(xs, [baseline_times["o1"]["time"]] * len(xs), label="O1", linestyle="--")
-    plt.plot(xs, [baseline_times["o2"]["time"]] * len(xs), label="O2", linestyle="--")
-    plt.plot(xs, [baseline_times["o3"]["time"]] * len(xs), label="O3", linestyle="--")
-    plt.plot(
-        xs,
-        [baseline_times["original"]["time"]] * len(xs),
-        label="Original",
-        linestyle="--",
-    )
-    # plt.plot(
-    #     xs,
-    #     [baseline_times["best"]["time"]] * len(xs),
-    #     label="Best",
-    #     linestyle="--",
-    # )
+    # Load baseline times if available
+    baseline_times_path = f"{results_folder}/baseline_times.json"
+    if os.path.exists(baseline_times_path):
+        with open(baseline_times_path, "r") as f:
+            baseline_times = json.load(f)
+        plt.plot(
+            xs, [baseline_times["o1"]["time"]] * len(xs), label="O1", linestyle="--"
+        )
+        plt.plot(
+            xs, [baseline_times["o2"]["time"]] * len(xs), label="O2", linestyle="--"
+        )
+        plt.plot(
+            xs, [baseline_times["o3"]["time"]] * len(xs), label="O3", linestyle="--"
+        )
+        plt.plot(
+            xs,
+            [baseline_times["original"]["time"]] * len(xs),
+            label="Original",
+            linestyle="--",
+        )
+        # plt.plot(
+        #     xs,
+        #     [baseline_times["best"]["time"]] * len(xs),
+        #     label="Best",
+        #     linestyle="--",
+        # )
+    else:
+        print(
+            "Warning: baseline_times.json not found. Baseline comparisons will not be shown."
+        )
 
     plt.legend()
+
+    # Save the figure
+    output_filename = f"diagrams/{benchmark_name}_benchmark_comparison.png"
+    plt.savefig(output_filename, dpi=300, bbox_inches="tight")
+    print(f"Plot saved to {output_filename}")
+
     plt.show()
 
 
 if __name__ == "__main__":
-    full_evaulation(sys.argv[1])
-    plot_results(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        description="Run benchmark evaluation and visualize results",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Run full evaluation and plot results
+  python run_benchmark_evaluation.py bubblesort --run
+  
+  # Just plot existing results (skip evaluation)
+  python run_benchmark_evaluation.py bubblesort
+        """,
+    )
+    parser.add_argument(
+        "benchmark_name",
+        help="Name of the benchmark to evaluate (must exist in benchmarks/ directory)",
+    )
+    parser.add_argument(
+        "--run",
+        action="store_true",
+        help="Run the full benchmark evaluation (baseline measurements and tuning). "
+        "If not set, only visualization will be performed on existing results.",
+    )
+
+    args = parser.parse_args()
+
+    if args.run:
+        print(f"Running full evaluation for benchmark: {args.benchmark_name}")
+        full_evaulation(args.benchmark_name)
+    else:
+        print(f"Visualizing existing results for benchmark: {args.benchmark_name}")
+        print("(Use --run flag to regenerate results)")
+
+    plot_results(args.benchmark_name)
