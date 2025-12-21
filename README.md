@@ -2,6 +2,16 @@
 
 **A Research Prototype for Exploring Semantic-Agnostic Code Mutations**
 
+## tl;dr
+
+This project implements **structural autotuning through low-level, sub-pass mutations at the LLVM IR level**. Using a beam search algorithm, we explore semantic-agnostic code transformations and achieve performance improvements that **beat O3 optimization on some benchmarks**.
+
+**Quick links:**
+- [Structural Mutations](#structural-mutations) - Five types of low-level IR transformations
+- [Autotuning Strategy](#autotuning-strategy) - Beam search exploration algorithm
+- [Results and Evaluation](#results-and-evaluation) - Performance comparison against O1/O2/O3
+- [Building and Usage](#building-and-usage) - How to build and run the framework
+
 ## Overview
 
 Optimizing programs for performance is a complex and time-consuming task. Traditional compilers rely on predefined optimization passes that apply semantic-preserving transformations to find and transform known patterns. While effective, these approaches are limited by their reliance on expert-defined patterns and often require manual fine-tuning.
