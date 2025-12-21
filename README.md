@@ -4,12 +4,12 @@
 
 ## tl;dr
 
-This project implements **structural autotuning through low-level, sub-pass mutations at the LLVM IR level**. Using a beam search algorithm, we explore semantic-agnostic code transformations and achieve performance improvements that **beat O3 optimization on some benchmarks**.
+This project implements **structural autotuning through low-level, sub-pass mutations at the LLVM IR level**. Using a beam search algorithm, we explore semantic-agnostic code transformations and achieve performance improvements that **beat LLVM's opt -O3 optimization on some benchmarks**.
 
 **Quick links:**
 - [Structural Mutations](#structural-mutations) - Five types of low-level IR transformations
 - [Autotuning Strategy](#autotuning-strategy) - Beam search exploration algorithm
-- [Results and Evaluation](#results-and-evaluation) - Performance comparison against O1/O2/O3
+- [Results and Evaluation](#results-and-evaluation) - Performance comparison against LLVM opt -O1/-O2/-O3
 - [Building and Usage](#building-and-usage) - How to build and run the framework
 
 ## Overview
@@ -265,7 +265,7 @@ Programs with `result == 0` (exact match) are considered correct. Only mutations
 
 ## Results and Evaluation
 
-The framework has been evaluated on benchmark programs, comparing the performance of autotuned variants against traditional compiler optimizations (O1, O2, O3) and the original unoptimized code.
+The framework has been evaluated on benchmark programs, comparing the performance of autotuned variants against traditional compiler optimizations using LLVM's opt tool (-O1, -O2, -O3) and the original unoptimized code.
 
 ### Monte Carlo Pi Calculation Benchmark
 
@@ -274,10 +274,10 @@ The framework has been evaluated on benchmark programs, comparing the performanc
 The benchmark implements a Monte Carlo method for calculating π by generating random points in a unit square and determining the ratio that fall within a unit circle. This benchmark is based on the Monte Carlo pi computation from the [LLVM benchmark repository maintained by Microsoft](https://github.com/microsoft/checkedc-llvm-test-suite/blob/master/SingleSource/Benchmarks/Misc/pi.c). This benchmark demonstrates significant performance improvements through structural autotuning:
 
 - **Original runtime**: 0.1132s (baseline)
-- **Compiler optimizations**: 
-  - O1: 0.1090s
-  - O2: 0.1082s  
-  - O3: 0.1087s
+- **Compiler optimizations (LLVM opt)**: 
+  - opt -O1: 0.1090s
+  - opt -O2: 0.1082s  
+  - opt -O3: 0.1087s
 - **Best autotuned variant**: Achieves performance below all compiler optimization levels
 - The beam search algorithm progressively improves performance over ~200 iterations, eventually outperforming traditional compiler optimizations
 - Multiple correct variants were discovered, with the search process exploring over 300 correct mutation paths
@@ -285,7 +285,7 @@ The benchmark implements a Monte Carlo method for calculating π by generating r
 ### Key Observations
 
 1. **Progressive Improvement**: The beam search algorithm shows a clear downward trend in execution time as it explores the mutation space, indicating effective search strategy
-2. **Outperforming Compiler Optimizations**: Autotuned variants achieve better performance than standard compiler optimization levels (O1-O3)
+2. **Outperforming Compiler Optimizations**: Autotuned variants achieve better performance than standard compiler optimization levels using LLVM's opt tool (-O1 to -O3)
 3. **Correctness Maintenance**: All reported variants maintain program correctness (result = 0), validating the correctness validation system
 4. **Search Space Exploration**: The framework successfully navigates a large search space while maintaining correctness constraints
 
