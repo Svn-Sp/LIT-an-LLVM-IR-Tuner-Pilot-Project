@@ -24,24 +24,211 @@ The primary objectives of this work are threefold:
 
 ## Structural Mutations
 
-The framework implements five types of structural mutations that operate at the LLVM IR level. These mutations are designed as "micromutations" - low-level transformations that can be applied independently or in combination to explore the optimization space:
+The framework implements five types of structural mutations that operate at the LLVM IR level. These mutations are designed as "micromutations" - low-level transformations that can be applied independently or in combination to explore the optimization space. Each mutation is parameterized by a decision vector that controls its specific behavior (e.g., which function, basic block, or instruction to target), allowing for systematic exploration of the mutation space.
 
 ### 1. ADD_RANDOM_ARITHMETIC
-Inserts random arithmetic operations into the IR. This mutation explores whether adding seemingly redundant computations can lead to performance improvements through effects on register allocation, instruction scheduling, or cache behavior.
+
+This mutation selects two arithmetic instructions from the same basic block and inserts a new arithmetic operation between them. The new operation uses the results of the two selected instructions as operands, and replaces some uses of the second instruction with the result of the new operation.
+
+**How it works:**
+1. Selects a function and basic block
+2. Finds arithmetic instructions with numeric return types (integer or floating point)
+3. Selects two instructions (Inst1 and Inst2) where Inst1 appears before Inst2
+4. Creates a random arithmetic operation (Add, Sub, Mul, UDiv, SDiv) between Inst1 and Inst2
+5. Handles type conversions if needed (integer casts, int-to-float, float casts)
+6. Inserts the new instruction after Inst2
+7. Replaces uses of Inst2 (except the first use) with the new instruction's result
+
+**Example transformation:**
+
+**Before:**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = mul i32 %a, 5
+  %2 = add i32 %b, 10
+  %3 = sub i32 %2, 3
+  ret i32 %3
+}
+```
+
+**After (with ADD_RANDOM_ARITHMETIC selecting %1 and %2, creating an add operation):**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = mul i32 %a, 5
+  %2 = add i32 %b, 10
+  %random_add_12345 = add i32 %1, %2  ; New instruction inserted after %2
+  %3 = sub i32 %random_add_12345, 3  ; %3 now uses new instruction instead of %2
+  ret i32 %3
+}
+```
+
+Note: The new instruction uses both %1 and %2 as operands. The first use of %2 (in the new instruction itself) is preserved, but subsequent uses (like in %3) are replaced with the new instruction's result.
 
 ### 2. MOVE_BLOCKWISE
-Moves basic blocks within functions, potentially affecting control flow and instruction ordering. This explores how code layout and block ordering can impact performance.
+
+This mutation moves a contiguous sequence of instructions within a basic block to a different position in the same basic block, without changing the relative order of the moved instructions.
+
+**How it works:**
+1. Selects a function and basic block
+2. Selects three instructions: First, Last (defining a range), and InsertBefore (insertion point)
+3. The insertion point must be outside the range [First, Last]
+4. Uses `BasicBlock::splice()` to move the instruction sequence
+
+**Example transformation:**
+
+**Before:**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, 1
+  %2 = mul i32 %b, 2
+  %3 = sub i32 %1, %2
+  %4 = add i32 %a, 10
+  ret i32 %3
+}
+```
+
+**After (with MOVE_BLOCKWISE moving instructions %2 and %3 to after %4):**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, 1
+  %4 = add i32 %a, 10
+  %2 = mul i32 %b, 2
+  %3 = sub i32 %1, %2
+  ret i32 %3
+}
+```
+
+Note: This mutation moves instructions structurally without checking data dependencies. The resulting IR may be invalid if moved instructions depend on instructions that come after them in the new order, or if instructions that depend on the moved instructions come before them. The mutation will fail validation if the resulting IR is invalid.
 
 ### 3. ADD_NEW_COND
-Adds new conditional branches to the IR. This mutation investigates whether additional control flow can enable better optimization opportunities or affect branch prediction behavior.
+
+This mutation adds a new conditional branch by comparing two existing register values and creating a new basic block that branches based on the comparison result.
+
+**How it works:**
+1. Selects a function and basic block
+2. Finds the terminator instruction of the selected basic block
+3. Collects all used registers from the function
+4. Selects two random registers to compare
+5. Creates a comparison (ICmpEQ for integers/pointers, FCmpOEQ for floats)
+6. Handles type conversions if the registers have different types
+7. Creates a new basic block that branches to the original successor
+8. Replaces the original terminator with a conditional branch: `br i1 %comparison, label %newblock, label %original_successor`
+
+**Example transformation:**
+
+**Before:**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, %b
+  %2 = mul i32 %1, 2
+  br label %next
+
+next:
+  %3 = add i32 %2, 5
+  ret i32 %3
+}
+```
+
+**After (with ADD_NEW_COND comparing %1 and %2):**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, %b
+  %2 = mul i32 %1, 2
+  %regCompare = icmp eq i32 %1, %2
+  br i1 %regCompare, label %newblock123456, label %next
+
+newblock123456:
+  br label %next
+
+next:
+  %3 = add i32 %2, 5
+  ret i32 %3
+}
+```
 
 ### 4. UNSAFE_MEM_2_REG
-Converts memory operations (alloca/load/store) to register operations by promoting stack-allocated variables to SSA registers. This mutation is derived from LLVM's standard `mem2reg` pass (PromoteMemToReg), but with safety checks removed. The original `mem2reg` pass only promotes allocas that are provably safe to promote (e.g., no address-taking, no volatile operations). This unsafe variant attempts promotion even when safety cannot be guaranteed, potentially discovering performance improvements in cases where the standard pass would be conservative.
+
+This mutation promotes a stack-allocated variable (alloca) to an SSA register by eliminating the alloca, load, and store instructions and using phi nodes where necessary. It uses LLVM's `PromoteMemToReg` function with a simplified promotability check (`simpleIsAllocaPromotable`) that allows:
+- Load instructions that read from the alloca
+- Store instructions where the alloca is the pointer operand
+- GetElementPtr and BitCast instructions (which are recursively checked)
+
+Any other use types cause the promotion to be rejected. This is more permissive than LLVM's standard `mem2reg` pass, which performs more conservative safety analysis.
+
+**How it works:**
+1. Selects a function and basic block
+2. Finds alloca instructions in the selected basic block
+3. Selects one alloca to promote
+4. Checks if the alloca is promotable using `simpleIsAllocaPromotable()` (allows Load, Store, GetElementPtr, and BitCast uses)
+5. Creates a DominatorTree for the function
+6. Calls `PromoteMemToReg()` to perform the promotion
+
+**Example transformation:**
+
+**Before:**
+```llvm
+define i32 @example(i32 %a) {
+entry:
+  %x = alloca i32, align 4
+  store i32 %a, ptr %x, align 4
+  %1 = load i32, ptr %x, align 4
+  %2 = add i32 %1, 5
+  ret i32 %2
+}
+```
+
+**After (with UNSAFE_MEM_2_REG promoting %x):**
+```llvm
+define i32 @example(i32 %a) {
+entry:
+  %2 = add i32 %a, 5
+  ret i32 %2
+}
+```
+
+The alloca, store, and load are eliminated, and the value flows directly through SSA registers. In more complex cases with multiple stores, phi nodes would be inserted at control flow merge points.
 
 ### 5. DELETE_RANDOM_INSTRUCTION
-Removes random instructions from the IR. This mutation explores whether eliminating certain computations can improve performance, potentially by reducing register pressure or enabling other optimizations.
 
-Each mutation is parameterized by a decision vector that controls its specific behavior (e.g., which function, basic block, or instruction to target), allowing for systematic exploration of the mutation space.
+This mutation removes a random instruction from a basic block, but only if the instruction has no uses (i.e., its result is not referenced by any other instruction).
+
+**How it works:**
+1. Selects a function and basic block
+2. Collects all non-terminator instructions from the basic block
+3. Selects a random instruction
+4. Checks if the instruction has no uses (`use_empty()`)
+5. If unused, deletes the instruction using `eraseFromParent()`
+
+**Example transformation:**
+
+**Before:**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, 1
+  %2 = mul i32 %b, 2
+  %3 = add i32 %1, %2
+  %4 = mul i32 %1, 5  ; Unused result
+  ret i32 %3
+}
+```
+
+**After (with DELETE_RANDOM_INSTRUCTION removing the unused %4):**
+```llvm
+define i32 @example(i32 %a, i32 %b) {
+entry:
+  %1 = add i32 %a, 1
+  %2 = mul i32 %b, 2
+  %3 = add i32 %1, %2
+  ret i32 %3
+}
+```
 
 ## Autotuning Strategy
 
