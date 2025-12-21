@@ -1,7 +1,6 @@
 .vscode
 build/
 *.csv
-*.png
 *.ll
 *.db
 *.sqlite

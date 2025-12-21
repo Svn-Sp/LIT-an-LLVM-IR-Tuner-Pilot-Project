@@ -261,7 +261,7 @@ The framework has been evaluated on benchmark programs, comparing the performanc
 
 ![Pi Benchmark Comparison](diagrams/pi_benchmark_comparison.png)
 
-The benchmark implements a Monte Carlo method for calculating π by generating random points in a unit square and determining the ratio that fall within a unit circle. This benchmark demonstrates significant performance improvements through structural autotuning:
+The benchmark implements a Monte Carlo method for calculating π by generating random points in a unit square and determining the ratio that fall within a unit circle. This benchmark is based on the Monte Carlo pi computation from the [LLVM benchmark repository maintained by Microsoft](https://github.com/microsoft/checkedc-llvm-test-suite/blob/master/SingleSource/Benchmarks/Misc/pi.c). This benchmark demonstrates significant performance improvements through structural autotuning:
 
 - **Original runtime**: 0.1132s (baseline)
 - **Compiler optimizations**: 
