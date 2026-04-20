@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <unistd.h>
 #include <string>
 #include <cstdio>
 #include <chrono>
@@ -178,23 +179,32 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
     run_instance.success = true;
     run_instance.avgDuration = avg;
     run_instance.stddevDuration = stddev;
-    if (typeid(correct_result) == typeid(Scalar)) {
-        Scalar result(output_file);
-        double distance = result.get_distance(correct_result);
-        llvm::outs() << "Measured Distance: " << distance << "\n";
-        run_instance.result = distance;
-    } else if (typeid(correct_result) == typeid(ArrayOutput)) {
-        ArrayOutput result(output_file);
-        double distance = result.get_distance(correct_result);
-        llvm::outs() << "Measured Distance: " << distance << "\n";
-        run_instance.result = distance;
-    }else if (typeid(correct_result) == typeid(Matrix2DOutput)) {
-        Matrix2DOutput result(output_file);
-        double distance = result.get_distance(correct_result);
-        llvm::outs() << "Measured Distance: " << distance << "\n";
-        run_instance.result = distance;
-    } else {
-        throw std::runtime_error("Output type not supported");
+    try {
+        if (typeid(correct_result) == typeid(Scalar)) {
+            Scalar result(output_file);
+            double distance = result.get_distance(correct_result);
+            llvm::outs() << "Measured Distance: " << distance << "\n";
+            run_instance.result = distance;
+        } else if (typeid(correct_result) == typeid(ArrayOutput)) {
+            ArrayOutput result(output_file);
+            double distance = result.get_distance(correct_result);
+            llvm::outs() << "Measured Distance: " << distance << "\n";
+            run_instance.result = distance;
+        } else if (typeid(correct_result) == typeid(Matrix2DOutput)) {
+            Matrix2DOutput result(output_file);
+            double distance = result.get_distance(correct_result);
+            llvm::outs() << "Measured Distance: " << distance << "\n";
+            run_instance.result = distance;
+        } else {
+            throw std::runtime_error("Output type not supported");
+        }
+    } catch (const std::exception& e) {
+        llvm::outs() << "Failed to parse/compare output '" << output_file << "': " << e.what() << "\n";
+        run_instance.success = false;
+        run_instance.avgDuration = 0;
+        run_instance.stddevDuration = 0;
+        run_instance.result = 0;
+        return -1;
     }
     //run_instance.saveToDb();
     return 1;

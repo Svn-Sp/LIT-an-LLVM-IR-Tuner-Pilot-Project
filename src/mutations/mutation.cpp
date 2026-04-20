@@ -10,11 +10,9 @@
 
 using namespace llvm;
 
-Mutation::Mutation(int decisionsCount) : dm(decisionsCount) {
-}
+Mutation::Mutation() : dm() {}
 
-Mutation::Mutation(int decisionsCount, int decisions[]) : dm(decisionsCount, decisions) {
-}
+Mutation::Mutation(std::vector<int> decisions) : dm(std::move(decisions)) {}
 
 std::vector<int> Mutation::run(const char* input_file, const char* output_file) {
     LLVMContext Context;
@@ -52,13 +50,7 @@ std::vector<int> Mutation::run(const char* input_file, const char* output_file) 
     raw_fd_ostream Out(output_file, EC);
     updatedM->print(Out, nullptr);
     Out.close();
-    // Return the decisions made during this mutation
-    std::vector<int> decisions;
-    for (int i = 0; i < dm.num_decisions; i++) {
-        decisions.push_back(dm.decisions[i]);
-    }
-    //dm.print_decisions();
-    return decisions;
+    return dm.decisions;
 }
 
 #endif // MUTATION_CPP

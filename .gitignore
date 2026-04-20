@@ -6,3 +6,4 @@ build/
 *.sqlite
 /*.json
 *.html
+**/__pycache__/

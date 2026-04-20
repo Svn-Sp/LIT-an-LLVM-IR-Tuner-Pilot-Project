@@ -1,13 +1,38 @@
 import os
 import sys
 
-import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import pandas as pd
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib import rcsetup
 
-# Create diagrams directory if it doesn't exist
-os.makedirs("diagrams", exist_ok=True)
+
+def configure_matplotlib_backend():
+    if matplotlib.get_backend().lower() != "agg":
+        return
+
+    interactive_backends = set(rcsetup.interactive_bk)
+    preferred_backends = ("qtagg", "tkagg", "gtk3agg", "gtk4agg", "wxagg", "webagg")
+
+    if not (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")):
+        return
+
+    for backend in preferred_backends:
+        if backend not in interactive_backends:
+            continue
+        try:
+            matplotlib.use(backend, force=True)
+            if backend == "webagg":
+                print("No desktop matplotlib backend found; opening plot via WebAgg.")
+            return
+        except Exception:
+            continue
+
+
+configure_matplotlib_backend()
+
+import matplotlib.pyplot as plt
 
 data = pd.read_csv(sys.argv[1])
 
@@ -92,12 +117,6 @@ plt.grid(True, linestyle="--", alpha=0.7)
 
 # Adjust layout
 plt.tight_layout()
-
-# Save the figure
-input_filename = os.path.basename(sys.argv[1])
-output_filename = f"diagrams/{input_filename.replace('.csv', '_plot.png')}"
-plt.savefig(output_filename, dpi=300)
-print(f"Plot saved to {output_filename}")
 
 # Show the plot
 plt.show()

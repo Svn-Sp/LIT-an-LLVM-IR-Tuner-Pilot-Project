@@ -6,9 +6,10 @@
 #include "utils/randomness_utils.cpp"
 #include "mutations/add_random_arithmetic.cpp"
 #include "mutations/move_blockwise.cpp"
-#include "mutations/unsafe_mem_2_reg.cpp"
 #include "mutations/add_new_cond.cpp"
 #include "mutations/delete_random_instruction.cpp"
+#include "mutations/replace_with_dominating_value.cpp"
+#include "mutations/replace_load_with_phi.cpp"
 #include <random>
 #include "constants.h"
 
@@ -18,9 +19,10 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
     AddRandomArithmetic addRandomArithmetic;
     MoveBlockwise moveBlockwise;
     AddNewCond addNewCond;
-    UnsafeMem2Reg unsafeMem2Reg;
     DeleteRandomInstruction deleteRandomInstruction;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 4);
+    ReplaceWithDominatingValue replaceWithDominatingValue;
+    ReplaceLoadWithPhi replaceLoadWithPhi;
+    std::uniform_int_distribution<> mutationTypeDistribution(0, 5);
     int mutationTypeVal = mutationTypeDistribution(gen);
     
     std::vector<int> decisions;
@@ -45,14 +47,20 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
                 modified_file.c_str()
             );
             break;
-        case UNSAFE_MEM_2_REG:
-            decisions = unsafeMem2Reg.run(
+        case DELETE_RANDOM_INSTRUCTION:
+            decisions = deleteRandomInstruction.run(
                 modified_file.c_str(),
                 modified_file.c_str()
             );
             break;
-        case DELETE_RANDOM_INSTRUCTION:
-            decisions = deleteRandomInstruction.run(
+        case REPLACE_WITH_DOMINATING_VALUE:
+            decisions = replaceWithDominatingValue.run(
+                modified_file.c_str(),
+                modified_file.c_str()
+            );
+            break;
+        case REPLACE_LOAD_WITH_PHI:
+            decisions = replaceLoadWithPhi.run(
                 modified_file.c_str(),
                 modified_file.c_str()
             );
@@ -63,50 +71,48 @@ std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance
 }
 
 void reapplyMutation(Run& run_instance, MutationType mutationType, const std::vector<int>& decisions, std::string modified_file) {
-    // Safety check: empty decisions vector
     if (decisions.empty()) {
         llvm::outs() << "Warning: Empty decisions vector for mutation type " << mutationType << "\n";
         throw std::runtime_error("Empty decisions vector for mutation type " + std::to_string(mutationType));
     }
-    
-    // Convert vector to array for the constructors
-    int* decisionsArray = nullptr;
+
     try {
-        decisionsArray = new int[decisions.size()];
-        for (size_t i = 0; i < decisions.size(); i++) {
-            decisionsArray[i] = decisions[i];
-        }
-        
         std::vector<int> result_decisions;
         bool success = false;
         switch (mutationType) {
             case ADD_RANDOM_ARITHMETIC: {
-                AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);
-                result_decisions = addRandomArithmeticCustom.run(modified_file.c_str(), modified_file.c_str());
+                AddRandomArithmetic m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case MOVE_BLOCKWISE: {
-                MoveBlockwise moveBlockwiseCustom(decisionsArray);
-                result_decisions = moveBlockwiseCustom.run(modified_file.c_str(), modified_file.c_str());
+                MoveBlockwise m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case ADD_NEW_COND: {
-                AddNewCond addNewCondCustom(decisionsArray);
-                result_decisions = addNewCondCustom.run(modified_file.c_str(), modified_file.c_str());
-                success = !result_decisions.empty();
-                break;
-            }
-            case UNSAFE_MEM_2_REG: {
-                UnsafeMem2Reg unsafeMem2RegCustom(decisionsArray);
-                result_decisions = unsafeMem2RegCustom.run(modified_file.c_str(), modified_file.c_str());
+                AddNewCond m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case DELETE_RANDOM_INSTRUCTION: {
-                DeleteRandomInstruction deleteRandomInstructionCustom(decisionsArray);
-                result_decisions = deleteRandomInstructionCustom.run(modified_file.c_str(), modified_file.c_str());
+                DeleteRandomInstruction m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case REPLACE_WITH_DOMINATING_VALUE: {
+                ReplaceWithDominatingValue m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case REPLACE_LOAD_WITH_PHI: {
+                ReplaceLoadWithPhi m(decisions);
+                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;
             }
@@ -114,7 +120,7 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
                 llvm::outs() << "Warning: Unknown mutation type " << mutationType << "\n";
                 break;
         }
-        
+
         if (success) {
             run_instance.mutations.push_back(std::make_tuple(mutationType, result_decisions));
         } else {
@@ -127,10 +133,6 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
     } catch (...) {
         llvm::outs() << "Unknown exception in reapplyMutation\n";
         throw std::runtime_error("Mutation reapplication failed");
-    }
-    
-    if (decisionsArray) {
-        delete[] decisionsArray;
     }
 }
 #endif 

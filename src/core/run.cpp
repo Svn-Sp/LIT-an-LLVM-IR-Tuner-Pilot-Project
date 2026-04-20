@@ -4,7 +4,6 @@
 #include "core/run.h"
 #include <sstream>
 #include <cmath>
-#include <sqlite3.h>
 #include "constants.h"
 #include <chrono>
 

@@ -28,9 +28,9 @@ using namespace llvm;
 
 class DeleteRandomInstruction : public Mutation {
 public:
-    DeleteRandomInstruction() : Mutation(3) {
+    DeleteRandomInstruction() : Mutation() {
     }
-    DeleteRandomInstruction(int decisions[]) : Mutation(3, decisions) {
+    DeleteRandomInstruction(std::vector<int> decisions) : Mutation(std::move(decisions)) {
     }
 
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {

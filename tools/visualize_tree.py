@@ -2,70 +2,108 @@ import json
 import math
 import os
 import sys
+from dataclasses import dataclass, field
+from typing import Any
 
 from pyvis.network import Network
 
 # Check if JSON file exists
-if not os.path.exists(sys.argv[1]):
-    print(f"Error: {sys.argv[1]} not found!")
+file_name=sys.argv[1]
+if not os.path.exists(file_name):
+    print(f"Error: {file_name} not found!")
     exit(1)
 
-with open(sys.argv[1], "r") as f:
-    data = json.load(f)
+@dataclass
+class TreeNode:
+    children: list["TreeNode"] = field(default_factory=list)
+    avg_duration: float | None = None
+    mutation_type: str | None = None
+    result: Any = None
+    raw: dict[str, Any] = field(default_factory=dict)
+
+    @staticmethod
+    def from_dict(data: dict[str, Any]) -> "TreeNode":
+        return TreeNode(
+            children=[TreeNode.from_dict(child) for child in data.get("children", [])],
+            mutation_type=data.get("mutationType"),
+            result=data.get("result"),
+            avg_duration=data.get("avg_time", data.get("avgDuration")),
+            raw=data,
+        )
 
 
-def generate_name(dict_):
-    name = dict_["mutationType"]
-    name += f" | {dict_['avg_time']:.4f} ± {dict_['std_dev_time']:.4f}"
-    if type(dict_["result"]) == float:
-        name += f" | {str(dict_['result'])[:6]}"
+with open(file_name, "r") as f:
+    raw_data = json.load(f)
+
+data = TreeNode.from_dict(raw_data)
+def get_all_nodes(root: TreeNode) -> list[TreeNode]:
+    """Return a flat list of all nodes in the tree (DFS order)."""
+    nodes = []
+    def dfs(node):
+        nodes.append(node)
+        for child in node.children:
+            dfs(child)
+    dfs(root)
+    return nodes
+
+all_nodes = get_all_nodes(data)
+
+
+def _numeric_runtimes(nodes: list[TreeNode]) -> list[float]:
+    out: list[float] = []
+    for node in nodes:
+        v = node.avg_duration
+        if isinstance(v, (int, float)) and not (isinstance(v, float) and math.isnan(v)):
+            out.append(float(v))
+    return out
+
+
+_runtime_values = _numeric_runtimes(all_nodes)
+_times = sorted(_runtime_values)
+
+if _times:
+    _k = max(1, math.ceil(0.1 * len(_times)))
+    # Fastest 10%: solid green for t ≤ this (largest time among the fastest decile).
+    RUNTIME_GREEN_MAX = _times[_k - 1]
+    # Slowest 10%: solid black for t ≥ this (smallest time among the slowest decile).
+    RUNTIME_BLACK_MIN = _times[len(_times) - _k]
+else:
+    RUNTIME_GREEN_MAX = None
+    RUNTIME_BLACK_MIN = None
+
+RUNTIME_FAST_COLOR = "#2ECC71"
+RUNTIME_SLOW_COLOR = "#000000"
+
+# Ramp u∈[0,1] between green cap and black floor.
+RUNTIME_PROGRESS_STOPS: list[tuple[float, str]] = [
+    (0.0, "#2ECC71"),
+    (0.11, "#7DCE82"),
+    (0.22, "#B8E986"),
+    (0.33, "#F7DC6F"),
+    (0.44, "#F8B739"),
+    (0.55, "#E67E22"),
+    (0.66, "#E74C3C"),
+    (0.77, "#C0392B"),
+    (0.88, "#78281F"),
+    (0.94, "#3D2C1F"),
+    (1.0, "#000000"),
+]
+
+def _format_runtime(runtime: float | None) -> str:
+    if runtime is None:
+        return "n/a"
+    return f"{float(runtime):.6g}s"
+
+
+def generate_name(node: TreeNode):
+    name = node.mutation_type or "ROOT"
+    if type(node.result) == float:
+        name += f" | {str(node.result)[:6]}"
     else:
-        name += f" | {dict_['result'][:6]}"
+        name += f" | {str(node.result)[:6]}"
+    # Show runtime directly in node label (not only via fill color).
+    name += f" | t={_format_runtime(node.avg_duration)}"
     return name
-
-
-def collect_avg_times(node, times_list):
-    """Recursively collect all avg_time values from the tree"""
-    if "avg_time" in node:
-        times_list.append(node["avg_time"])
-    for child in node.get("children", []):
-        collect_avg_times(child, times_list)
-
-
-def calculate_node_size(avg_time, min_time, max_time, top_30_percent_threshold):
-    """Calculate node size based on speed (avg_time) - faster = larger
-    Emphasizes differences among fast nodes (top 30%) while minimizing differences for slow ones"""
-    if max_time == min_time:
-        return 40  # Default size if all times are the same
-
-    # Check if this node is in the top 30% (faster than threshold)
-    is_top_30 = avg_time <= top_30_percent_threshold
-
-    if is_top_30:
-        # For top 30%: use fine granularity with cubic emphasis
-        # Normalize within the top 30% range (from threshold to min_time)
-        top_range = max_time - top_30_percent_threshold
-        if top_range == 0:
-            top_normalized = 1.0
-        else:
-            top_normalized = (max_time - avg_time) / top_range
-
-        # Apply cubic transformation for fine granularity
-        final_normalized = top_normalized**3
-
-        # Map to size range >40 (emphasized range for fast nodes)
-        return 40 + min(final_normalized, 60)
-    else:
-        # For bottom 70%: use compressed range with minimal differences
-        # Normalize within the bottom 70% range (from max_time to threshold)
-        bottom_range = top_30_percent_threshold - min_time
-        if bottom_range == 0:
-            bottom_normalized = 0.0
-        else:
-            bottom_normalized = (top_30_percent_threshold - avg_time) / bottom_range
-
-        # Map to size range 20-40 (compressed range for slow nodes)
-        return max(20, 20 + (bottom_normalized * 20))
 
 
 def interpolate_correctness_color(distance):
@@ -73,29 +111,95 @@ def interpolate_correctness_color(distance):
     # Use logarithmic scale to emphasize differences between close results
     if distance == 0:
         return "#00FF00"  # Green for perfect match
-    if distance < 0.01:
+    if distance < 0.001:
         return "#FFFF00"  # Yellow for close match
     else:
         return "#FF0000"  # Red for invalid values
 
 
-# Collect all avg_time values to determine the range
-all_times = []
-if "children" in data and len(data["children"]) > 0:
-    for child in data["children"]:
-        collect_avg_times(child, all_times)
+def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    h = hex_color.lstrip("#")
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
 
-min_time = min(all_times)
-max_time = max(all_times)
 
-sorted_times = sorted(all_times)
-threshold_index = int(len(sorted_times) * 0.3)
-top_30_percent_threshold = sorted_times[threshold_index]
-print(f"Top 30% speed threshold: {top_30_percent_threshold:.4f}")
+def _lerp_hex(color_a: str, color_b: str, t: float) -> str:
+    t = max(0.0, min(1.0, t))
+    ra, ga, ba = _hex_to_rgb(color_a)
+    rb, gb, bb = _hex_to_rgb(color_b)
+    return "#{:02X}{:02X}{:02X}".format(
+        int(round(ra + (rb - ra) * t)),
+        int(round(ga + (gb - ga) * t)),
+        int(round(ba + (bb - ba) * t)),
+    )
 
-# Print statistics for debugging
-print(f"Time range: {min_time:.6f} to {max_time:.6f}")
-print(f"Number of nodes: {len(all_times)}")
+
+def _color_from_progression_stops(u: float, stops: list[tuple[float, str]]) -> str:
+    u = max(0.0, min(1.0, u))
+    if u <= stops[0][0]:
+        return stops[0][1]
+    if u >= stops[-1][0]:
+        return stops[-1][1]
+    for i in range(len(stops) - 1):
+        u0, c0 = stops[i]
+        u1, c1 = stops[i + 1]
+        if u <= u1:
+            span = u1 - u0
+            if span <= 0:
+                return c1
+            t = (u - u0) / span
+            return _lerp_hex(c0, c1, t)
+    return stops[-1][1]
+
+
+def _css_linear_gradient_from_stops(stops: list[tuple[float, str]], direction: str = "to right") -> str:
+    parts = [f"{color} {frac * 100:.1f}%" for frac, color in stops]
+    return f"linear-gradient({direction}, {', '.join(parts)})"
+
+
+def runtime_gradient_color(runtime: float | None) -> str:
+    if runtime is None:
+        return "#B0BEC5"
+    t = float(runtime)
+    if not _times:
+        return RUNTIME_FAST_COLOR
+    # Green before black so tied runtimes at both cutoffs count as green.
+    if t <= RUNTIME_GREEN_MAX:
+        return RUNTIME_FAST_COLOR
+    if t >= RUNTIME_BLACK_MIN:
+        return RUNTIME_SLOW_COLOR
+    hi = RUNTIME_BLACK_MIN
+    lo = RUNTIME_GREEN_MAX
+    if hi <= lo:
+        return _color_from_progression_stops(1.0, RUNTIME_PROGRESS_STOPS)
+    u = (t - lo) / (hi - lo)
+    return _color_from_progression_stops(max(0.0, min(1.0, u)), RUNTIME_PROGRESS_STOPS)
+
+
+def _inject_runtime_legend(html: str) -> str:
+    grad = _css_linear_gradient_from_stops(RUNTIME_PROGRESS_STOPS)
+    if _times:
+        g, b = f"{RUNTIME_GREEN_MAX:.6g}", f"{RUNTIME_BLACK_MIN:.6g}"
+        desc = (
+            f"Green if ≤ {g}s (fastest 10% of timed nodes). "
+            f"Black if ≥ {b}s (slowest 10%). Ramp in between. "
+            f"Border = correctness."
+        )
+    else:
+        desc = "No timed nodes in this tree."
+    legend = f"""
+<div id="runtime-legend" style="position:fixed;top:12px;right:12px;z-index:9999;
+  background:rgba(255,255,255,0.95);border:1px solid #ccc;border-radius:6px;
+  padding:10px 12px;max-width:300px;font-family:Arial,sans-serif;font-size:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+  <div style="font-weight:bold;margin-bottom:6px;">Runtime (fill)</div>
+  <div style="height:14px;border-radius:4px;border:1px solid #999;background:{grad};"></div>
+  <div style="margin-top:8px;line-height:1.4;color:#333;">{desc}</div>
+</div>
+"""
+    if "</body>" in html:
+        return html.replace("</body>", legend + "\n</body>", 1)
+    return html + legend
+
 
 # Create network with hierarchical tree layout
 net = Network(height="900px", width="100%", bgcolor="#ffffff", font_color="#000000")
@@ -148,7 +252,7 @@ var options = {
       "blockShifting": true,
       "edgeMinimization": true,
       "parentCentralization": true,
-      "direction": "UD",
+      "direction": "LR",
       "sortMethod": "directed"
     }
   },
@@ -170,59 +274,50 @@ net.add_node(0, "Root", color="#FF6B6B", level=0)
 id_counter = 1
 
 
-def add_node_and_children(node, net, parent_id, level=1):
+def add_node_and_children(node: TreeNode, net, parent_id, level=1):
     global id_counter
 
     # Generate node name
     node_name = generate_name(node)
 
     # Add node with color based on correctness (distance to correct result)
-    result_value = node.get("result", "0")
+    result_value = node.result if node.result is not None else "0"
     if type(result_value) != float:
         result_value = float("inf")
     correctness_color = interpolate_correctness_color(result_value)
-
-    # Calculate node size based on speed (avg_time)
-    avg_time = node.get("avg_time", 0.0)
-    node_size = calculate_node_size(
-        avg_time, min_time, max_time, top_30_percent_threshold
-    )
+    runtime_color = runtime_gradient_color(node.avg_duration)
 
     net.add_node(
-        id_counter, node_name, color=correctness_color, level=level, size=node_size
-    )
-
-    # Use score for edge label, weight, and title
-    score = node.get("score", 0.0)
-    net.add_edge(
-        parent_id,
         id_counter,
-        label=f"{score:.2f}",
-        weight=score,
+        node_name,
+        color={"background": runtime_color, "border": correctness_color},
+        borderWidth=3,
+        title=f"runtime={_format_runtime(node.avg_duration)}",
+        level=level,
     )
+    net.add_edge(parent_id, id_counter)
 
     current_id = id_counter
     id_counter += 1
 
     # Process children
-    for child in node.get("children", []):
+    for child in node.children:
         add_node_and_children(child, net, current_id, level + 1)
 
 
-if "children" in data and len(data["children"]) > 0:
-    for child in data["children"]:
+if data and data.children:
+    for child in data.children:
         add_node_and_children(child, net, 0)
 else:
-    print("No children found in the tree data")
+    print("No children found in the filtered tree data")
 
 # Generate and save HTML
-html_content = net.generate_html()
+html_content = _inject_runtime_legend(net.generate_html())
 with open("beam_search_tree.html", "w") as f:
     f.write(html_content)
 print("Tree visualization saved to beam_search_tree.html")
 print("Open the HTML file in your web browser to view the hierarchical tree")
 print(
-    "Node colors represent correctness: Green = correct, Red = incorrect, Yellow = close"
+    "Fill: green ≤ fastest 10%, black ≥ slowest 10%, ramp between; "
+    "border = correctness"
 )
-print("Node size represents speed: Larger = faster")
-print("Scores are displayed directly on the edges")

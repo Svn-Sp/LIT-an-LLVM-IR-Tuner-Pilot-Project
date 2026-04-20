@@ -185,10 +185,6 @@ int write_tree_to_json(std::string file_name, BeamSearchTreeNode* root) {
     }
 }
 void beam_search(std::string program_file, std::string modified_file, std::string output_file, OutputBase& correct_result, std::vector<Run>& runs, std::string results_file_prefix){
-    std::string sanitized_program_file = sanitizeFileName(program_file);
-    std::string csv_file_name = "beam_search_results_" + sanitized_program_file + ".csv";
-    std::string tree_file_name = "beam_search_tree_" + sanitized_program_file + ".json";
-
     BeamSearchTreeNode* root = new BeamSearchTreeNode();
     Run run;
     measure_time(program_file, output_file, correct_result, run);
@@ -215,7 +211,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
         llvm::outs() << "Reapplying mutations:\n";
         while(children.size() > 0 && current_depth < MAX_MUTATIONS){
             current_depth++;
-            scores.push_back(0.17); //Weight of adding new node at this level
+            scores.push_back(0.12); //Weight of adding new node at this level
             std::discrete_distribution<> distribution(scores.begin(), scores.end());
             int index = distribution(gen);
             if(index==scores.size()-1){

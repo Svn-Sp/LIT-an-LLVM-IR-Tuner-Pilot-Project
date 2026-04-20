@@ -23,9 +23,9 @@ using namespace llvm;
 
 class AddNewCond : public Mutation {
 public:
-    AddNewCond() : Mutation(4) {
+    AddNewCond() : Mutation() {
     }
-    AddNewCond(int decisions[]) : Mutation(4, decisions) {
+    AddNewCond(std::vector<int> decisions) : Mutation(std::move(decisions)) {
     }
 
     std::unique_ptr<Module> mutate(std::unique_ptr<Module> M) override {

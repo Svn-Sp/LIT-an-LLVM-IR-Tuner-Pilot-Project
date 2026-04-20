@@ -294,43 +294,6 @@ public:
         return total_search_space;
     }
     
-    // Measure search space for UnsafeMem2Reg mutation
-    double measureUnsafeMem2Reg() {
-        double total_search_space = 0.0;
-        int valid_functions = countValidFunctions();
-        
-        if (valid_functions == 0) {
-            return 0.0;
-        }
-        
-        for (Function &F : *module) {
-            if (!F.isDeclaration() && isOptimizable(&F)) {
-                int basic_blocks = countBasicBlocks(&F);
-                if (basic_blocks == 0) continue;
-                
-                for (BasicBlock &BB : F) {
-                    int alloca_instructions = 0;
-                    for (Instruction &I : BB) {
-                        if (isa<AllocaInst>(I)) {
-                            alloca_instructions++;
-                        }
-                    }
-                    
-                    if (alloca_instructions == 0) continue;
-                    
-                    // Decision 1: Select function (valid_functions choices)
-                    // Decision 2: Select basic block (basic_blocks choices)
-                    // Decision 3: Select alloca instruction (alloca_instructions choices)
-                    
-                    double search_space = valid_functions * basic_blocks * alloca_instructions;
-                    total_search_space += search_space;
-                }
-            }
-        }
-        
-        return total_search_space;
-    }
-    
     // Measure search space for SplitLoop mutation
     double measureSplitLoop() {
         double total_search_space = 0.0;
@@ -368,7 +331,6 @@ public:
         search_spaces.push_back(measureDeleteRandomInstruction());
         search_spaces.push_back(measureMoveBlockwise());
         search_spaces.push_back(measureAddNewCond());
-        search_spaces.push_back(measureUnsafeMem2Reg());
         search_spaces.push_back(measureSplitLoop());
         
         // Calculate average
@@ -396,7 +358,6 @@ public:
         std::cout << "  DeleteRandomInstruction: " << measureDeleteRandomInstruction() << std::endl;
         std::cout << "  MoveBlockwise: " << measureMoveBlockwise() << std::endl;
         std::cout << "  AddNewCond: " << measureAddNewCond() << std::endl;
-        std::cout << "  UnsafeMem2Reg: " << measureUnsafeMem2Reg() << std::endl;
         std::cout << "  SplitLoop: " << measureSplitLoop() << std::endl;
         std::cout << std::endl;
         

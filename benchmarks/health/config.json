@@ -1,0 +1,7 @@
+{
+    "original": "benchmarks/health/original.ll",
+    "modified": "benchmarks/health/modified.ll",
+    "correct_output": "benchmarks/health/result.txt",
+    "output_file": "benchmarks/health/output.txt",
+    "output_type": "scalar"
+}

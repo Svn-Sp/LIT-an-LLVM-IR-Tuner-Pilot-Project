@@ -74,39 +74,44 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
         return false;
     }
     
-    // Convert vector to array for the constructors
-    int* decisionsArray = nullptr;
     try {
-        decisionsArray = new int[decisions.size()];
-        for (size_t i = 0; i < decisions.size(); i++) {
-            decisionsArray[i] = decisions[i];
-        }
-        
         std::vector<int> result_decisions;
         bool success = false;
-        
+
         switch (mutationType) {
             case ADD_RANDOM_ARITHMETIC: {
-                AddRandomArithmetic addRandomArithmeticCustom(decisionsArray);
-                result_decisions = addRandomArithmeticCustom.run(inputFile.c_str(), outputFile.c_str());
+                AddRandomArithmetic m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case MOVE_BLOCKWISE: {
-                MoveBlockwise moveBlockwiseCustom(decisionsArray);
-                result_decisions = moveBlockwiseCustom.run(inputFile.c_str(), outputFile.c_str());
+                MoveBlockwise m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
                 success = !result_decisions.empty();
                 break;
             }
             case ADD_NEW_COND: {
-                AddNewCond addNewCondCustom(decisionsArray);
-                result_decisions = addNewCondCustom.run(inputFile.c_str(), outputFile.c_str());
+                AddNewCond m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
                 success = !result_decisions.empty();
                 break;
             }
-            case UNSAFE_MEM_2_REG: {
-                UnsafeMem2Reg unsafeMem2RegCustom(decisionsArray);
-                result_decisions = unsafeMem2RegCustom.run(inputFile.c_str(), outputFile.c_str());
+            case DELETE_RANDOM_INSTRUCTION: {
+                DeleteRandomInstruction m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case REPLACE_WITH_DOMINATING_VALUE: {
+                ReplaceWithDominatingValue m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
+                success = !result_decisions.empty();
+                break;
+            }
+            case REPLACE_LOAD_WITH_PHI: {
+                ReplaceLoadWithPhi m(decisions);
+                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
                 success = !result_decisions.empty();
                 break;
             }
@@ -114,19 +119,17 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
                 std::cerr << "Warning: Unknown mutation type " << mutationType << std::endl;
                 break;
         }
-        
+
         if (success) {
             std::cout << "Successfully applied mutation: " << mutation_type_to_string(mutationType) << std::endl;
         } else {
             std::cerr << "Warning: Mutation application failed for type " << mutation_type_to_string(mutationType) << std::endl;
         }
-        
-        delete[] decisionsArray;
+
         return success;
-        
+
     } catch (const std::exception& e) {
         std::cerr << "Exception in applyMutation: " << e.what() << std::endl;
-        if (decisionsArray) delete[] decisionsArray;
         return false;
     }
 }

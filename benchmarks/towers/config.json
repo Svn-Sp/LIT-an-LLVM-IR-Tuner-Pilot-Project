@@ -1,0 +1,7 @@
+{
+    "original": "benchmarks/towers/original.ll",
+    "modified": "benchmarks/towers/modified.ll",
+    "correct_output": "benchmarks/towers/result.txt",
+    "output_file": "benchmarks/towers/output.txt",
+    "output_type": "scalar"
+}

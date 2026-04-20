@@ -1,7 +1,6 @@
 #include "tuning_strategies/random_tuning.cpp"
 #include "tuning_strategies/genetic_tuning.cpp"
 #include "tuning_strategies/beam_search.cpp"
-#include <sqlite3.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>

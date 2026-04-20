@@ -44,11 +44,13 @@ add_library(utils
 
 add_library(mutations
     src/mutations/mutation_factory.cpp
-    src/mutations/unsafe_mem_2_reg.cpp
     src/mutations/add_random_arithmetic.cpp
     src/mutations/add_new_cond.cpp
+    src/mutations/delete_random_instruction.cpp
     src/mutations/mutation.cpp
     src/mutations/move_blockwise.cpp
+    src/mutations/replace_with_dominating_value.cpp
+    src/mutations/replace_load_with_phi.cpp
 )
 
 add_library(tuning_strategies
