@@ -29,7 +29,6 @@ enum MutationType {
     ADD_NEW_COND,
     DELETE_RANDOM_INSTRUCTION,
     REPLACE_WITH_DOMINATING_VALUE,
-    REPLACE_LOAD_WITH_PHI,
 };
 
 // Add string conversion functionality
@@ -40,7 +39,6 @@ inline std::string mutation_type_to_string(MutationType type) {
         case ADD_NEW_COND: return "ADD_NEW_COND";
         case DELETE_RANDOM_INSTRUCTION: return "DELETE_RANDOM_INSTRUCTION";
         case REPLACE_WITH_DOMINATING_VALUE: return "REPLACE_WITH_DOMINATING_VALUE";
-        case REPLACE_LOAD_WITH_PHI: return "REPLACE_LOAD_WITH_PHI";
         default: return "UNKNOWN";
     }
 }
@@ -51,7 +49,6 @@ inline MutationType stringToMutationType(const std::string& typeStr) {
     if (typeStr == "ADD_NEW_COND") return ADD_NEW_COND;
     if (typeStr == "DELETE_RANDOM_INSTRUCTION") return DELETE_RANDOM_INSTRUCTION;
     if (typeStr == "REPLACE_WITH_DOMINATING_VALUE") return REPLACE_WITH_DOMINATING_VALUE;
-    if (typeStr == "REPLACE_LOAD_WITH_PHI") return REPLACE_LOAD_WITH_PHI;
     std::cerr << "Warning: Unknown mutation type: " << typeStr << std::endl;
     throw std::runtime_error("Unknown mutation type: " + typeStr);
 }

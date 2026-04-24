@@ -9,62 +9,50 @@
 #include "mutations/add_new_cond.cpp"
 #include "mutations/delete_random_instruction.cpp"
 #include "mutations/replace_with_dominating_value.cpp"
-#include "mutations/replace_load_with_phi.cpp"
 #include <random>
 #include "constants.h"
 
 extern std::mt19937 gen;
 
 std::tuple<MutationType, std::vector<int>> applyRandomMutation(Run& run_instance, std::string modified_file) {
-    AddRandomArithmetic addRandomArithmetic;
-    MoveBlockwise moveBlockwise;
-    AddNewCond addNewCond;
-    DeleteRandomInstruction deleteRandomInstruction;
-    ReplaceWithDominatingValue replaceWithDominatingValue;
-    ReplaceLoadWithPhi replaceLoadWithPhi;
-    std::uniform_int_distribution<> mutationTypeDistribution(0, 5);
-    int mutationTypeVal = mutationTypeDistribution(gen);
-    
-    std::vector<int> decisions;
-    MutationType mutationType = static_cast<MutationType>(mutationTypeVal);
+    static const std::vector<MutationType> allowedMutations = {
+        ADD_RANDOM_ARITHMETIC,
+        MOVE_BLOCKWISE,
+        ADD_NEW_COND,
+        DELETE_RANDOM_INSTRUCTION,
+        REPLACE_WITH_DOMINATING_VALUE,
+    };
+    std::uniform_int_distribution<int> dist(0, allowedMutations.size() - 1);
+    MutationType mutationType = allowedMutations[dist(gen)];
     llvm::outs() << "Apply mutation: " << mutationType << "\n";
+
+    std::vector<int> decisions;
     switch (mutationType) {
-        case ADD_RANDOM_ARITHMETIC:
-            decisions = addRandomArithmetic.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
+        case ADD_RANDOM_ARITHMETIC: {
+            AddRandomArithmetic m;
+            decisions = m.run(modified_file.c_str(), modified_file.c_str());
             break;
-        case MOVE_BLOCKWISE:
-            decisions = moveBlockwise.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
+        }
+        case MOVE_BLOCKWISE: {
+            MoveBlockwise m;
+            decisions = m.run(modified_file.c_str(), modified_file.c_str());
             break;
-        case ADD_NEW_COND:
-            decisions = addNewCond.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
+        }
+        case ADD_NEW_COND: {
+            AddNewCond m;
+            decisions = m.run(modified_file.c_str(), modified_file.c_str());
             break;
-        case DELETE_RANDOM_INSTRUCTION:
-            decisions = deleteRandomInstruction.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
+        }
+        case DELETE_RANDOM_INSTRUCTION: {
+            DeleteRandomInstruction m;
+            decisions = m.run(modified_file.c_str(), modified_file.c_str());
             break;
-        case REPLACE_WITH_DOMINATING_VALUE:
-            decisions = replaceWithDominatingValue.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
+        }
+        case REPLACE_WITH_DOMINATING_VALUE: {
+            ReplaceWithDominatingValue m;
+            decisions = m.run(modified_file.c_str(), modified_file.c_str());
             break;
-        case REPLACE_LOAD_WITH_PHI:
-            decisions = replaceLoadWithPhi.run(
-                modified_file.c_str(),
-                modified_file.c_str()
-            );
-            break;
+        }
     }
     run_instance.mutations.push_back(std::make_tuple(mutationType, decisions));
     return std::make_tuple(mutationType, decisions);
@@ -106,12 +94,6 @@ void reapplyMutation(Run& run_instance, MutationType mutationType, const std::ve
             }
             case REPLACE_WITH_DOMINATING_VALUE: {
                 ReplaceWithDominatingValue m(decisions);
-                result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
-                success = !result_decisions.empty();
-                break;
-            }
-            case REPLACE_LOAD_WITH_PHI: {
-                ReplaceLoadWithPhi m(decisions);
                 result_decisions = m.run(modified_file.c_str(), modified_file.c_str());
                 success = !result_decisions.empty();
                 break;

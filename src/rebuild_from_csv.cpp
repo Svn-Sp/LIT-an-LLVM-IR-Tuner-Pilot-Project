@@ -109,12 +109,6 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
                 success = !result_decisions.empty();
                 break;
             }
-            case REPLACE_LOAD_WITH_PHI: {
-                ReplaceLoadWithPhi m(decisions);
-                result_decisions = m.run(inputFile.c_str(), outputFile.c_str());
-                success = !result_decisions.empty();
-                break;
-            }
             default:
                 std::cerr << "Warning: Unknown mutation type " << mutationType << std::endl;
                 break;
@@ -134,18 +128,23 @@ bool applyMutation(MutationType mutationType, const std::vector<int>& decisions,
     }
 }
 
-int main() {
-    const std::string csvFile = "fastest_correct_mutations.csv";
-    const std::string originalFile = "original.ll";
-    const std::string outputFile = "best.ll";
-    const std::string tempFile = "temp.ll";
-    
+int main(int argc, char** argv) {
+    if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " <original.ll> <mutations.csv> <output.ll>" << std::endl;
+        return 1;
+    }
+
+    const std::string originalFile = argv[1];
+    const std::string csvFile = argv[2];
+    const std::string outputFile = argv[3];
+    const std::string tempFile = outputFile + ".tmp.ll";
+
     // Check if input files exist
     if (!std::filesystem::exists(csvFile)) {
         std::cerr << "Error: CSV file '" << csvFile << "' not found!" << std::endl;
         return 1;
     }
-    
+
     if (!std::filesystem::exists(originalFile)) {
         std::cerr << "Error: Original file '" << originalFile << "' not found!" << std::endl;
         return 1;

@@ -50,7 +50,6 @@ add_library(mutations
     src/mutations/mutation.cpp
     src/mutations/move_blockwise.cpp
     src/mutations/replace_with_dominating_value.cpp
-    src/mutations/replace_load_with_phi.cpp
 )
 
 add_library(tuning_strategies
