@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
+#include <cmath>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -38,16 +39,19 @@ class ArrayOutput : public Output<std::vector<float>> {
             std::stringstream buffer;
             buffer << file.rdbuf();
             std::string content = buffer.str();
-            // Replace all occurrences "-nan" with "0"
-            size_t pos = 0;
-            while ((pos = content.find("-nan", pos)) != std::string::npos) {
-                content.replace(pos, 4, "0");
-                pos += 1;
+            if (content.find("nan") != std::string::npos ||
+                content.find("NaN") != std::string::npos ||
+                content.find("inf") != std::string::npos) {
+                throw std::runtime_error("NaN/inf in array output: " + output_file);
             }
             json json_data = json::parse(content);
             std::vector<float> result;
             for (const auto& value : json_data) {
-                result.push_back(value.get<float>());
+                float v = value.get<float>();
+                if (std::isnan(v) || std::isinf(v)) {
+                    throw std::runtime_error("NaN/inf value in array output: " + output_file);
+                }
+                result.push_back(v);
             }
             return result;
         }

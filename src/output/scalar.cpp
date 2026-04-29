@@ -5,6 +5,7 @@
 #include "output.cpp"
 #include <fstream>
 #include <limits>
+#include <cmath>
 
 class Scalar : public Output<float> {
     public:
@@ -16,8 +17,7 @@ class Scalar : public Output<float> {
             if (!other_scalar) {
                 throw std::runtime_error("Cannot compare Scalar with different output type");
             }
-            double res = std::abs(this->content - other_scalar->content);
-            return res;
+            return std::abs(this->content - other_scalar->content);
         }
         float read_output(std::string output_file) override {
             std::ifstream file(output_file);
@@ -30,9 +30,10 @@ class Scalar : public Output<float> {
                 throw std::runtime_error("Failed to read from file: " + output_file);
             }
             file.close();
-            if (content == "nan" or content == "inf" or content == "-inf") {
-                return std::numeric_limits<float>::infinity();
+            float val = std::stof(content);
+            if (std::isnan(val) || std::isinf(val)) {
+                throw std::runtime_error("NaN/inf in scalar output: " + output_file);
             }
-            return std::stof(content);
+            return val;
         }
 };

@@ -13,6 +13,7 @@
 #include <cstdio>
 #include <chrono>
 #include <cmath>
+#include <limits>
 #include <vector>
 #include <typeinfo>
 #include <filesystem>
@@ -25,7 +26,7 @@
 #include "output/array.cpp"
 #include "output/matrix2d.cpp"
 #define TIMEOUT_SECONDS 6
-#define REPETITIONS 10
+#define REPETITIONS 20
 #define COMPILED_BINARY "/tmp/lit_benchmark_binary"
 #define COMPILED_OBJ    "/tmp/lit_benchmark_binary.o"
 
@@ -180,7 +181,7 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
         run_instance.success = false;
         run_instance.avgDuration = 0;
         run_instance.stddevDuration = 0;
-        run_instance.result = 0;
+        run_instance.result = std::numeric_limits<double>::infinity();
         return -1;
     }
 
@@ -201,7 +202,7 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
             run_instance.success = false;
             run_instance.avgDuration = 0;
             run_instance.stddevDuration = 0;
-            run_instance.result = 0;
+            run_instance.result = std::numeric_limits<double>::infinity();
             return -1;
         }
 
@@ -216,7 +217,7 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
             run_instance.success = false;
             run_instance.avgDuration = 0;
             run_instance.stddevDuration = 0;
-            run_instance.result = 0;
+            run_instance.result = std::numeric_limits<double>::infinity();
             return -1;
         }
     }

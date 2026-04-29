@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
+#include <cmath>
 #include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
@@ -42,17 +43,21 @@ class Matrix2DOutput : public Output<std::vector<std::vector<double>>> {
             std::stringstream buffer;
             buffer << file.rdbuf();
             std::string content = buffer.str();
-            size_t pos = 0;
-            while ((pos = content.find("-nan", pos)) != std::string::npos) {
-                content.replace(pos, 4, "0");
-                pos += 4;
-            }
-            pos = 0;
-            while ((pos = content.find("null", pos)) != std::string::npos) {
-                content.replace(pos, 4, "0.0");
-                pos += 4;
+            if (content.find("nan") != std::string::npos ||
+                content.find("NaN") != std::string::npos ||
+                content.find("inf") != std::string::npos ||
+                content.find("null") != std::string::npos) {
+                throw std::runtime_error("NaN/inf/null in matrix2d output: " + output_file);
             }
             json data = json::parse(content);
-            return data.get<std::vector<std::vector<double>>>();
+            std::vector<std::vector<double>> result = data.get<std::vector<std::vector<double>>>();
+            for (const auto& row : result) {
+                for (double v : row) {
+                    if (std::isnan(v) || std::isinf(v)) {
+                        throw std::runtime_error("NaN/inf value in matrix2d output: " + output_file);
+                    }
+                }
+            }
+            return result;
         }
 };
