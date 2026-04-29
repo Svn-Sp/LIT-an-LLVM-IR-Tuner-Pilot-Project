@@ -2,6 +2,8 @@
 build/
 *.csv
 *.ll
+!cherrypicked/**/*.csv
+!cherrypicked/**/*.ll
 *.db
 *.sqlite
 /*.json

@@ -1,0 +1,4 @@
+step,mutationType,decisions,avg_time,std_dev_time,result
+0,MOVE_BLOCKWISE,"[0, 2, 40, 42, 40]",0.116205,0.001944,0.0
+1,ADD_NEW_COND,"[0, 3, 7, 42]",0.113563,0.006042,0.0
+2,MOVE_BLOCKWISE,"[0, 2, 6, 40, 9]",0.092498,0.000717,0.0
