@@ -1,0 +1,55 @@
+{
+  "children": [
+    {
+      "avg_path_run_score": 0.131541,
+      "path_size": 1,
+      "score": 0.271900,
+      "mutationType": "DELETE_RANDOM_INSTRUCTION",
+      "decisions": [0,0,24],
+      "avg_time": 0.331909,
+      "std_dev_time": 0.001140,
+      "result": 0.002049,
+      "children": [
+
+      ]
+    },
+    {
+      "avg_path_run_score": 0.522592,
+      "path_size": 2,
+      "score": 0.861144,
+      "mutationType": "ADD_NEW_COND",
+      "decisions": [0,3,55,9],
+      "avg_time": 0.385403,
+      "std_dev_time": 0.000836,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.135420,
+          "path_size": 1,
+          "score": 0.108336,
+          "mutationType": "REPLACE_WITH_DOMINATING_VALUE",
+          "decisions": [0,5,1],
+          "avg_time": 0.322381,
+          "std_dev_time": 0.000801,
+          "result": 0.869319,
+          "children": [
+
+          ]
+        }
+      ]
+    },
+    {
+      "avg_path_run_score": 0.131787,
+      "path_size": 1,
+      "score": 0.272096,
+      "mutationType": "REPLACE_WITH_DOMINATING_VALUE",
+      "decisions": [0,61,1],
+      "avg_time": 0.331306,
+      "std_dev_time": 0.001451,
+      "result": 6563.585449,
+      "children": [
+
+      ]
+    }
+  ]
+}

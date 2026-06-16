@@ -2,9 +2,11 @@ import json
 import math
 import os
 import sys
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any
 
+import networkx as nx
 from pyvis.network import Network
 
 # Check if JSON file exists
@@ -96,14 +98,17 @@ def _format_runtime(runtime: float | None) -> str:
 
 
 def generate_name(node: TreeNode):
-    name = node.mutation_type or "ROOT"
-    if type(node.result) == float:
-        name += f" | {str(node.result)[:6]}"
+    mutation_label = node.mutation_type or "ROOT"
+    score = node.raw.get("score")
+    if isinstance(score, (int, float)) and not (
+        isinstance(score, float) and math.isnan(score)
+    ):
+        weight_label = f"{float(score):.4f}"
     else:
-        name += f" | {str(node.result)[:6]}"
-    # Show runtime directly in node label (not only via fill color).
-    name += f" | t={_format_runtime(node.avg_duration)}"
-    return name
+        weight_label = "n/a"
+
+    # Keep labels compact and readable for dense trees.
+    return f"{mutation_label}\nweight={weight_label}\nruntime={_format_runtime(node.avg_duration)}"
 
 
 def interpolate_correctness_color(distance):
@@ -173,6 +178,303 @@ def runtime_gradient_color(runtime: float | None) -> str:
         return _color_from_progression_stops(1.0, RUNTIME_PROGRESS_STOPS)
     u = (t - lo) / (hi - lo)
     return _color_from_progression_stops(max(0.0, min(1.0, u)), RUNTIME_PROGRESS_STOPS)
+
+
+def _node_face_edge_color(node: dict[str, Any]) -> tuple[str, str, float]:
+    """Return (facecolor, edgecolor, linewidth) for matplotlib from a pyvis node dict."""
+    c = node.get("color")
+    lw = float(node.get("borderWidth", 1))
+    if isinstance(c, dict):
+        face = str(c.get("background", "#97C2FC"))
+        edge = str(c.get("border", "#2B7CE9"))
+        return face, edge, lw
+    if isinstance(c, str):
+        return c, "#2B7CE9", lw
+    return "#97C2FC", "#2B7CE9", lw
+
+
+def _edge_color_from_vis(edge: dict[str, Any]) -> str:
+    c = edge.get("color")
+    if isinstance(c, dict):
+        return str(c.get("color", "#848484"))
+    if isinstance(c, str):
+        return c
+    return "#848484"
+
+
+def export_tree_png(net: Network, png_path: str) -> None:
+    """Render the pyvis network as a static hierarchical PNG (LR layers)."""
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib import patheffects as pe
+    from matplotlib.colors import LinearSegmentedColormap
+    from matplotlib.patches import Rectangle
+
+    G = nx.DiGraph()
+    for n in net.nodes:
+        nid = n["id"]
+        label = n.get("label", nid)
+        if not isinstance(label, str):
+            label = str(label)
+        level = int(n.get("level", 0))
+        face, edge_col, lw = _node_face_edge_color(n)
+        G.add_node(nid, label=label, level=level, _face=face, _edge=edge_col, _lw=lw)
+
+    for e in net.edges:
+        frm, to = e["from"], e["to"]
+        G.add_edge(
+            frm,
+            to,
+            dashes=bool(e.get("dashes")),
+            ecolor=_edge_color_from_vis(e),
+        )
+
+    if G.number_of_nodes() == 0:
+        return
+
+    levels = [int(G.nodes[n]["level"]) for n in G.nodes()]
+    layer_counts = Counter(levels)
+    max_per_level = max(layer_counts.values(), default=1)
+    max_level = max(levels, default=0)
+    scale = 3.0 + min(0.8, max_per_level / 18.0)
+    pos = nx.multipartite_layout(G, subset_key="level", align="vertical", scale=scale)
+    # Narrow overall figure; legend column gets more relative width and larger type.
+    w_main = min(28.0, 5.4 + (max_level + 1) * 2.25)
+    h = min(36.0, 6.8 + max_per_level * 0.52)
+    w_legend = 7.2
+    fig, (ax, lax) = plt.subplots(
+        1,
+        2,
+        figsize=(w_main + w_legend, h),
+        dpi=150,
+        facecolor="white",
+        layout="constrained",
+        gridspec_kw={"width_ratios": [w_main, w_legend], "wspace": 0.06},
+    )
+    fig.set_constrained_layout_pads(w_pad=0.03, h_pad=0.04, hspace=0.0, wspace=0.06)
+
+    ax.set_facecolor("white")
+    ax.axis("off")
+    ax.set_clip_on(False)
+    lax.set_facecolor("#fafafa")
+    lax.set_xlim(0, 1)
+    lax.set_ylim(0, 1)
+    lax.axis("off")
+    lax.set_clip_on(False)
+    for spine in lax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(0.6)
+        spine.set_edgecolor("#bdbdbd")
+
+    nodes = list(G.nodes())
+    node_color = [G.nodes[n]["_face"] for n in nodes]
+    edgecolors = [G.nodes[n]["_edge"] for n in nodes]
+    linewidths = [G.nodes[n]["_lw"] for n in nodes]
+
+    solid = [(u, v) for u, v, d in G.edges(data=True) if not d.get("dashes")]
+    dashed = [(u, v) for u, v, d in G.edges(data=True) if d.get("dashes")]
+
+    n_nodes = len(nodes)
+    font = max(6, min(10, 15 - n_nodes // 22))
+
+    node_size = max(4500, min(14000, 32000 // max(1, max_per_level)))
+    margin = max(22, int(node_size**0.5 * 0.35))
+    arr = max(22, int(node_size**0.5 * 0.22))
+
+    if solid:
+        nx.draw_networkx_edges(
+            G,
+            pos,
+            edgelist=solid,
+            ax=ax,
+            arrows=True,
+            arrowsize=arr,
+            width=1.55,
+            edge_color=[G.edges[u, v]["ecolor"] for u, v in solid],
+            connectionstyle="arc3,rad=0.04",
+            node_size=node_size,
+            min_source_margin=margin,
+            min_target_margin=margin,
+        )
+    if dashed:
+        nx.draw_networkx_edges(
+            G,
+            pos,
+            edgelist=dashed,
+            ax=ax,
+            arrows=True,
+            arrowsize=max(16, arr - 4),
+            width=1.15,
+            edge_color=[G.edges[u, v]["ecolor"] for u, v in dashed],
+            style="dashed",
+            connectionstyle="arc3,rad=0.04",
+            node_size=node_size,
+            min_source_margin=margin,
+            min_target_margin=margin,
+        )
+
+    nx.draw_networkx_nodes(
+        G,
+        pos,
+        nodelist=nodes,
+        ax=ax,
+        node_color=node_color,
+        node_shape="o",
+        node_size=node_size,
+        edgecolors=edgecolors,
+        linewidths=linewidths,
+    )
+
+    labels = {n: G.nodes[n]["label"] for n in nodes}
+    texts = nx.draw_networkx_labels(
+        G,
+        pos,
+        labels,
+        ax=ax,
+        font_size=font,
+        font_family="sans-serif",
+        font_color="#1a1a1a",
+    )
+    for t in texts.values():
+        t.set_clip_on(False)
+        t.set_path_effects([pe.withStroke(linewidth=2.2, foreground="white", alpha=0.92)])
+
+    xs = np.array([pos[n][0] for n in nodes], dtype=float)
+    ys = np.array([pos[n][1] for n in nodes], dtype=float)
+    xr = float(xs.max() - xs.min()) or 1.0
+    yr = float(ys.max() - ys.min()) or 1.0
+    # Room for large circular nodes and multiline labels (not included in pos extent).
+    x_pad = max(xr * 0.18, 0.16)
+    y_pad = max(yr * 0.40, 0.26 + 0.018 * max_per_level)
+    ax.set_xlim(float(xs.min() - x_pad), float(xs.max() + x_pad))
+    ax.set_ylim(float(ys.min() - y_pad), float(ys.max() + y_pad))
+
+    for coll in ax.collections:
+        coll.set_clip_on(False)
+    for coll in ax.patches:
+        coll.set_clip_on(False)
+
+    # --- Legend (same semantics as HTML; compact, no inset axes) ---
+    rt_cmap = LinearSegmentedColormap.from_list(
+        "lit_runtime_legend", [(u, c) for u, c in RUNTIME_PROGRESS_STOPS]
+    )
+    y_bar_top, h_bar = 0.92, 0.052
+    y_bar_bot = y_bar_top - h_bar
+    lax.imshow(
+        np.linspace(0, 1, 256).reshape(1, -1),
+        extent=(0.08, 0.92, y_bar_bot, y_bar_top),
+        origin="lower",
+        cmap=rt_cmap,
+        vmin=0,
+        vmax=1,
+        aspect="auto",
+        zorder=1,
+    )
+    lax.add_patch(
+        Rectangle(
+            (0.08, y_bar_bot),
+            0.84,
+            h_bar,
+            fill=False,
+            edgecolor="#888888",
+            linewidth=0.9,
+            zorder=2,
+        )
+    )
+    lax.text(0.08, y_bar_bot - 0.018, "faster", ha="left", va="top", fontsize=14, color="#444444")
+    lax.text(0.92, y_bar_bot - 0.018, "slower", ha="right", va="top", fontsize=14, color="#444444")
+
+    lax.text(
+        0.5,
+        0.988,
+        "Legend",
+        ha="center",
+        va="top",
+        fontsize=17,
+        fontweight="bold",
+        color="#111111",
+    )
+    if _times:
+        runtime_body = (
+            "• Green fill: fastest 10% of timed nodes\n"
+            "• Black fill: slowest 10%\n"
+            "• Between: ramp by relative speed (bar above)"
+        )
+    else:
+        runtime_body = "• No timed nodes in this tree"
+    lax.text(
+        0.5,
+        y_bar_bot - 0.076,
+        runtime_body,
+        ha="center",
+        va="top",
+        fontsize=14,
+        linespacing=1.55,
+        color="#333333",
+    )
+
+    lax.text(
+        0.5,
+        0.49,
+        "Correctness (border)",
+        ha="center",
+        va="top",
+        fontsize=15,
+        fontweight="semibold",
+        color="#222222",
+    )
+    fill_sample = "#CFD8DC"
+    y_corr = 0.39
+    # Green = correct (distance 0); red = incorrect (matches node border semantics).
+    lax.plot(
+        0.26,
+        y_corr,
+        "o",
+        ms=18,
+        mfc=fill_sample,
+        mec="#00FF00",
+        mew=3.6,
+        clip_on=False,
+    )
+    lax.text(
+        0.36,
+        y_corr,
+        "Correct",
+        ha="left",
+        va="center",
+        fontsize=14,
+        color="#333333",
+    )
+    lax.plot(
+        0.56,
+        y_corr,
+        "o",
+        ms=18,
+        mfc=fill_sample,
+        mec="#FF0000",
+        mew=3.6,
+        clip_on=False,
+    )
+    lax.text(
+        0.66,
+        y_corr,
+        "Incorrect",
+        ha="left",
+        va="center",
+        fontsize=14,
+        color="#333333",
+    )
+
+    lax.set_xlim(0, 1)
+    lax.set_ylim(0, 1)
+
+    fig.savefig(
+        png_path,
+        bbox_inches="tight",
+        facecolor="white",
+        pad_inches=0.45,
+    )
+    plt.close(fig)
 
 
 def _inject_runtime_legend(html: str) -> str:
@@ -273,6 +575,18 @@ net.add_node(0, "Root", color="#FF6B6B", level=0)
 
 id_counter = 1
 
+# Add stop/add-new option from root as well.
+net.add_node(
+    id_counter,
+    "ADD NEW MUTATION HERE\nweight=0.12",
+    color={"background": "#FFFFFF", "border": "#666666"},
+    borderWidth=2,
+    title="Stop search option weight",
+    level=1,
+)
+net.add_edge(0, id_counter, dashes=True, color="#B0B0B0")
+id_counter += 1
+
 
 def add_node_and_children(node: TreeNode, net, parent_id, level=1):
     global id_counter
@@ -300,6 +614,20 @@ def add_node_and_children(node: TreeNode, net, parent_id, level=1):
     current_id = id_counter
     id_counter += 1
 
+    # Visualize the stop/add-new-mutation option at this point.
+    stop_weight_label = "weight=1" if len(node.children) == 0 else "weight=0.12"
+    stop_id = id_counter
+    id_counter += 1
+    net.add_node(
+        stop_id,
+        f"ADD NEW MUTATION HERE \n{stop_weight_label}",
+        color={"background": "#FFFFFF", "border": "#666666"},
+        borderWidth=2,
+        title="Stop search option weight",
+        level=level + 1,
+    )
+    net.add_edge(current_id, stop_id, dashes=True, color="#B0B0B0")
+
     # Process children
     for child in node.children:
         add_node_and_children(child, net, current_id, level + 1)
@@ -316,6 +644,14 @@ html_content = _inject_runtime_legend(net.generate_html())
 with open("beam_search_tree.html", "w") as f:
     f.write(html_content)
 print("Tree visualization saved to beam_search_tree.html")
+
+png_path = "beam_search_tree.png"
+try:
+    export_tree_png(net, png_path)
+    print(f"Tree visualization saved to {png_path}")
+except ImportError as e:
+    print(f"Skipping PNG export (matplotlib required): {e}")
+
 print("Open the HTML file in your web browser to view the hierarchical tree")
 print(
     "Fill: green ≤ fastest 10%, black ≥ slowest 10%, ramp between; "

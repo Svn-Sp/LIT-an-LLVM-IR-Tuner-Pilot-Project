@@ -9,3 +9,4 @@ build/
 /*.json
 *.html
 **/__pycache__/
+env/

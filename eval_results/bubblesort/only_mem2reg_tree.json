@@ -1,0 +1,65 @@
+{
+  "children": [
+    {
+      "avg_path_run_score": 0.941725,
+      "path_size": 5,
+      "score": 0.704410,
+      "mutationType": "UNSAFE_MEM2REG",
+      "decisions": [0,0,2],
+      "avg_time": 0.713771,
+      "std_dev_time": 0.007692,
+      "result": 0.000000,
+      "children": [
+        {
+          "avg_path_run_score": 0.941403,
+          "path_size": 4,
+          "score": 0.753122,
+          "mutationType": "UNSAFE_MEM2REG",
+          "decisions": [0,0,3],
+          "avg_time": 0.765468,
+          "std_dev_time": 0.017134,
+          "result": 0.000000,
+          "children": [
+            {
+              "avg_path_run_score": 0.943851,
+              "path_size": 3,
+              "score": 0.755081,
+              "mutationType": "UNSAFE_MEM2REG",
+              "decisions": [0,0,2],
+              "avg_time": 0.729436,
+              "std_dev_time": 0.004736,
+              "result": 0.000000,
+              "children": [
+                {
+                  "avg_path_run_score": 0.945627,
+                  "path_size": 2,
+                  "score": 0.756513,
+                  "mutationType": "UNSAFE_MEM2REG",
+                  "decisions": [0,0,0],
+                  "avg_time": 0.698601,
+                  "std_dev_time": 0.000527,
+                  "result": 0.000000,
+                  "children": [
+                    {
+                      "avg_path_run_score": 0.945613,
+                      "path_size": 1,
+                      "score": 0.756490,
+                      "mutationType": "UNSAFE_MEM2REG",
+                      "decisions": [0,0,0],
+                      "avg_time": 0.698764,
+                      "std_dev_time": 0.005343,
+                      "result": 0.000000,
+                      "children": [
+
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -46,23 +46,42 @@ data["Run"] = pd.to_numeric(data["Run"], errors="coerce")
 data["Result"] = pd.to_numeric(data["Result"], errors="coerce")
 
 
-plt.figure(figsize=(12, 6))
+def y_extent_from_runs(df):
+    """Lower/upper bound from durations ± std (finite values only)."""
+    y = df["Average Duration (s)"]
+    sd = df["Standard Deviation (s)"].fillna(0)
+    mask = y.notna()
+    if not mask.any():
+        return None
+    y = y[mask]
+    sd = sd[mask]
+    lo = float((y - sd).min())
+    hi = float((y + sd).max())
+    return lo, hi
+
 
 no_result_mask = data["Success"] == 0
 runs_without_results = data[no_result_mask]
-plt.errorbar(
-    runs_without_results["Run"],
-    runs_without_results["Average Duration (s)"],
-    yerr=runs_without_results["Standard Deviation (s)"],
-    fmt="o",
-    capsize=3,
-    ecolor="red",
-    markerfacecolor="blue",
-    markersize=4,
-    label="No Result",
-)
-
 runs_with_results = data[~no_result_mask]
+
+extent = y_extent_from_runs(runs_with_results)
+if extent is None:
+    extent = y_extent_from_runs(data)
+if extent is None:
+    y_lo, y_hi = 0.0, 1.0
+else:
+    y_lo, y_hi = extent
+
+span = y_hi - y_lo
+# Cap padding at 0.5 s for long-running benchmarks; use ~5% of span when tighter.
+pad_bottom = min(0.5, max(0.05 * span, 1e-9))
+pad_top = min(0.5, max(0.05 * span, 1e-9))
+ylim_lo = y_lo - pad_bottom
+ylim_hi = y_hi + pad_top
+
+
+plt.figure(figsize=(12, 6))
+plt.ylim(ylim_lo, ylim_hi)
 
 
 # Define color mapping based on result values
@@ -81,12 +100,20 @@ scatter = plt.scatter(
     runs_with_results["Run"],
     runs_with_results["Average Duration (s)"],
     c=colors,
-    s=80,  # Size of markers
+    s=10,  # Size of markers
     zorder=3,  # Draw on top
     edgecolors="black",
 )
 
-# Add a colorbar to show the correctness scale
+correct = runs_with_results[runs_with_results["Result"] == 0]
+plt.plot(
+    correct["Run"],
+    correct["Average Duration (s)"],
+    color="green",
+    linewidth=1.2,
+    zorder=2,
+)
+
 from matplotlib.patches import Patch
 
 legend_elements = [
@@ -109,7 +136,21 @@ for i, row in runs_with_results.iterrows():
         alpha=0.5,
     )
 
-# Set plot labels and title
+# No-result runs: pin markers just above the axis bottom so y-scaling follows timings only.
+vertical_span = ylim_hi - ylim_lo
+fail_y = ylim_lo + max(0.02 * vertical_span, 1e-12)
+fail_runs = runs_without_results["Run"].to_numpy()
+plt.scatter(
+    fail_runs,
+    np.full_like(fail_runs, fail_y, dtype=float),
+    s=10,
+    zorder=4,
+    marker="o",
+    facecolors="blue",
+    edgecolors="black",
+    label="_nolegend",
+)
+
 plt.xlabel("Run Number")
 plt.ylabel("Average Duration (s)")
 plt.title("Execution Time with Standard Deviation (Outliers Removed)")
