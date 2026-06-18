@@ -3,5 +3,6 @@
     "modified": "benchmarks/perm/modified.ll",
     "correct_output": "benchmarks/perm/result.txt",
     "output_file": "benchmarks/perm/output.txt",
-    "output_type": "scalar"
+    "output_type": "scalar",
+    "accepts_input": false
 }

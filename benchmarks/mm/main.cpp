@@ -8,8 +8,8 @@
 
 using json = nlohmann::json;
 
-#define N 512
-#define M 512
+#define N 128
+#define M 128
 
 __attribute__((section("OPTIMIZABLE_SECTION")))
 void computation(const std::vector<std::vector<double>>& matrix1, 
@@ -39,7 +39,7 @@ void read_matrix(const char* filename, std::vector<std::vector<double>>& matrix)
     free(json_data);
     matrix = data.get<std::vector<std::vector<double>>>();
 }
-int main() {
+int main(int argc, char *argv[]) {
     double* result = (double*)malloc(N * M * sizeof(double));
     if (!result) {
         std::cerr << "Error: Memory allocation failed for result" << std::endl;
@@ -51,10 +51,13 @@ int main() {
     strcpy(filepath, __FILE__);
     char *dir = dirname(filepath);
     char input1_path[512], input2_path[512];
-    sprintf(input1_path, "%s/input1.json", dir);
-    sprintf(input2_path, "%s/input2.json", dir);
-    read_matrix(input1_path, matrix);
-    read_matrix(input2_path, matrix2);
+    const char *input1 = NULL;
+    const char *input2 = NULL;
+
+    input1 = argv[1];
+    input2 = argv[2];
+    read_matrix(input1, matrix);
+    read_matrix(input2, matrix2);
     computation(matrix, matrix2, result);
 
     // Create output JSON array with proper dimensions

@@ -33,6 +33,7 @@ llvm_map_components_to_libnames(llvm_libs
 add_library(core
     src/core/run.cpp
     src/core/decision_maker.cpp
+    src/core/benchmark_config.cpp
 )
 
 add_library(utils

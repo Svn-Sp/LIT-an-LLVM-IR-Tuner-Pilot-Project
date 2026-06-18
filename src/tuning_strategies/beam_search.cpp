@@ -184,10 +184,10 @@ int write_tree_to_json(std::string file_name, BeamSearchTreeNode* root) {
         return -1;
     }
 }
-void beam_search(std::string program_file, std::string modified_file, std::string output_file, OutputBase& correct_result, std::vector<Run>& runs, std::string results_file_prefix){
+void beam_search(std::string program_file, std::string modified_file, BenchmarkEval& eval, std::vector<Run>& runs, std::string results_file_prefix){
     BeamSearchTreeNode* root = new BeamSearchTreeNode();
     Run run;
-    measure_time(program_file, output_file, correct_result, run);
+    measure_time(program_file, eval, run);
     float og_runtime = run.avgDuration;
     float max_runtime = og_runtime * 1.25; // Assume max runtime for now
     runs.push_back(run);
@@ -237,7 +237,7 @@ void beam_search(std::string program_file, std::string modified_file, std::strin
                 break;
             }
         }
-        int success = measure_time(modified_file, output_file, correct_result, run);
+        int success = measure_time(modified_file, eval, run);
         if (run.avgDuration > max_runtime){
             max_runtime = run.avgDuration;
         }

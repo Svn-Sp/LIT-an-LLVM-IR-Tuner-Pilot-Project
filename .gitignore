@@ -10,3 +10,4 @@ build/
 *.html
 **/__pycache__/
 env/
+benchmarks/**/input/

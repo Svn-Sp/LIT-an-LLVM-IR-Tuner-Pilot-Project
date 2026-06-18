@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 #include <chrono>
 #include <cmath>
 #include <limits>
@@ -20,13 +21,14 @@
 #include <iostream>
 #include <ctime>
 #include "core/run.cpp"
+#include "core/benchmark_config.h"
 
 #include "output/output.cpp"
 #include "output/scalar.cpp"
 #include "output/array.cpp"
 #include "output/matrix2d.cpp"
 #define TIMEOUT_SECONDS 6
-#define REPETITIONS 20
+#define REPETITIONS 6
 #define COMPILED_BINARY "/tmp/lit_benchmark_binary"
 #define COMPILED_OBJ    "/tmp/lit_benchmark_binary.o"
 
@@ -46,14 +48,17 @@ bool compile_ll_to_binary(const std::string& ll_file) {
     return true;
 }
 
-int call_executable(const std::string& program_file,  double& time_result, int timeout_seconds = TIMEOUT_SECONDS) {
+int call_executable(const std::string& program_file, double& time_result,
+                    int timeout_seconds = TIMEOUT_SECONDS,
+                    const std::vector<std::string>& program_args = {}) {
     // Use fork and exec for better process control
     int time_fd[2];
     pipe(time_fd);
     pid_t pid = fork();
     
     if (pid == -1) {
-        // Fork failed
+        close(time_fd[0]);
+        close(time_fd[1]);
         std::cerr << "Error: Failed to fork process" << std::endl;
         return -1;
     }
@@ -73,7 +78,12 @@ int call_executable(const std::string& program_file,  double& time_result, int t
         }
         
         // Execute the compiled binary
-        std::string cmd = "taskset -c 5 " COMPILED_BINARY " > /dev/null 2>&1";
+        std::string cmd="taskset -c 5 ";
+        cmd += COMPILED_BINARY;
+        for (const auto& arg : program_args) {
+            cmd += " '" + arg + "'";
+        }
+        cmd += " > /dev/null 2>&1";
         auto start_time = std::chrono::high_resolution_clock::now();
         int ret = system(cmd.c_str());
         auto end_time = std::chrono::high_resolution_clock::now();
@@ -88,68 +98,72 @@ int call_executable(const std::string& program_file,  double& time_result, int t
         exit(0);
     } else {
         // Parent process
+        close(time_fd[1]);
+
         int status;
+        int result_code = -1;
         time_t start_time = time(nullptr);
-        
+
         // Set the process group for the child
         setpgid(pid, pid);
-        
+
         while (true) {
             // Check if process has finished
             pid_t result = waitpid(pid, &status, WNOHANG);
-            
+
             if (result == pid) {
                 // Process finished - ensure all children are killed
                 killpg(pid, SIGTERM);
                 sleep(1);
-                
+
                 // Force kill any remaining processes in the group
                 if (killpg(pid, 0) == 0) {
                     killpg(pid, SIGKILL);
                     sleep(1);
                 }
-                
+
                 if (WIFEXITED(status) && WEXITSTATUS(status) == 0) {
                     read(time_fd[0], &time_result, sizeof(time_result));
-                    close(time_fd[0]);
-                    return 1;  // Success
-                } else {
-                    return -1;  // Process failed
+                    result_code = 1;
                 }
+                break;
             } else if (result == -1) {
                 // Error in waitpid - kill the process group
                 killpg(pid, SIGTERM);
                 sleep(1);
-                
+
                 // Force kill if still running
                 if (killpg(pid, 0) == 0) {
                     killpg(pid, SIGKILL);
                     sleep(1);
                 }
-                
+
                 std::cerr << "Error: waitpid failed" << std::endl;
-                return -1;
+                break;
             }
-            
+
             // Check timeout
             if (time(nullptr) - start_time >= timeout_seconds) {
                 // Timeout - kill the process group
                 killpg(pid, SIGTERM);
                 sleep(1);
-                
+
                 // Force kill if still running
                 if (killpg(pid, 0) == 0) {
                     killpg(pid, SIGKILL);
                     sleep(1);
                 }
-                
+
                 std::cerr << "Error: Process timed out after " << timeout_seconds << " seconds" << std::endl;
-                return -1;
+                break;
             }
-            
+
             // Sleep a bit before checking again
             usleep(10000);  // 10ms
         }
+
+        close(time_fd[0]);
+        return result_code;
     }
 }
 
@@ -174,7 +188,7 @@ static double compute_distance(const std::string& output_file, OutputBase& corre
     throw std::runtime_error("Output type not supported");
 }
 
-int measure_time(std::string program_file, std::string output_file, OutputBase& correct_result, Run& run_instance){
+int measure_time(std::string program_file, BenchmarkEval& eval, Run& run_instance){
     // Compile the IR to a native binary once before timing
     if (!compile_ll_to_binary(program_file)) {
         llvm::outs() << "measure_time: compilation failed for " << program_file << "\n";
@@ -187,6 +201,65 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
 
     std::vector<double> durations;
     std::vector<double> distances;
+    const std::string& output_file = eval.output_file;
+
+    if (eval.accepts_input) {
+        for (const auto& input_case : eval.input_cases) {
+            if (std::filesystem::exists(output_file)) {
+                std::filesystem::remove(output_file);
+            }
+
+            double time_result;
+            int success = call_executable(program_file, time_result, TIMEOUT_SECONDS, input_case.input_paths);
+            cleanup_lli_processes();
+
+            if (success != 1 || !std::filesystem::exists(output_file)) {
+                llvm::outs() << "Case " << input_case.name << ": executable failed — aborting\n";
+                run_instance.success = false;
+                run_instance.avgDuration = 0;
+                run_instance.stddevDuration = 0;
+                run_instance.result = std::numeric_limits<double>::infinity();
+                return -1;
+            }
+
+            durations.push_back(time_result);
+
+            try {
+                auto reference = make_correct_output(eval.output_type, input_case.reference_output_path);
+                double dist = compute_distance(output_file, *reference);
+                llvm::outs() << "Case " << input_case.name << ": distance = " << dist << "\n";
+                distances.push_back(dist);
+            } catch (const std::exception& e) {
+                llvm::outs() << "Case " << input_case.name << ": failed to parse output: " << e.what() << " — aborting\n";
+                run_instance.success = false;
+                run_instance.avgDuration = 0;
+                run_instance.stddevDuration = 0;
+                run_instance.result = std::numeric_limits<double>::infinity();
+                return -1;
+            }
+        }
+
+        cleanup_lli_processes();
+
+        double sum = 0.0;
+        for (double d : durations) sum += d;
+        double avg = sum / durations.size();
+        double variance = 0.0;
+        for (double d : durations) variance += (d - avg) * (d - avg);
+        variance /= durations.size();
+
+        double max_distance = 0.0;
+        for (double d : distances) max_distance = std::max(max_distance, d);
+
+        run_instance.success = true;
+        run_instance.avgDuration = avg;
+        run_instance.stddevDuration = std::sqrt(variance);
+        run_instance.result = max_distance;
+
+        llvm::outs() << "Final distance: " << run_instance.result
+                     << " (all " << eval.input_cases.size() << " cases succeeded)\n";
+        return 1;
+    }
 
     for (int run = 0; run < REPETITIONS; run++) {
         if (std::filesystem::exists(output_file)) {
@@ -209,7 +282,7 @@ int measure_time(std::string program_file, std::string output_file, OutputBase& 
         durations.push_back(time_result);
 
         try {
-            double dist = compute_distance(output_file, correct_result);
+            double dist = compute_distance(output_file, *eval.correct_result);
             llvm::outs() << "Run " << run << ": distance = " << dist << "\n";
             distances.push_back(dist);
         } catch (const std::exception& e) {

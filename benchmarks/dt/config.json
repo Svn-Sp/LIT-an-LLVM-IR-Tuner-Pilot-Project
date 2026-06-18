@@ -3,5 +3,6 @@
     "modified": "benchmarks/dt/modified.ll",
     "correct_output": "benchmarks/dt/result.json",
     "output_file": "benchmarks/dt/dvec1.json",
-    "output_type": "array"
+    "output_type": "array",
+    "accepts_input": false
 }

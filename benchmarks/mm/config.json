@@ -3,5 +3,7 @@
     "modified": "benchmarks/mm/modified.ll",
     "correct_output": "benchmarks/mm/correct.json",
     "output_file": "benchmarks/mm/output.json",
-    "output_type": "matrix2d"
+    "output_type": "matrix2d",
+    "accepts_input": true,
+    "input_files": ["input1.json", "input2.json"]
 }

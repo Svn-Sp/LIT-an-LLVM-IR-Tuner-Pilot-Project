@@ -29,22 +29,16 @@ void Bubble(int* unsorted, int size) {
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    // Try to open input.json in the current directory first
-    FILE *fp = fopen("input.json", "r");
+    const char *input_path = NULL;
+    char default_input_path[512];
+    input_path = argv[1];
+
+    FILE *fp = fopen(input_path, "r");
     if (!fp) {
-        // If not found in current directory, try relative to the executable
-        char filepath[256];
-        strcpy(filepath, __FILE__);
-        char *dir = dirname(filepath);
-        char output_path[512];
-        sprintf(output_path, "%s/input.json", dir);
-        fp = fopen(output_path, "r");
-        if (!fp) {
-            fprintf(stderr, "Could not open input.json in current directory or %s\n", output_path);
-            return 1;
-        }
+        fprintf(stderr, "Could not open input file: %s\n", input_path);
+        return 1;
     }
     fseek(fp, 0, SEEK_END);
     long fsize = ftell(fp);
